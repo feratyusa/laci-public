@@ -1,7 +1,12 @@
-export default function InputError({ message, className = '', ...props }) {
+import { XCircleIcon } from "@heroicons/react/24/outline";
+
+export default function InputError({ message, textSize="text-sm", iconSize="5", color="red-900", className = '', ...props }) {
     return message ? (
-        <p {...props} className={'text-sm text-red-600 ' + className}>
-            {message}
-        </p>
+        <div {...props} className={"flex flex-row gap-1 items-center " + className}>
+            <XCircleIcon className={"h-"+iconSize+" w-"+iconSize+" text-"+color}/>
+            <p className={"text-"+textSize+" text-"+color}>
+                {message}
+            </p>
+        </div>
     ) : null;
 }

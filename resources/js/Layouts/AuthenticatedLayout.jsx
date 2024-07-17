@@ -1,125 +1,155 @@
-import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import {
+    Card,
+    Typography,
+    List,
+    ListItem,
+    ListItemPrefix,
+    ListItemSuffix,
+  } from "@material-tailwind/react";
+  import {
+    AcademicCapIcon,
+    HomeIcon,
+    LightBulbIcon,
+    CalendarDaysIcon,
+    BookOpenIcon,
+    UserCircleIcon,
+    Cog6ToothIcon,
+    PowerIcon,
+} from "@heroicons/react/24/solid";
+import { useEffect, useState } from 'react';
+import { useMediaQuery } from "react-responsive";
+import { Link } from "@inertiajs/react";
+import logo from "../../../storage/app/public/logo.png";
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const isMobile = useMediaQuery({query: '(max-width: 800px)'});
+    const [sidebar, setSidebar] = useState(!isMobile);
 
+    const handleResize = () => {
+        if(isMobile){
+            setSidebarClassName(classNameClose);
+            setSideButton(classNameBtnClose);
+            setSidebar(false)
+        }
+        else{
+            setSidebarClassName(classNameOpen);
+            setSideButton(classNameBtnOpen);
+            setSidebar(true);
+        }
+    }
+
+    const classNameOpen = 'flex-none min-h-screen w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5';
+    const classNameClose = 'hidden';
+    const [sidebarClassName, setSidebarClassName] = useState(sidebar ? classNameOpen : classNameClose);
+
+    const classNameBtnOpen = 'hidden';
+    const classNameBtnClose = 'flex-none';
+    const [sideButton, setSideButton] = useState(sidebar ? classNameBtnOpen : classNameBtnClose);
+
+    function handleSidebar(){
+        if(sidebar){
+            setSidebarClassName(classNameClose);
+            setSideButton(classNameBtnClose);
+        }
+        else{
+            setSidebarClassName(classNameOpen);
+            setSideButton(classNameBtnOpen);
+        }
+        setSidebar(!sidebar)
+    }
+
+    /**
+     * Menu list
+     */
+    const menusBatch = [
+        [
+            {name: 'Dashboard', link: 'dashboard', icon: <HomeIcon className="h-5 w-5"/>},
+            {name: 'Usulan', link: 'proposal.index', icon: <LightBulbIcon className="h-5 w-5"/>},
+            {name: 'Pelatihan', link: 'dashboard', icon: <AcademicCapIcon className="h-5 w-5"/>},
+            {name: 'Kalender', link: 'dashboard', icon: <CalendarDaysIcon className="h-5 w-5"/>},
+            {name: 'Tutorial', link: 'dashboard', icon: <BookOpenIcon className="h-5 w-5"/>},
+        ],
+        [
+            {name: 'Profile', link: 'profile.edit', icon: <UserCircleIcon className="h-5 w-5"/>},
+            {name: 'Settings', link: 'dashboard', icon: <Cog6ToothIcon className="h-5 w-5"/>},
+        ]
+    ]
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize)
+    })
+    
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+        <div className="flex min-h-screen bg-gray-100">
+            <Card className={sidebarClassName}>
+                <div className="mb-2 flex justify-between gap-4 p-4">
+                    <div className='flex items-start'>
+                        <img src={logo} alt="brand" className="h-8 w-8 mr-5" />
+                        <Typography variant="h5" color="blue-gray">
+                            Learning Center
+                        </Typography>
+                    </div>
+                    <button className='hover:opacity-50' onClick={handleSidebar}>
+                        <svg className="w-[35px] h-[35px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M5 7h14M5 12h14M5 17h14"/>
+                        </svg>
+                    </button>                  
+                </div>
+                <List>
+                    {
+                        menusBatch.map((batches, key) => (
+                            <>
+                            {batches.map((menu, i) =>
+                                <Link href={route(menu.link)} as="button">
+                                    <ListItem key={menu.name+i}>
+                                        <ListItemPrefix>
+                                            {menu.icon}
+                                        </ListItemPrefix>
+                                            {menu.name}
+                                        <ListItemSuffix>
+                                        </ListItemSuffix>
+                                    </ListItem>
                                 </Link>
+                            )
+                            }
+                            {
+                                key != menusBatch.length-1 ?   
+                                <hr className="my-2 border-blue-gra y-50" /> :
+                                ""
+                            }
+                            </>
+                        ))
+                    }
+                    <Link href={route('logout')} method="post" as="button">
+                        <ListItem key={'logout'}>
+                            <ListItemPrefix>
+                            <PowerIcon className="h-5 w-5" />
+                            </ListItemPrefix>
+                            Log Out
+                        </ListItem>
+                    </Link>
+                </List>
+            </Card>
+            <div className="flex-auto">
+                {header && (
+                    <div className='bg-red-900'>
+                        <div className='flex flex-row gap-5 items-center h-16 pl-3 pt-3 pb-3 pr-10'>
+                            <div className={sideButton}>
+                                <button className='hover:opacity-80' onClick={handleSidebar}>
+                                    <svg className="w-[35px] h-[35px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="white" strokeLinecap="round" strokeWidth="1.5" d="M5 7h14M5 12h14M5 17h14"/>
+                                    </svg>
+                                </button>
                             </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
-                            <div className="ms-3 relative">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                        <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
+                            <div className='grow'>{header}</div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
-                </header>
-            )}
-
-            <main>{children}</main>
+                <main>
+                    {children}
+                </main>
+            </div>
         </div>
     );
 }

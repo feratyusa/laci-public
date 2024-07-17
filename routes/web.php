@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Proposal\ProposalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,3 +26,13 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::prefix('proposals')->group(function () {
+    Route::get('', [ProposalController::class, 'index'])->name('proposal.index');
+    Route::get('/create', [ProposalController::class, 'create'])->name('proposal.create');
+    Route::post('', [ProposalController::class, 'store'])->name('proposal.store');
+    Route::post('/{id}', [ProposalController::class, 'changeStatus'])->name('proposal.status');
+    Route::get('/{id}', [ProposalController::class, 'show'])->name('proposal.show');
+    Route::put('/{id}', [ProposalController::class, 'update'])->name('proposal.update');
+    Route::delete('/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
+});

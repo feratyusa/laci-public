@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* This is a style to fix visible border while typing using react-select 
+    combine with classNamePrefix on the component itself
+*/
+.select2-selection__input:focus {
+    box-shadow: none;
+}

@@ -15,11 +15,6 @@ class File extends Model
     use HasFactory, HasUuids;
 
     /**
-     * Connection init
-     */
-    protected $connection = 'dev';
-
-    /**
      * Table init
      */
     protected $table = 'files';

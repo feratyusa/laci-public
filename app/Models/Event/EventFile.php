@@ -6,16 +6,12 @@ use App\Models\File\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EventFile extends Model
 {
-    use HasFactory;
-
-    /**
-     * Connection init
-     */
-    protected $connection = 'dev';
-
+    use HasFactory, SoftDeletes;
+    
     /**
      * Table init
      */

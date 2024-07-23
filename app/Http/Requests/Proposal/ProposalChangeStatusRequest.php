@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Proposal;
 
-use App\ProposalStatus;
+use App\Enum\ProposalStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,7 +24,7 @@ class ProposalChangeStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => [Rule::in(ProposalStatus::PENDING, ProposalStatus::ACCEPTED, ProposalStatus::REJECTED)],
+            'status' => [Rule::in(array_column(ProposalStatus::cases(), 'value'))],
         ];
     }
 }

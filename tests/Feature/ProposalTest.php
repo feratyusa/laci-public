@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\EventCategory;
+use App\Enum\EventCategory;
+use App\Enum\ProposalStatus;
 use App\Models\Proposal\Proposal;
-use App\ProposalStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Helpers\BaseData;
@@ -24,8 +24,8 @@ class ProposalTest extends TestCase
             'name' => 'Banking Simulation',
             'kd_kursus' => '9006021',
             'entry_date' => date("Y-m-d H:m:s"),
-            'event_category' => EventCategory::PT,
-            'status' => ProposalStatus::PENDING,
+            'event_category' => EventCategory::PT->value,
+            'status' => ProposalStatus::PENDING->value,
         ]);
 
         $proposal = Proposal::first();
@@ -44,9 +44,9 @@ class ProposalTest extends TestCase
         $response = $this->actingAs($base->user)->put("/proposals/{$base->proposal->id}", [
             'name' => 'Banking Simulation',
             'kd_kursus' => '9006021',
-            'entry_date' => date("Y-m-d H:m:s"),
-            'event_category' => EventCategory::PT,
-            'status' => ProposalStatus::PENDING,
+            'entry_date' => date("Y-m-d"),
+            'event_category' => EventCategory::PT->value,
+            'status' => ProposalStatus::PENDING->value,
         ]);
 
         $response->assertRedirect(route('proposal.show', ['id' => $base->proposal->id]));
@@ -55,9 +55,9 @@ class ProposalTest extends TestCase
             ->assertDatabaseHas('proposals', [
                 'name' => 'Banking Simulation',
                 'kd_kursus' => '9006021',
-                'entry_date' => date("Y-m-d H:m:s"),
-                'event_category' => EventCategory::PT,
-                'status' => ProposalStatus::PENDING,
+                'entry_date' => date("Y-m-d"),
+                'event_category' => EventCategory::PT->value,
+                'status' => ProposalStatus::PENDING->value,
             ])
             ->assertDatabaseCount('proposals', 1);        
     }
@@ -83,13 +83,13 @@ class ProposalTest extends TestCase
         $base->createProposal();
 
         $response = $this->actingAs($base->user)->post("/proposals/{$base->proposal->id}",[
-            'status' => ProposalStatus::ACCEPTED,
+            'status' => ProposalStatus::ACCEPTED->value,
         ]);
 
         $response->assertRedirect(route('proposal.show', ['id' => $base->proposal->id]));
 
         $this->assertDatabaseCount('proposals', 1)
-            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::ACCEPTED]);      
+            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::ACCEPTED->value]);      
     }
     
     public function test_user_can_reject_proposal(): void
@@ -98,13 +98,13 @@ class ProposalTest extends TestCase
         $base->createProposal();
 
         $response = $this->actingAs($base->user)->post("/proposals/{$base->proposal->id}",[
-            'status' => ProposalStatus::REJECTED,
+            'status' => ProposalStatus::REJECTED->value,
         ]);
 
         $response->assertRedirect(route('proposal.show', ['id' => $base->proposal->id]));
 
         $this->assertDatabaseCount('proposals', 1)
-            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::REJECTED]);      
+            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::REJECTED->value]);      
     }
 
     public function test_user_can_pending_a_proposal(): void
@@ -113,12 +113,12 @@ class ProposalTest extends TestCase
         $base->createProposal();
 
         $response = $this->actingAs($base->user)->post("/proposals/{$base->proposal->id}",[
-            'status' => ProposalStatus::PENDING,
+            'status' => ProposalStatus::PENDING->value,
         ]);
 
         $response->assertRedirect(route('proposal.show', ['id' => $base->proposal->id]));
 
         $this->assertDatabaseCount('proposals', 1)
-            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::PENDING]);      
+            ->assertDatabaseHas('proposals', ['status' => ProposalStatus::PENDING->value]);      
     }
 }

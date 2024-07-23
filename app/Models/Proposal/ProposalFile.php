@@ -21,7 +21,8 @@ class ProposalFile extends Model
      * Fillable
      */
     protected $fillable = [
-        'file_category',
+        'proposal_id',
+        'file_id'
     ];
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-use App\UserRole;
+use App\Enum\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('username_verified_at')->nullable();
             $table->string('password');
             $table->string('name');
-            $table->enum('role', [UserRole::ADMIN, UserRole::STAFF]);
+            $table->enum('role', array_column(UserRole::cases(), 'value'));
             $table->rememberToken();
             $table->timestamps();
         });

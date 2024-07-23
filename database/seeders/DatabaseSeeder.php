@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder
             'username' => 'prabuega',
         ]);
 
-        $this->call(
-            ProposalSeeder::class
-        );
+        $this->call([
+            ProposalSeeder::class,
+            EventSeeder::class,
+        ]);
     }
 }

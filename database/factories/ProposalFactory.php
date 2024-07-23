@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\EventCategory;
+use App\Enum\EventCategory;
+use App\Enum\ProposalStatus;
 use App\Models\Proposal\Proposal;
-use App\ProposalStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProposalFactory extends Factory
@@ -20,8 +20,8 @@ class ProposalFactory extends Factory
             'name' => fake()->name(),
             'kd_kursus' => fake()->regexify('[0-9]{6}'),
             'entry_date' => fake()->date("Y-m-d"),
-            'event_category' => fake()->randomElement([EventCategory::IHT, EventCategory::PT]),
-            'status' => fake()->randomElement([ProposalStatus::PENDING, ProposalStatus::ACCEPTED, ProposalStatus::REJECTED]),
+            'event_category' => fake()->randomElement(array_column(EventCategory::cases(), 'value')),
+            'status' => fake()->randomElement(array_column(ProposalStatus::cases(), 'value')),
         ];
     }
 

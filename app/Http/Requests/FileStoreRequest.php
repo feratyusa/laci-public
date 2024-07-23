@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Proposal;
+namespace App\Http\Requests;
 
-use App\Enum\EventCategory;
-use App\Enum\ProposalStatus;
+use App\Enum\FileCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
-class ProposalFormRequest extends FormRequest
+class FileStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,25 +28,28 @@ class ProposalFormRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z0-9 _-]+$/',
-                'max:120', 
+                'max:120',
             ],
-            'event_category' => [
+            'relation' => [
+                'nullable',
+                Rule::in('proposal', 'event'),
+            ],
+            'relation_id' => [
+                'nullable',
+                'integer'
+            ],
+            'category' => [
                 'required',
-                Rule::in(array_column(EventCategory::cases(), 'value'))
+                Rule::enum(FileCategory::class),
             ],
-            'entry_date' => [
+            'files' => [
                 'required',
-                'date',
+                'array'
             ],
-            'kd_kursus' => [
-                'required',
-                'string',
-            ],
-            'status' => [
-                'required',
-                Rule::in(array_column(ProposalStatus::cases(), 'value'))
-            ],
+            'files.*' => [
+                File::types(['pdf', 'doc', 'docx'])
+                    ->max('1mb')
+            ]
         ];
     }
 }

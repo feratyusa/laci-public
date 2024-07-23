@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enum\ProposalStatus;
+use App\Models\Event\Event;
 use App\Models\Proposal\Proposal;
-use App\ProposalStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,10 +15,11 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        Proposal::factory()->create([
-            'name' => "Pelatihan RPK",
-            'status' => ProposalStatus::ACCEPTED,
-        ]);
+        Proposal::factory()
+            ->create([
+                'name' => "Pelatihan RPK",
+                'status' => ProposalStatus::ACCEPTED,
+            ]);
         Proposal::factory()->create([
             'name' => "Pelatihan Sales Management Development for AO",
             'status' => ProposalStatus::PENDING,

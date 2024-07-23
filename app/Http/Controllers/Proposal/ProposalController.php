@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Proposal;
 
-use App\EventCategory;
+use App\Enum\FileCategory;
+use App\Enum\ProposalStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Proposal\ProposalChangeStatusRequest;
 use App\Http\Requests\Proposal\ProposalFormRequest;
 use App\Models\Proposal\Proposal;
-use App\ProposalStatus;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ProposalController extends Controller
@@ -32,8 +30,8 @@ class ProposalController extends Controller
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),
             'paginator' => $paginator,
-            'oldest_year' => $last_year,
-            'latest_year' => $latest_year,
+            'code' => session('code'),
+            'status' => session('status'),
         ]);        
     }
 
@@ -52,23 +50,9 @@ class ProposalController extends Controller
     {
         $validated = $request->validated();
 
-        $arr = [];
-        foreach ($request->file('files') as $file) {
-            array_push($arr, $file->extension());
-        }
-        
-        return response()->json([
-            'file' => $arr,
-        ]);
-        // foreach ($request->files as $file) {
-        //     // $filename = $file->store();
-        // }
+        $proposal = Proposal::create($validated);
 
-
-        // $proposal = Proposal::create($validated);
-
-
-        // return redirect()->route('proposal.show', ['id' => $proposal->id])->with(['code' => 1, 'status' => 'Proposal created!']);
+        return redirect()->route('proposal.show', ['id' => $proposal->id])->with(['code' => 1, 'status' => 'Proposal created!']);
     }
 
     /**
@@ -77,8 +61,21 @@ class ProposalController extends Controller
     public function show(string $id)
     {
         $proposal = Proposal::findOrFail($id);
+
+        $categories = array_column(FileCategory::cases(), 'value');
+        $categorySelection = [];
+        foreach ($categories as $category) {
+            $categorySelection[] = (object)['label' => $category, 'value' => $category];
+        }
+
+        $files = $proposal->files()->get();
+
         return Inertia::render("Proposal/Show", [
             'proposal' => $proposal,
+            'categories' => $categorySelection,
+            'files' => $files,
+            'code' => session('code'),
+            'status' => session('status'),
         ]);
     }
 
@@ -87,7 +84,9 @@ class ProposalController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return Inertia::render('Proposal/Edit', [
+            'proposal' => Proposal::find($id)
+        ]);
     }
 
     /**
@@ -101,7 +100,8 @@ class ProposalController extends Controller
 
         $proposal->updateOrFail($validated);
 
-        return redirect()->route('proposal.show', ['id' => $proposal->id])->with(['code' => 1 ,'status' => 'Proposal updated!']);
+        return redirect()->route('proposal.show', ['id' => $proposal->id])
+            ->with(['code' => 1 ,'status' => 'Proposal updated!']);
     }
 
     public function changeStatus(ProposalChangeStatusRequest $request, string $id): RedirectResponse

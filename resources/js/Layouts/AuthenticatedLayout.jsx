@@ -65,7 +65,7 @@ export default function Authenticated({ user, header, children }) {
         [
             {name: 'Dashboard', link: 'dashboard', icon: <HomeIcon className="h-5 w-5"/>},
             {name: 'Usulan', link: 'proposal.index', icon: <LightBulbIcon className="h-5 w-5"/>},
-            {name: 'Pelatihan', link: 'dashboard', icon: <AcademicCapIcon className="h-5 w-5"/>},
+            {name: 'Event', link: 'dashboard', icon: <AcademicCapIcon className="h-5 w-5"/>},
             {name: 'Kalender', link: 'dashboard', icon: <CalendarDaysIcon className="h-5 w-5"/>},
             {name: 'Tutorial', link: 'dashboard', icon: <BookOpenIcon className="h-5 w-5"/>},
         ],

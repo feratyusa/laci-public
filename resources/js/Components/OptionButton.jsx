@@ -4,10 +4,10 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "@inertiajs/react";
 
-export default function OptionButton({tip='', color='gray', link='#', children, ...props}){
+export default function OptionButton({tip='', color='gray', link='#', children, variant="text", ...props}){
     return (
         <Tooltip content={tip}>
-            <IconButton {...props} variant="text" color={color}>
+            <IconButton {...props} variant={variant} color={color}>
                 <Link href={link}>
                     {children}
                 </Link>

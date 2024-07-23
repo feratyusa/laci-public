@@ -1,9 +1,8 @@
 import { Chip, IconButton, Typography } from "@material-tailwind/react"
-import { useState } from "react"
 import { DocumentTextIcon, DocumentIcon } from "@heroicons/react/24/solid"
 import { filesize } from "filesize"
 
-export default function MultipleFileInput({files, className='', ...props}){
+export default function MultipleFileInput({files, error='', className='', ...props}){
     const acceptedFile = {
         pdf: "application/pdf", // PDF
         doc: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"  // Word Document

@@ -5,7 +5,7 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import ProposalForm from "./Partials/Form";
 
-export default function Create({auth}){
+export default function Edit({auth, proposal}){
     return(
         <Authenticated
             user={auth.user}
@@ -27,13 +27,13 @@ export default function Create({auth}){
                         <div className="flex justify-center my-4">
                             <Typography
                             variant="h4"
-                            color="red"
+                            color="amber"
                             className="uppercase"
                             >
-                                Form Usulan Baru
+                                Form Edit Usulan
                             </Typography>
                         </div>
-                        <ProposalForm method={'create'}/>
+                        <ProposalForm method={'edit'} proposal={proposal}/>
                     </CardBody>
                 </Card>
             </div>

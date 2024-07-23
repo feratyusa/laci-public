@@ -6,9 +6,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { 
     ArrowPathIcon,
-    TrashIcon,
-    PencilIcon,
-    PlusIcon
+    PlusIcon,
+    Cog8ToothIcon
  }
 from "@heroicons/react/24/solid"
 import {
@@ -25,7 +24,8 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Collapse,  
+  Collapse,
+  Alert
 } from "@material-tailwind/react";
 import { Head, Link } from "@inertiajs/react";
 import OptionButton from "@/Components/OptionButton";
@@ -35,6 +35,7 @@ import Select from "react-select";
 import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
+import DialogDelete from "@/Components/DialogDelete";
 
 const LinkProposal = ({children, className='', id}) => {
     return(
@@ -44,10 +45,25 @@ const LinkProposal = ({children, className='', id}) => {
     )
 }
 
-export default function Index({ auth, oldest_year, latest_year, proposals, paginator }) {
+export default function Index({ auth, status, code, proposals, paginator }) {
+    // Collapse State
     const [open, setOpen] = useState(false)
-    const  [collapseClass, setCollapseClass] = useState("")
+    const  [collapseClass, setCollapseClass] = useState("")  
+    // Dialog
+    const [openDialog, setOpenDialog] = useState(false)
+    function handleOpenDialog(){
+        setOpenDialog(true)
+    }
+    function handleCloseDialog() {
+        setOpenDialog(false)
+    }
 
+    function openCollapse(state){
+        setOpen(state)
+        if(state) setCollapseClass("overflow-visible");
+        else setCollapseClass("");
+    }  
+    
     const columns = [
         "ID", "NAMA USULAN", "KATEGORI","KODE KURSUS", "TANGGAL MASUK", "STATUS", "OPSI"
     ];
@@ -80,19 +96,8 @@ export default function Index({ auth, oldest_year, latest_year, proposals, pagin
         {value: 'Public Training', label: 'Public Training'},
     ]
 
-
-    function openCollapse(state){
-        setOpen(state)
-        if(state) setCollapseClass("overflow-visible");
-        else setCollapseClass("");
-    }
-    function onChangeYear(e){
-        if(e.value == null) setMonthSelect(false);
-        else setMonthSelect(true)
-    }
-
     useEffect(() => {
-        console.log(open)
+        
     })
 
     return (
@@ -101,6 +106,7 @@ export default function Index({ auth, oldest_year, latest_year, proposals, pagin
             header={<HeaderTitle title={'usulan'}/>}
         >
             <Head title="Usulan"/>
+            
             <div className="container min-h-screen min-w-full p-5">
                 <BreadcrumbMod menu="proposals" />
                 <Card className="h-max mt-5">
@@ -191,7 +197,12 @@ export default function Index({ auth, oldest_year, latest_year, proposals, pagin
                         </Button>
                     </div>  
                     <CardBody className="overflow-scroll px-0">
-                        <div className="table w-full">
+                        {status && 
+                            <Alert color={code===0 ? "red" : code===1 ? 'green' : 'amber'}>
+                                {status}
+                            </Alert>}
+
+                        <div className="table w-full mt-2">
                             <div className="table-header-group bg-red-600 text-center">
                                 <div className="table-row">
                                     {
@@ -206,14 +217,14 @@ export default function Index({ auth, oldest_year, latest_year, proposals, pagin
                             <div className="table-row-group text-center">
                                 {                                    
                                     proposals?.map((proposal, index) => {
-                                        const cellClassName = "table-cell border-y p-4 ";
+                                        const cellClassName = "table-cell border-y p-4 align-middle ";
                                         const dateoptions = {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric'
-                                        }    
+                                        }
                                         return (
-                                            <div className="table-row hover:bg-gray-100" id={proposal.id}>
+                                            <div className="table-row hover:bg-gray-100" key={proposal.id} id={proposal.id}>
                                                 <LinkProposal className={cellClassName + "w-16"} id={proposal.id}>
                                                     {proposal.id}
                                                 </LinkProposal>
@@ -274,12 +285,18 @@ export default function Index({ auth, oldest_year, latest_year, proposals, pagin
                                                             }
                                                         </MenuList>
                                                     </Menu>
-                                                    <OptionButton tip="Edit Proposal" color="yellow" link={'#'}>
-                                                        <PencilIcon className="h-5 w-5"/>
+                                                    <OptionButton tip="Edit Proposal" color="yellow" link={route('proposal.edit', [proposal.id])}>
+                                                        <Cog8ToothIcon className="h-5 w-5"/>
                                                     </OptionButton>
-                                                    <OptionButton tip="Hapus Proposal" color="red" link={'#'}>
-                                                        <TrashIcon className="h-5 w-5" />
-                                                    </OptionButton>
+                                                    <DialogDelete 
+                                                        key={proposal.id}
+                                                        content="Proposal"
+                                                        title={"Hapus Proposal?"}
+                                                        variant="text"
+                                                        message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
+                                                        route={route('proposal.destroy', [proposal.id])}
+                                                        handleClose={handleCloseDialog}
+                                                    />
                                                 </div>
                                             </div>
                                         )

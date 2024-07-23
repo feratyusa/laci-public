@@ -27,7 +27,7 @@ export default function BreadcrumbMod({menu, title}){
     var combinelink = '/'
 
     return(
-        <Breadcrumbs fullWidth>
+        <Breadcrumbs fullWidth className="mb-5">
         {
             splitted.map((link, index) => {
                 console.log(combinelink)

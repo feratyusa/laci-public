@@ -43,7 +43,10 @@ export default function BreadcrumbMod({menu, title}){
                         <CrumbLink link={combinelink} title={index === 3 ? 'Proposals' : title}/>
                     )              
                 }else if(menu === 'events'){
-
+                    combinelink += splitted[index] + '/'
+                    return(
+                        <CrumbLink link={combinelink} title={index === 3 ? 'Events' : title} />
+                    )
                 }else{
                     combinelink +=splitted[index] + '/'
                     return(

@@ -20,13 +20,6 @@ class ProposalController extends Controller
     {
         $paginator = Proposal::paginate(10);
 
-        // Latest proposal and get the year
-        $latestp = Proposal::orderByDesc('entry_date')->first();
-        $latest_year = date('Y', strtotime($latestp->entry_date));
-        // Last proposal and get the year
-        $lastp = Proposal::orderBy('entry_date')->first();
-        $last_year = date('Y', strtotime($lastp->entry_date));
-
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),
             'paginator' => $paginator,

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Event;
 
+use App\Enum\EventCategory;
+use App\Enum\FileCategory;
+use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
 use App\Models\Event\Event;
+use App\Models\Proposal\Proposal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,9 +20,11 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::all();
+        $paginator = Event::paginate(30);
+
         return Inertia::render("Event/Index", [
-            "events" => $events,
+            "events" => $paginator->items(),
+            'paginator' => $paginator,
         ]);
     }
 
@@ -27,7 +33,17 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        $proposals = Proposal::all();
+        $proposalSelection = [];
+        foreach ($proposals as $proposal) {
+            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}"];
+        }
+
+        return Inertia::render('Event/Create', [
+            'proposals' => $proposalSelection,
+            'event_categories' => EventCategory::selection(),
+            'number_types' => ParticipantNumberType::selection(),
+        ]);
     }
 
     /**
@@ -50,7 +66,12 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        return $event;
+        return Inertia::render('Event/Show', [
+            'event' => $event,
+            'proposal' => $event->proposal,
+            'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
+            'categories' => FileCategory::selection(),
+        ]);
     }
 
     /**
@@ -58,7 +79,21 @@ class EventController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $event = Event::findOrFail($id);
+
+        $proposals = Proposal::all();
+        $proposalSelection = [];
+        foreach ($proposals as $proposal) {
+            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}"];
+        }
+
+        return Inertia::render('Event/Edit', [
+            'event' => $event,
+            'proposal_id' => $event->proposal->id,
+            'proposals' => $proposalSelection,
+            'event_categories' => EventCategory::selection(),
+            'number_types' => ParticipantNumberType::selection(),
+        ]);
     }
 
     /**

@@ -36,7 +36,7 @@ class EventFormRequest extends FormRequest
                 'integer'
             ],
             'kd_kursus' => [
-                'nullable', // 'required'
+                'required', // 'required'
                 'integer',
             ],
             'event_category' => [
@@ -57,11 +57,12 @@ class EventFormRequest extends FormRequest
             ],
             'participant_number' => [
                 'nullable',
+                'numeric',
                 'integer',
             ],
             'price_per_person' => [
                 'nullable',
-                'integer'
+                'numeric',
             ]
         ];
     }

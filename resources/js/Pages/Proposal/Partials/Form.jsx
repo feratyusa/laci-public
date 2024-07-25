@@ -175,22 +175,6 @@ export default function ProposalForm({method, proposal=null}){
                             <InputError message={errors.status} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
-                    {/* <div className="table-row">
-                        <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Upload File(s)" htmlFor="files" 
-                                className="font-bold text-lg" />
-                        </div>
-                        <div className="table-cell pb-8">
-                            <MultipleFileInput 
-                            id="files"
-                            onChange={(e) => setData('files', e.target.files)}
-                            files={data.files}
-                            multiple
-                            />
-
-                        <InputError message={errors['files.0']} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                        </div>
-                    </div> */}
                 </div>
             </div>
             <div className="flex flex-row gap-10 justify-center">

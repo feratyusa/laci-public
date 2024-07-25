@@ -36,6 +36,7 @@ import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import DialogDelete from "@/Components/DialogDelete";
+import TableProposal from "./Partials/Table";
 
 const LinkProposal = ({children, className='', id}) => {
     return(
@@ -49,14 +50,6 @@ export default function Index({ auth, status, code, proposals, paginator }) {
     // Collapse State
     const [open, setOpen] = useState(false)
     const  [collapseClass, setCollapseClass] = useState("")  
-    // Dialog
-    const [openDialog, setOpenDialog] = useState(false)
-    function handleOpenDialog(){
-        setOpenDialog(true)
-    }
-    function handleCloseDialog() {
-        setOpenDialog(false)
-    }
 
     function openCollapse(state){
         setOpen(state)
@@ -202,108 +195,8 @@ export default function Index({ auth, status, code, proposals, paginator }) {
                                 {status}
                             </Alert>}
 
-                        <div className="table w-full mt-2">
-                            <div className="table-header-group bg-red-600 text-center">
-                                <div className="table-row">
-                                    {
-                                        columns.map((column, index) => (
-                                          <div className="table-cell p-4 text-white text-bold"> 
-                                                {column}
-                                          </div>  
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                            <div className="table-row-group text-center">
-                                {                                    
-                                    proposals?.map((proposal, index) => {
-                                        const cellClassName = "table-cell border-y p-4 align-middle ";
-                                        const dateoptions = {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        }
-                                        return (
-                                            <div className="table-row hover:bg-gray-100" key={proposal.id} id={proposal.id}>
-                                                <LinkProposal className={cellClassName + "w-16"} id={proposal.id}>
-                                                    {proposal.id}
-                                                </LinkProposal>
-                                                <LinkProposal className={cellClassName + "w-72"} id={proposal.id}>
-                                                    {proposal.name}
-                                                </LinkProposal>
-                                                <LinkProposal className={cellClassName + "w-30"} id={proposal.id}>
-                                                    {proposal.event_category}
-                                                </LinkProposal>
-                                                <LinkProposal className={cellClassName + "w-30"} id={proposal.id}>
-                                                    {proposal.kd_kursus}
-                                                </LinkProposal>
-                                                <LinkProposal className={cellClassName + "w-60"} id={proposal.id}>
-                                                    {new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}
-                                                </LinkProposal>
-                                                <LinkProposal className={cellClassName + "w-16"} id={proposal.id}>
-                                                    {
-                                                        <Chip color={Statuses.find(status => status.value === proposal.status).color} 
-                                                            value={proposal.status}
-                                                            variant="ghost"
-                                                        />
-                                                    }
-                                                </LinkProposal>
-                                                <div className={cellClassName}>
-                                                    <Menu>
-                                                        <Tooltip content="Ganti Status">
-                                                            <MenuHandler>
-                                                                <IconButton variant="text" color="green">
-                                                                    <ArrowPathIcon className="h-5 w-5"/>
-                                                                </IconButton>
-                                                            </MenuHandler>
-                                                        </Tooltip>
-                                                        <MenuList className="rounded-lg border-none">
-                                                            <MenuItem key={'id'} disabled>
-                                                                <Chip value={"ID "+ proposal.id} 
-                                                                        variant="outlined"
-                                                                        className="text-center"
-                                                                />
-                                                            </MenuItem>
-                                                            {
-                                                                Statuses.map((status, index) => 
-                                                                    status.value !== proposal.status ?
-                                                                    (
-                                                                        <Link method="post" 
-                                                                            href={route('proposal.status', [proposal.id])}
-                                                                            data={{'status': status.value}}
-                                                                        >
-                                                                            <MenuItem key={proposal.id}>
-                                                                                <Chip value={"SET TO " + status.value}
-                                                                                    color={status.color}
-                                                                                    variant="ghost"
-                                                                                />
-                                                                            </MenuItem>
-                                                                        </Link>
-    
-                                                                    ) : ''
-                                                                )
-                                                            }
-                                                        </MenuList>
-                                                    </Menu>
-                                                    <OptionButton tip="Edit Proposal" color="yellow" link={route('proposal.edit', [proposal.id])}>
-                                                        <Cog8ToothIcon className="h-5 w-5"/>
-                                                    </OptionButton>
-                                                    <DialogDelete 
-                                                        key={proposal.id}
-                                                        content="Proposal"
-                                                        title={"Hapus Proposal?"}
-                                                        variant="text"
-                                                        message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
-                                                        route={route('proposal.destroy', [proposal.id])}
-                                                        handleClose={handleCloseDialog}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
+                        <TableProposal proposals={proposals}/>
+                        
                     </CardBody>
                     <CardFooter className="flex justify-center">
                         {

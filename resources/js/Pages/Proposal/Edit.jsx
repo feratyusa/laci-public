@@ -9,9 +9,9 @@ export default function Edit({auth, proposal}){
     return(
         <Authenticated
             user={auth.user}
-            header={<HeaderTitle title={'buat usulan baru'}/>}
+            header={<HeaderTitle title={'edit usulan'}/>}
         >
-            <Head title="Buat Usulan"/>
+            <Head title="Edit Usulan"/>
 
             <div className="m-10">
                 <Card className="px-5 pb-10">

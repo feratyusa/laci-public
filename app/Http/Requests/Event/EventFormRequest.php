@@ -35,10 +35,6 @@ class EventFormRequest extends FormRequest
                 'required',
                 'integer'
             ],
-            'kd_kursus' => [
-                'required', // 'required'
-                'integer',
-            ],
             'event_category' => [
                 'required',
                 Rule::enum(EventCategory::class)

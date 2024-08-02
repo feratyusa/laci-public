@@ -15,7 +15,7 @@ const LinkProposal = ({children, className='', id}) => {
 
 export default function TableProposal({proposals}){
     const columns = [
-        "ID", "NAMA USULAN", "KATEGORI","KODE KURSUS", "TANGGAL MASUK", "STATUS", "OPSI"
+        "ID", "NAMA USULAN", "KATEGORI","KURSUS", "TANGGAL MASUK", "STATUS", "OPSI"
     ];
 
     return(
@@ -33,8 +33,8 @@ export default function TableProposal({proposals}){
             </div>
             <div className="table-row-group text-center">
                 {                                    
-                    proposals?.map((proposal, index) => {
-                        const cellClassName = "table-cell border-y p-4 align-middle ";
+                    proposals?.map((proposal, ) => {
+                        const cellClassName = "table-cell border-y p-4 align-middle text-sm ";
                         const dateoptions = {
                             year: 'numeric',
                             month: 'long',

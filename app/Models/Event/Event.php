@@ -50,8 +50,9 @@ class Event extends Model
     }
     public function files(): BelongsToMany
     {
-        return $this->belongsToMany(File::class, EventFile::class, 'event_id', 'file_id', 'id', 'id');
+        return $this->belongsToMany(File::class, 'event_files', 'event_id', 'file_id');
     }
+
 
     /**
      * Create a new factory instance for the model.

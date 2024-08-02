@@ -21,7 +21,8 @@ class EventFile extends Model
      * Fillable
      */
     protected $fillable = [
-        'file_category',
+        'event_id',
+        'file_id',
     ];
 
     /**

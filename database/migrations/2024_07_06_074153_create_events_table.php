@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('event_category', array_column(EventCategory::cases(), 'value'));
             $table->enum('participant_number_type', array_column(ParticipantNumberType::cases(), 'value'));
             $table->integer('participant_number')->nullable()->default(0);
-            $table->decimal('price_per_person', 16, 2)->default(0);
+            $table->decimal('price_per_person', 16)->default(0);
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });

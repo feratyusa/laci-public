@@ -9,7 +9,9 @@ enum FileCategory: string
     case BAN = 'BERITA ACARA NEGOSIASI';
     case SPK = 'SURAT PERINTAH KERJA';
     case PKS = 'PERJANJIAN KERJA SAMA';
+    case UNDANGAN = 'UNDANGAN';
     case DOKUMENTASI = 'DOKUMENTASI';
+    case PEMBAYARAN = 'BERKAS PEMBAYARAN';
     case LAMPIRAN = 'LAMPIRAN';
     case OTHER = 'OTHER';
 

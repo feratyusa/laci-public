@@ -9,6 +9,7 @@ use App\Models\File\File;
 use App\Models\Proposal\ProposalFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {    
@@ -31,8 +32,9 @@ class FileController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(FileStoreRequest $request): RedirectResponse
+    public function store(FileStoreRequest $request)
     {
+        // return response()->json(['mess' => $request->file('files')[0]]);
         $validated = $request->validated();
         
         // Init Folder
@@ -71,9 +73,19 @@ class FileController extends Controller
             return redirect()->route('proposal.show', ['id' => $validated['relation_id']])
                     ->with(['code' => 1, 'status' => count($filesUpload)." File(s) Uploaded!"]);
         else if($validated['relation'] == 'event')
-            return redirect()->route('dashboard');
+        return redirect()->route('event.show', ['id' => $validated['relation_id']])
+                    ->with(['code' => 1, 'status' => count($filesUpload)." File(s) Uploaded!"]);
         else
             return redirect()->route('dashboard');
+    }
+
+    public function download(string $id)
+    {
+        $file = File::findOrFail($id);
+
+        $file_name = "{$file->name}.{$file->mime_type}";
+
+        return Storage::download($file->path, $file_name);
     }
 
     /**

@@ -48,7 +48,7 @@ class FileStoreRequest extends FormRequest
             ],
             'files.*' => [
                 File::types(['pdf', 'doc', 'docx'])
-                    ->max('1mb')
+                    ->max('100mb')
             ]
         ];
     }

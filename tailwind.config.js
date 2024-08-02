@@ -1,7 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import withMT from "@material-tailwind/react/utils/withMT";
-import { dialog } from '@material-tailwind/react';
 
 /** @type {import('tailwindcss').Config} */
 export default withMT({

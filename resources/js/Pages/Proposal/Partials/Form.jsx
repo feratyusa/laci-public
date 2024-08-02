@@ -1,10 +1,11 @@
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import { Button } from "@material-tailwind/react";
+import { Button, Typography } from "@material-tailwind/react";
 import { Link, useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
 import statuses from "@/Base/Statuses";
 import InputError from "@/Components/InputError";
+import { useState } from "react";
 
 export default function ProposalForm({method, proposal=null, kursus}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
@@ -22,6 +23,13 @@ export default function ProposalForm({method, proposal=null, kursus}){
         kd_kursus: proposal ? proposal.kd_kursus : '',
         status: proposal ? proposal.status : statuses[0].value,
     });
+
+    const [openSelect, setOpenSelect] = useState(false)
+    
+    function handleInputChange(s){
+        if(s.length > 4) setOpenSelect(true)
+        else setOpenSelect(false)
+    }
 
     function handleSubmit(e){
         e.preventDefault()
@@ -115,12 +123,17 @@ export default function ProposalForm({method, proposal=null, kursus}){
                                 name="kd-kursus"
                                 classNamePrefix="select2-selection"
                                 className="max-w-2xl focus:border-red-500"
-                                value={kursus.find(k => k.value === data.kd_kursus)}
+                                value={kursus.find(k => k.value == data.kd_kursus) ?? ''}
                                 options={[...kursus]}
+                                openMenuOnClick={false}
+                                onChange={(e) => setData('kd_kursus', e?.value ?? "")}
+                                onInputChange={(s) => handleInputChange(s)}
+                                menuIsOpen={openSelect}
                                 isSearchable
                                 isClearable
-                                onChange={(e) => setData('kd_kursus', e.value)}
+                                menuShouldBlockScroll
                             />
+                            <p className="text-sm italic text-gray-400">Ketik 5 karakter</p>
 
                             <InputError message={errors.kd_kursus} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>

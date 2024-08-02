@@ -5,7 +5,7 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import EventForm from "./Partials/Form";
 
-export default function Edit({auth, event, proposal_id, proposals, number_types, event_categories}){
+export default function Edit({auth, event, proposal_id, kursus, proposals, number_types, event_categories}){
     return(
         <Authenticated
             user={auth.user}
@@ -24,7 +24,7 @@ export default function Edit({auth, event, proposal_id, proposals, number_types,
                         </IconButton>
                     </CardHeader>
                     <CardBody>
-                        <div className="flex justify-center my-4">
+                        <div className="flex flex-col items-center justify-center my-4">
                             <Typography
                             variant="h4"
                             color="amber"
@@ -32,8 +32,25 @@ export default function Edit({auth, event, proposal_id, proposals, number_types,
                             >
                                 Form Edit Event
                             </Typography>
+                            {
+                                proposal_id ? 
+                                <Typography
+                                    variant="h6"
+                                    color="amber"
+                                >
+                                    Event untuk Usulan {proposals.find(p => p.value === proposal_id).label}
+                                </Typography> : ''
+                            }
                         </div>
-                        <EventForm method={'edit'} event={event} proposal_id={proposal_id} proposals={proposals} event_categories={event_categories} number_types={number_types}/>
+                        <EventForm 
+                            method={'edit'} 
+                            event={event} 
+                            proposal_id={proposal_id} 
+                            proposals={proposals} 
+                            event_categories={event_categories} 
+                            number_types={number_types}
+                            kursus={kursus}
+                        />
                     </CardBody>
                 </Card>
             </div>

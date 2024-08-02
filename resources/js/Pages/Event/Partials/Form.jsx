@@ -1,9 +1,8 @@
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import { Button } from "@material-tailwind/react";
-import { Link, useForm } from "@inertiajs/react";
+import { Button, Tooltip } from "@material-tailwind/react";
+import { useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
-import statuses from "@/Base/Statuses";
 import InputError from "@/Components/InputError";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
@@ -13,6 +12,7 @@ export default function EventForm({
         event=null, 
         proposal_id=null, 
         proposals,
+        kursus,
         number_types,
         event_categories,
     }){
@@ -22,24 +22,11 @@ export default function EventForm({
     const e_date = event ? new Date(event.end_date) : new Date()
     const e_date_string = `${e_date.getFullYear()}-${('0'+(e_date.getMonth() + 1)).slice(-2)}-${('0'+(e_date.getDate())).slice(-2)}`
     
-    const kd_kursus =[
-        {value: '90051', label: '90051'},
-        {value: '90050', label: '90050'},
-        {value: '90049', label: '90049'},
-        {value: '90048', label: '90048'},
-        {value: '90047', label: '90047'},
-        {value: '90046', label: '90046'},
-        {value: '90045', label: '90045'},
-        {value: '90044', label: '90044'},
-        {value: '90043', label: '90043'},
-        {value: '90042', label: '90042'},
-    ]
-    
     const { data, setData, post, put, cancel, processing, errors, reset, transform} = useForm({
         name: event ? event.name : '',
         proposal_id: proposal_id ? proposal_id : '',
+        kd_kursus: proposal_id ? kursus.find(k => k.value === proposals.find(p => p.value === proposal_id).kd_kursus)?.value : '',
         event_category: event ? event.event_category : event_categories[0].value,
-        kd_kursus: event ? event.kd_kursus : '',
         start_date: s_date_string,
         end_date: e_date_string,
         participant_number_type: event ? event.participant_number_type : number_types[0].value,
@@ -48,6 +35,12 @@ export default function EventForm({
     });
 
     const [numberDisabled, setNumberDisabled] = useState(false)
+
+    function handleProposalChange(proposal_id){
+        setData('proposal_id', proposal_id)
+        
+        setData('kd_kursus', kursus.find(k => k.value === proposals.find(p => p.value === proposal_id).kd_kursus)?.value)
+    }
 
     function handleSubmit(e){
         e.preventDefault()
@@ -69,6 +62,8 @@ export default function EventForm({
         reset()
         window.history.back()
     }
+
+    console.log(data)
 
     return(
         <form onSubmit={handleSubmit} 
@@ -114,7 +109,8 @@ export default function EventForm({
                                 options={proposals}
                                 value={proposals.find(p => p.value === data.proposal_id)}
                                 isSearchable={true}
-                                onChange={(e) => setData('proposal_id', e.value)}
+                                isDisabled={proposal_id != null}
+                                onChange={(e) => handleProposalChange(e.value)}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {
@@ -125,6 +121,27 @@ export default function EventForm({
                             />
 
                             <InputError message={errors.proposal_id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                        </div>
+                    </div>
+                    <div className="table-row">
+                        <div className="table-cell pb-8 w-44">
+                            <InputLabel value="Kursus" htmlFor="kursus" 
+                                className="font-bold text-lg" />
+                        </div>
+                        <div className="table-cell pb-8">
+                            <ReactSelect
+                                id="kursus"
+                                name="kursus"
+                                placeholder="Kursus"
+                                classNamePrefix="select2-selection"
+                                className="max-w-full focus:border-red-500"
+                                options={kursus}
+                                value={kursus.find(k => k.value === data.kd_kursus) ?? ''}
+                                isSearchable={true}
+                                isDisabled
+                            />
+                                
+                            <InputError message={data.kd_kursus == null ? "Kursus tidak ada / tidak terbaca di Database" : ''} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
                     <div className="table-row">
@@ -151,33 +168,6 @@ export default function EventForm({
                             />
 
                             <InputError message={errors.event_category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                        </div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Kursus" htmlFor="kd-kursus" 
-                                className="font-bold text-lg" />
-                        </div>
-                        <div className="table-cell pb-8">
-                            <ReactSelect
-                                id="kd-kursus"
-                                name="kd-kursus"
-                                placeholder="Kursus"
-                                classNamePrefix="select2-selection"
-                                className="max-w-full focus:border-red-500"
-                                value={kd_kursus.find(k => k.value === data.kd_kursus)}
-                                options={kd_kursus}
-                                onChange={(e) => setData('kd_kursus', e.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
-                            />
-
-                            <InputError message={errors.kd_kursus} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
                     <div className="table-row">

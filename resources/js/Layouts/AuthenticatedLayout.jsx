@@ -15,11 +15,12 @@ import {
     UserCircleIcon,
     Cog6ToothIcon,
     PowerIcon,
+    CalculatorIcon,
 } from "@heroicons/react/24/solid";
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@inertiajs/react";
-import logo from "../../../storage/app/public/logo.png";
+import logo from "../assets/logo.png";
 
 export default function Authenticated({ user, header, children }) {
     const isMobile = useMediaQuery({query: '(max-width: 800px)'});
@@ -67,6 +68,7 @@ export default function Authenticated({ user, header, children }) {
             {name: 'Usulan', link: 'proposal.index', icon: <LightBulbIcon className="h-5 w-5"/>},
             {name: 'Event', link: 'event.index', icon: <AcademicCapIcon className="h-5 w-5"/>},
             {name: 'Kalender', link: 'dashboard', icon: <CalendarDaysIcon className="h-5 w-5"/>},
+            {name: 'Kalkulator', link: 'calculator.index', icon: <CalculatorIcon className="h-5 w-5"/>},
             {name: 'Tutorial', link: 'dashboard', icon: <BookOpenIcon className="h-5 w-5"/>},
         ],
         [

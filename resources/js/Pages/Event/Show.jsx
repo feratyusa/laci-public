@@ -7,8 +7,9 @@ import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import EventDetails from "./Partials/Details";
+import FileCard from "@/Components/FileCard";
 
-export default function Show({auth, code, status, event, categories, files, proposal, proposalRoute}){
+export default function Show({auth, code, status, event, files, categories, proposal, proposalRoute}){
     return(
         <Authenticated
             user={auth.user}
@@ -43,15 +44,12 @@ export default function Show({auth, code, status, event, categories, files, prop
                     <CardBody>
                         <EventDetails event={event} categories={categories} proposal={proposal} proposalRoute={proposalRoute}/>
                         <div className="flex flex-col justify-start">
-                            <Typography variant="h4">File</Typography>
-                            <div className="grid grid-cols-5 max-w-full border-y-2 gap-4 my-5 p-2">
+                            <Typography variant="h4">File(s)</Typography>
+                            <div className="flex flex-wrap gap-5 p-2">
                                 {
                                     files
                                     ? files.map((file, index) => (
-                                        <div>
-                                            <div>{file.id}</div>
-                                            <div>{file.category}</div>
-                                        </div>
+                                        <FileCard file={file} categories={categories}/>
                                     ))
                                     : ""
                                 }

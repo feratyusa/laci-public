@@ -5,7 +5,7 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import ProposalForm from "./Partials/Form";
 
-export default function Edit({auth, proposal}){
+export default function Edit({auth, proposal, kursus}){
     return(
         <Authenticated
             user={auth.user}
@@ -33,7 +33,7 @@ export default function Edit({auth, proposal}){
                                 Form Edit Usulan
                             </Typography>
                         </div>
-                        <ProposalForm method={'edit'} proposal={proposal}/>
+                        <ProposalForm method={'edit'} proposal={proposal} kursus={kursus}/>
                     </CardBody>
                 </Card>
             </div>

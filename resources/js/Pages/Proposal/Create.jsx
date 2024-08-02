@@ -5,7 +5,7 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import ProposalForm from "./Partials/Form";
 
-export default function Create({auth}){
+export default function Create({auth, kursus}){
     return(
         <Authenticated
             user={auth.user}
@@ -33,7 +33,7 @@ export default function Create({auth}){
                                 Form Usulan Baru
                             </Typography>
                         </div>
-                        <ProposalForm method={'create'}/>
+                        <ProposalForm method={'create'} kursus={kursus}/>
                     </CardBody>
                 </Card>
             </div>

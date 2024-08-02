@@ -6,26 +6,13 @@ import ReactSelect from "react-select";
 import statuses from "@/Base/Statuses";
 import InputError from "@/Components/InputError";
 
-export default function ProposalForm({method, proposal=null}){
+export default function ProposalForm({method, proposal=null, kursus}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
     const date_string = `${date.getFullYear()}-${('0'+(date.getMonth() + 1)).slice(-2)}-${('0'+(date.getDate())).slice(-2)}`    
     
     const event_category = [
         {value:'In House Training', label:'In House Training'},
         {value:'Public Training', label:'Public Training'}
-    ]
-    
-    const kd_kursus =[
-        {value: '90051', label: '90051'},
-        {value: '90050', label: '90050'},
-        {value: '90049', label: '90049'},
-        {value: '90048', label: '90048'},
-        {value: '90047', label: '90047'},
-        {value: '90046', label: '90046'},
-        {value: '90045', label: '90045'},
-        {value: '90044', label: '90044'},
-        {value: '90043', label: '90043'},
-        {value: '90042', label: '90042'},
     ]
     
     const { data, setData, post, put, cancel, processing, errors, reset } = useForm({
@@ -72,7 +59,7 @@ export default function ProposalForm({method, proposal=null}){
                                 placeholder="Nama Usulan"
                                 autoComplete="name"
                                 isFocused={true}
-                                className="border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900  focus:border-gray-900   "
+                                className="max-w-2xl border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900 focus:border-gray-900   "
                                 onChange={(e) => setData('name', e.target.value)}
                             />
                             <p className="text-sm italic text-gray-400">Alphanumeric only, maximum length 120 characters</p>
@@ -108,17 +95,10 @@ export default function ProposalForm({method, proposal=null}){
                                 id="event-category"
                                 name="event-category"
                                 classNamePrefix="select2-selection"
-                                className="max-w-72 focus:border-red-500"
+                                className="max-w-2xl focus:border-red-500"
                                 options={event_category}
                                 value={event_category.find(v => v.value === data.event_category)}
                                 onChange={(e) => setData('event_category', e.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
                             />
 
                             <InputError message={errors.event_category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
@@ -126,7 +106,7 @@ export default function ProposalForm({method, proposal=null}){
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Kode Kursus" htmlFor="kd-kursus" 
+                            <InputLabel value="Kursus" htmlFor="kd-kursus" 
                                 className="font-bold text-lg" />
                         </div>
                         <div className="table-cell pb-8">
@@ -134,17 +114,12 @@ export default function ProposalForm({method, proposal=null}){
                                 id="kd-kursus"
                                 name="kd-kursus"
                                 classNamePrefix="select2-selection"
-                                className="max-w-72 focus:border-red-500"
-                                value={kd_kursus.find(k => k.value === data.kd_kursus)}
-                                options={kd_kursus}
+                                className="max-w-2xl focus:border-red-500"
+                                value={kursus.find(k => k.value === data.kd_kursus)}
+                                options={[...kursus]}
+                                isSearchable
+                                isClearable
                                 onChange={(e) => setData('kd_kursus', e.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
                             />
 
                             <InputError message={errors.kd_kursus} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
@@ -159,17 +134,10 @@ export default function ProposalForm({method, proposal=null}){
                             <ReactSelect
                                 id="status"
                                 classNamePrefix="select2-selection"
-                                className="max-w-72 focus:border-red-500"
+                                className="max-w-2xl focus:border-red-500"
                                 options={statuses}
                                 value={statuses.find(s => s.value === data.status)}
                                 onChange={(e) => setData('status', e.value)}
-                                theme={(theme, e) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
                             />
                             
                             <InputError message={errors.status} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>

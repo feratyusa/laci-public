@@ -6,20 +6,23 @@ import { ArrowDownIcon, ArrowUpIcon, CircleStackIcon, ExclamationCircleIcon, Mag
 import { useForm } from "@inertiajs/react";
 import { Button, Collapse, Tooltip, Typography } from "@material-tailwind/react";
 import { useState } from "react";
-import ReactSelect, {components } from "react-select";
+import ReactSelect from "react-select";
 
-export default function Filters({filters=null, categories}){
+export default function Filters({filters=null, kursus, categories}){
     const {data, setData, get, transform, isDirty, reset, processing} = useForm({
         search: filters ? filters.search : '',
         start_date: filters ? filters.start_date : '',
         end_date: filters ? filters.end_date : '',
         category: filters ? filters.category : '',
+        kursus: filters ? filters?.kursus : [],
         status: filters ? filters.status : [],
     })
  
     // Collapse State
     const [open, setOpen] = useState(false)
     const  [collapseClass, setCollapseClass] = useState("") 
+
+    const [openSelect, setOpenSelect] = useState(false)
 
     const filterClassName = "flex flex-col gap-2"
 
@@ -33,9 +36,17 @@ export default function Filters({filters=null, categories}){
         if(property === 'status'){
             setData('status', [...e])
         }
+        else if(property === 'kursus'){
+            setData('kursus', [...e])
+        }
         else{
             setData('category', e?.value ?? "")
         }
+    }
+
+    function handleInputChange(s){
+        if(s.length > 4) setOpenSelect(true)
+        else setOpenSelect(false)
     }
     
     function handleSubmit(e){
@@ -49,7 +60,7 @@ export default function Filters({filters=null, categories}){
     }
 
     return(
-        <div className="container">                            
+        <div className="w-full">                            
             <Collapse open={open} className={collapseClass}>
                 <div className="flex flex-col gap-5 px-5 mt-5 mb-10">
                     <div className={filterClassName}>
@@ -112,6 +123,27 @@ export default function Filters({filters=null, categories}){
                         />
                     </div>
                     <div className={filterClassName}>
+                        <InputLabel htmlFor="kursus">
+                            <Typography variant="h6">Kursus</Typography>
+                        </InputLabel>
+                        <ReactSelect
+                                id="kursus"
+                                name="kursus"
+                                classNamePrefix="select2-selection"
+                                className="max-w-5xl focus:border-red-500"
+                                value={kursus.length != 0 ? data.kursus : ''}
+                                options={[...kursus]}
+                                openMenuOnClick={false}
+                                onChange={(e) => handleSelectChange('kursus', e)}
+                                onInputChange={(s) => handleInputChange(s)}
+                                menuIsOpen={openSelect}
+                                isSearchable
+                                isClearable
+                                isMulti
+                                menuShouldBlockScroll
+                            />
+                    </div>
+                    <div className={filterClassName}>
                         <InputLabel htmlFor="status">
                             <Typography variant="h6">Status</Typography>
                         </InputLabel>
@@ -153,7 +185,7 @@ export default function Filters({filters=null, categories}){
                 </div>
             </Collapse>
             <Button
-                className="flex items-center justify-center min-w-full gap-5 rounded-none border-x-0 focus:ring-0"
+                className="flex items-center justify-center w-full gap-5 rounded-none border-x-0 focus:ring-0"
                 variant="outlined"
                 color={isDirty ? "green" : "black"}
                 onClick={() => openCollapse(!open)}>

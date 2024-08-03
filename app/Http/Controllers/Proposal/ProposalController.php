@@ -43,14 +43,14 @@ class ProposalController extends Controller
                 'start_date' => ['date']
             ]);
             $start_date = date("Y-m-d", strtotime($start_date['start_date']));
-            $query[] = ["entry_date = ?", [$start_date]]; // Don't forget the end space for additional query if needed
+            $query[] = ["entry_date = ?", [$start_date]]; 
         }
         if($request->isNotFilled('start_date') && $request->filled('end_date')){
             $end_date = $request->validate([
                 'end_date' => ['date']
             ]);
             $end_date = date("Y-m-d", strtotime($end_date['end_date']));
-            $query[] = ["entry_date = ?", [$end_date]];; // Don't forget the end space for additional query if needed
+            $query[] = ["entry_date = ?", [$end_date]];; 
         }
         if($request->filled('start_date') && $request->filled('end_date')){
             $date = $request->validate([
@@ -59,14 +59,28 @@ class ProposalController extends Controller
             ]);
             $start_date = date("Y-m-d", strtotime($date['start_date']));
             $end_date = date("Y-m-d", strtotime($date['end_date']));
-            $query[] = ["entry_date between ? and ?", [$start_date, $end_date]]; // Don't forget the end space for additional query if needed
+            $query[] = ["entry_date between ? and ?", [$start_date, $end_date]]; 
         }
         if($request->filled('category')){
             $category = $request->validate([
                 'category' => [Rule::enum(EventCategory::class)]
             ]);
             $category = $category['category'];
-            $query[] = ["event_category = ?", [$category]]; // Don't forget the end space for additional query if needed
+            $query[] = ["event_category = ?", [$category]]; 
+        }
+        if($request->filled('kd_kursus')){
+            $kursus = $request->kursus;
+            $tempQ = "kd_kursus in (";
+            $tempD = [];
+            $i = 0;
+            foreach ($kursus as $k) {
+                $tempD[] = $k->value;
+                $tempQ = $tempQ . "?";
+                if($i != count($kursus)-1) $tempQ = $tempQ . ", ";
+                $i++;
+            }
+            $tempQ = $tempQ . ")";
+            $query[] = [$tempQ, $tempD];
         }
         if($request->filled('status')){
             $status = $request->validate([                    
@@ -101,10 +115,13 @@ class ProposalController extends Controller
         }else{
             $paginator = Proposal::paginate(10);
         }
+
+        $kursusOptions = $this->getKursusOptions();
         
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),
-            'paginator' => $paginator,        
+            'paginator' => $paginator,
+            'kursus' => $kursusOptions,        
             'code' => session('code'),
             'status' => session('status'),
         ]);        

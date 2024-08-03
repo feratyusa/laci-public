@@ -102,7 +102,7 @@ class EventController extends Controller
         $proposals = Proposal::all();
         $proposalSelection = [];
         foreach ($proposals as $proposal) {
-            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}"];
+            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}", 'kd_kursus' => $proposal->kd_kursus];
         }
 
         $kursusOptions = $this->getKursusOptions();

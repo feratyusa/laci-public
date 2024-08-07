@@ -16,15 +16,6 @@ use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    private function getKursusOptions(){
-        $kursus = Kursus::all();
-        $kursusOptions = [];
-        foreach ($kursus as $k) {
-            $kursusOptions[] = (object)['value' => $k->Sandi, 'label' => "($k->Sandi) {$k->Lengkap}"];
-        }
-
-        return $kursusOptions;
-    }
     /**
      * Display a listing of the resource.
      */
@@ -46,17 +37,16 @@ class EventController extends Controller
         $proposals = Proposal::all();
         $proposalSelection = [];
         foreach ($proposals as $proposal) {
-            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}", 'kd_kursus' => $proposal->kd_kursus];
+            $proposalSelection[] = (object)[
+                'value' => $proposal->id, 
+                'label' => "({$proposal->id}) {$proposal->name}", 
+                'kursus' => $proposal->kursus,
+                'event_category' => $proposal->event_category];
         }
-
-        $kursusOptions = $this->getKursusOptions();
 
         return Inertia::render('Event/Create', [
             'proposals' => $proposalSelection,
-            'event_categories' => EventCategory::selection(),
-            'number_types' => ParticipantNumberType::selection(),
-            'kursus' => $kursusOptions,
-            'proposal_id' => intval(session('proposal_id')),
+            'proposal_id' => session('proposal_id') ? intval(session('proposal_id')) : null,
             'status' => session('status'),
         ]);
     }
@@ -81,11 +71,10 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        $files = $event->files()->get();
+        $files = $event->files()->get();        
 
         return Inertia::render('Event/Show', [
             'event' => $event,
-            'proposal' => $event->proposal,
             'files' => $files,
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
             'categories' => FileCategory::selection(),
@@ -102,18 +91,17 @@ class EventController extends Controller
         $proposals = Proposal::all();
         $proposalSelection = [];
         foreach ($proposals as $proposal) {
-            $proposalSelection[] = (object)['value' => $proposal->id, 'label' => "({$proposal->id}) {$proposal->name}", 'kd_kursus' => $proposal->kd_kursus];
+            $proposalSelection[] = (object)[
+                'value' => $proposal->id, 
+                'label' => "({$proposal->id}) {$proposal->name}", 
+                'kursus' => $proposal->kursus,
+                'event_category' => $proposal->event_category];
         }
-
-        $kursusOptions = $this->getKursusOptions();
 
         return Inertia::render('Event/Edit', [
             'event' => $event,
             'proposal_id' => $event->proposal->id,
             'proposals' => $proposalSelection,
-            'event_categories' => EventCategory::selection(),
-            'number_types' => ParticipantNumberType::selection(),
-            'kursus' => $kursusOptions,
         ]);
     }
 

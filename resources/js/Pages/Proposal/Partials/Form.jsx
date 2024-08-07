@@ -6,15 +6,12 @@ import ReactSelect from "react-select";
 import statuses from "@/Base/Statuses";
 import InputError from "@/Components/InputError";
 import { useState } from "react";
+import event_category from "@/Base/EventCategory";
+import SelectInput from "@/Components/SelectInput";
 
 export default function ProposalForm({method, proposal=null, kursus}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
     const date_string = `${date.getFullYear()}-${('0'+(date.getMonth() + 1)).slice(-2)}-${('0'+(date.getDate())).slice(-2)}`    
-    
-    const event_category = [
-        {value:'In House Training', label:'In House Training'},
-        {value:'Public Training', label:'Public Training'}
-    ]
     
     const { data, setData, post, put, cancel, processing, errors, reset } = useForm({
         name: proposal ? proposal.name : '',
@@ -27,7 +24,7 @@ export default function ProposalForm({method, proposal=null, kursus}){
     const [openSelect, setOpenSelect] = useState(false)
     
     function handleInputChange(s){
-        if(s.length > 4) setOpenSelect(true)
+        if(s.length > 2) setOpenSelect(true)
         else setOpenSelect(false)
     }
 
@@ -133,7 +130,7 @@ export default function ProposalForm({method, proposal=null, kursus}){
                                 isClearable
                                 menuShouldBlockScroll
                             />
-                            <p className="text-sm italic text-gray-400">Ketik 5 karakter</p>
+                            <p className="text-sm italic text-gray-400">Ketik 3 karakter</p>
 
                             <InputError message={errors.kd_kursus} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>

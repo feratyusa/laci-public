@@ -22,7 +22,6 @@ function CrumbLink({link, title='[Insert title here]'}){
 export default function BreadcrumbMod({menu, title}){
     const urlNow = window.location.href
     const splitted = urlNow.split('/')
-    console.log(splitted)
     
     var combinelink = '/'
 
@@ -30,7 +29,6 @@ export default function BreadcrumbMod({menu, title}){
         <Breadcrumbs fullWidth className="mb-5">
         {
             splitted.map((link, index) => {
-                console.log(combinelink)
                 if(index === 0 || index === 1) return "";
                 else if(index === 2){
                     return(

@@ -35,10 +35,6 @@ class EventFormRequest extends FormRequest
                 'required',
                 'integer'
             ],
-            'event_category' => [
-                'required',
-                Rule::enum(EventCategory::class)
-            ],
             'start_date' => [
                 'nullable',
                 'date'

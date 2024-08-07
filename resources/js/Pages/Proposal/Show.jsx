@@ -7,6 +7,8 @@ import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import ProposalDetails from "./Partials/Details";
+import DisclosureFile from "@/Components/DisclosureFile";
+import FileCard from "@/Components/FileCard";
 
 export default function Show({auth, code, status, proposal, categories, files}){
     const [color, ] = useState(Statuses.find(s => s.value === proposal.status).color)
@@ -18,7 +20,7 @@ export default function Show({auth, code, status, proposal, categories, files}){
         >
             <Head title={proposal.name}/>
 
-            <div className="container min-w-full p-5">
+            <div className="w-full p-5">
                 <BreadcrumbMod menu={'proposals'} title={proposal.name}/>
 
                 {status && 
@@ -26,7 +28,7 @@ export default function Show({auth, code, status, proposal, categories, files}){
                                 {status}
                             </Alert>}
 
-                <Card className="mt-10">
+                <Card className="max-w-2mt-10">
                     <CardHeader 
                         className={"flex items-center justify-between px-20 py-3 shadow-"+color+"-100"}>
                             <IconButton
@@ -52,15 +54,18 @@ export default function Show({auth, code, status, proposal, categories, files}){
                         <ProposalDetails proposal={proposal} color={color} categories={categories}/>
                         <div className="flex flex-col justify-start">
                             <Typography variant="h4">File</Typography>
+                            <div className="w-full">
+                                <DisclosureFile>
+                                    {
+                                        proposal.files.map((file, index) => (
+                                            <FileCard 
+                                                file={file}
+                                            />
+                                        ))
+                                    }
+                                </DisclosureFile>
+                            </div>
                             <div className="grid grid-cols-5 max-w-full border-y-2 gap-4 my-5 p-2">
-                                {
-                                    files.map((file, index) => (
-                                        <div>
-                                            <div>{file.id}</div>
-                                            <div>{file.category}</div>
-                                        </div>
-                                    ))
-                                }
                             </div>
                         </div>
                     </CardBody>

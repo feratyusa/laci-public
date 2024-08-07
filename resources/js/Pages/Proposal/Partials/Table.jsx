@@ -24,7 +24,7 @@ export default function TableProposal({proposals}){
                 <div className="table-row">
                     {
                         columns.map((column, index) => (
-                            <div className="table-cell p-4 text-white text-bold"> 
+                            <div className="table-cell p-4 text-white text-bold align-middle"> 
                                 {column}
                             </div>  
                         ))
@@ -42,22 +42,22 @@ export default function TableProposal({proposals}){
                         }
                         return (
                             <div className="table-row hover:bg-gray-100" key={proposal.id} id={proposal.id}>
-                                <LinkProposal className={cellClassName + "w-16"} id={proposal.id}>
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {proposal.id}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + "w-72"} id={proposal.id}>
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {proposal.name}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + "w-30"} id={proposal.id}>
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {proposal.event_category}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + "w-30"} id={proposal.id}>
-                                    {proposal.kd_kursus}
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
+                                    {proposal.kursus.Lengkap}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + "w-60"} id={proposal.id}>
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + "w-16"} id={proposal.id}>
+                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {
                                         <Chip color={Statuses.find(status => status.value === proposal.status).color} 
                                             value={proposal.status}
@@ -65,7 +65,7 @@ export default function TableProposal({proposals}){
                                         />
                                     }
                                 </LinkProposal>
-                                <div className={cellClassName}>
+                                <div className={cellClassName + "w-40"}>
                                     <Menu>
                                         <Tooltip content="Ganti Status">
                                             <MenuHandler>

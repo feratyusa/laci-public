@@ -53,7 +53,7 @@ class FileController extends Controller
                 'path' => $path,
                 'mime_type' => $uploaded->extension(),
                 'size' => $uploaded->getSize(),
-                'category' => $validated['category'],
+                'category_id' => $validated['category_id']
             ]);
 
             if($folder === AppFolder::PROPOSAL->value){

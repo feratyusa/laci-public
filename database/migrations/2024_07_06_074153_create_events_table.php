@@ -16,11 +16,9 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('proposal_id')->constrained();
-            $table->string('kd_kursus');
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('event_category', array_column(EventCategory::cases(), 'value'));
             $table->enum('participant_number_type', array_column(ParticipantNumberType::cases(), 'value'));
             $table->integer('participant_number')->nullable()->default(0);
             $table->decimal('price_per_person', 16)->default(0);
@@ -54,5 +52,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('events');
+        Schema::dropIfExists('event_files');
+        Schema::dropIfExists('event_participants');
     }
 };

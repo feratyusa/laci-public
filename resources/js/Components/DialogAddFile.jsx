@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
@@ -9,29 +9,41 @@ import InputError from "./InputError";
 import MultipleFileInput from "./MultipleFileInput";
 import ReactSelect from "react-select";
 
-export default function DialogAddFile({content='', content_name='', content_id='', categories=null, route}){
+export default function DialogAddFile({
+    content='', 
+    content_name='', 
+    content_id='', 
+    categories=null, 
+    route
+}){
     const [open, setOpen] = useState(false)
-    const {data, setData, processing, post, errors, reset} = useForm({
+    const {data, setData, processing, post, errors, clearErrors, reset} = useForm({
         name: content_name,
         relation: content,
         relation_id: content_id,
-        category: categories[0].value,
+        category_id: categories[0].value,
         files: '',
     })
 
     function handleClose(){
         reset()
+        clearErrors()
         setOpen(false)
     }
+
     function handleOpen(){
         setOpen(true)
     }
+
     function handleSubmit(e){
         e.preventDefault()
         post(route, {
+            preserveScroll: true,
             onSuccess: () => handleClose()
         })
     }
+
+    console.log(categories)
 
     return(
         <>
@@ -78,9 +90,11 @@ export default function DialogAddFile({content='', content_name='', content_id='
                                         name="category"
                                         placeholder="Kategori File" 
                                         classNamePrefix="select2-selection"
-                                        value={categories.find(c => c.value === data.category)}
-                                        onChange={(e) => setData('category', e.value)}
+                                        className="w-full"
                                         options={categories}
+                                        value={categories.find(c => c.value.localeCompare(data.category_id) === 0)}
+                                        onChange={(e) => setData('category_id', e.value)}
+                                        getOptionValue={(option) => option.value}
                                     />
 
                                     <InputError message={errors.category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>

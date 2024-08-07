@@ -34,7 +34,7 @@ export default function Index({ auth, status, code, proposals, kursus, paginator
                 <BreadcrumbMod menu="proposals" />
                 <Card className="h-max mt-5">
                     <CardBody className="overflow-scroll px-0">
-                        <div className="flex flex-col justify-between m-5">
+                        <div className="flex flex-col justify-between m-5 gap-5">
                             <div className="w-max">
                                 <Link href={route('proposal.create')}>
                                     <Button className="flex items-center gap-3" color="green" variant="filled">

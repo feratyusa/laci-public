@@ -1,8 +1,9 @@
 import statuses from "@/Base/Statuses";
 import InputDate from "@/Components/InputDate";
+import InputInstruction from "@/Components/InputInstruction";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import { ArrowDownIcon, ArrowUpIcon, CircleStackIcon, ExclamationCircleIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, Collapse, Tooltip, Typography } from "@material-tailwind/react";
 import { useState } from "react";
@@ -15,7 +16,7 @@ export default function Filters({filters=null, kursus, categories}){
         end_date: filters ? filters.end_date : '',
         category: filters ? filters.category : '',
         kursus: filters ? filters?.kursus : [],
-        status: filters ? filters.status : [],
+        status: filters ? filters?.status : [],
     })
  
     // Collapse State
@@ -32,12 +33,19 @@ export default function Filters({filters=null, kursus, categories}){
         else setCollapseClass("");
     }
 
-    function handleSelectChange(property, e){
+    function handleSelectChange(property, e, multi=false){
+        if(multi){
+            var elements = []
+            e.forEach(element => {
+                elements.push(element.value)
+            });
+            console.log(elements)
+        }
         if(property === 'status'){
-            setData('status', [...e])
+            setData('status', [...elements])
         }
         else if(property === 'kursus'){
-            setData('kursus', [...e])
+            setData('kursus', [...elements])
         }
         else{
             setData('category', e?.value ?? "")
@@ -45,7 +53,7 @@ export default function Filters({filters=null, kursus, categories}){
     }
 
     function handleInputChange(s){
-        if(s.length > 4) setOpenSelect(true)
+        if(s.length > 2) setOpenSelect(true)
         else setOpenSelect(false)
     }
     
@@ -127,21 +135,22 @@ export default function Filters({filters=null, kursus, categories}){
                             <Typography variant="h6">Kursus</Typography>
                         </InputLabel>
                         <ReactSelect
-                                id="kursus"
-                                name="kursus"
-                                classNamePrefix="select2-selection"
-                                className="max-w-5xl focus:border-red-500"
-                                value={kursus.length != 0 ? data.kursus : ''}
-                                options={[...kursus]}
-                                openMenuOnClick={false}
-                                onChange={(e) => handleSelectChange('kursus', e)}
-                                onInputChange={(s) => handleInputChange(s)}
-                                menuIsOpen={openSelect}
-                                isSearchable
-                                isClearable
-                                isMulti
-                                menuShouldBlockScroll
-                            />
+                            id="kursus"
+                            name="kursus"
+                            classNamePrefix="select2-selection"
+                            className="max-w-5xl focus:border-red-500"
+                            value={kursus.length != 0 ? kursus.filter(k => data.kursus.includes(k.value)) : ''}
+                            options={[...kursus]}
+                            openMenuOnClick={false}
+                            onChange={(e) => handleSelectChange('kursus', e, true)}
+                            onInputChange={(s) => handleInputChange(s)}
+                            menuIsOpen={openSelect}
+                            isSearchable
+                            isClearable
+                            isMulti
+                            menuShouldBlockScroll
+                        />
+                        <InputInstruction text="Ketik 3 karakter"/>
                     </div>
                     <div className={filterClassName}>
                         <InputLabel htmlFor="status">
@@ -157,8 +166,8 @@ export default function Filters({filters=null, kursus, categories}){
                             isSearchable={true}                     
                             isMulti
                             isClearable
-                            value={data.status.length != 0 ? data.status : ''}
-                            onChange={(e) => handleSelectChange('status', e)}
+                            value={data.status.length != 0 ? statuses.filter(s => data.status.includes(s.value)) : ''}
+                            onChange={(e) => handleSelectChange('status', e, true)}
                         />
                     </div>
                     <div className="flex gap-5 justify-center">

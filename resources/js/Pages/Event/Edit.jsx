@@ -5,7 +5,12 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import EventForm from "./Partials/Form";
 
-export default function Edit({auth, event, proposal_id, kursus, proposals, number_types, event_categories}){
+export default function Edit({
+        auth, 
+        event, 
+        proposal_id, 
+        proposals,      
+    }){
     return(
         <Authenticated
             user={auth.user}
@@ -46,10 +51,7 @@ export default function Edit({auth, event, proposal_id, kursus, proposals, numbe
                             method={'edit'} 
                             event={event} 
                             proposal_id={proposal_id} 
-                            proposals={proposals} 
-                            event_categories={event_categories} 
-                            number_types={number_types}
-                            kursus={kursus}
+                            proposals={proposals}
                         />
                     </CardBody>
                 </Card>

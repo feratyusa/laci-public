@@ -18,10 +18,8 @@ class EventFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'kd_kursus' => fake()->regexify('[1-9]{6}'),
             'start_date' => fake()->date(),
             'end_date' => fake()->date(),
-            'event_category' => fake()->randomElement([EventCategory::IHT, EventCategory::PT]),
             'participant_number_type' => fake()->randomElement([ParticipantNumberType::FIXED, ParticipantNumberType::DYNAMIC]),
             'participant_number' => fake()->numberBetween(0, 100),
             'price_per_person' => fake()->numberBetween(100000, 950000),

@@ -9,7 +9,7 @@ import HeaderTitle from "@/Components/HeaderTitle";
 import EventDetails from "./Partials/Details";
 import FileCard from "@/Components/FileCard";
 
-export default function Show({auth, code, status, event, files, categories, proposal, proposalRoute}){
+export default function Show({auth, code, status, event, files, categories, proposalRoute}){
     return(
         <Authenticated
             user={auth.user}
@@ -42,7 +42,7 @@ export default function Show({auth, code, status, event, files, categories, prop
                             <div></div>                          
                     </CardHeader>
                     <CardBody>
-                        <EventDetails event={event} categories={categories} proposal={proposal} proposalRoute={proposalRoute}/>
+                        <EventDetails event={event} categories={categories} proposalRoute={proposalRoute}/>
                         <div className="flex flex-col justify-start">
                             <Typography variant="h4">File(s)</Typography>
                             <div className="flex flex-wrap gap-5 p-2">

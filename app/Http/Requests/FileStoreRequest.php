@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enum\FileCategory;
+use App\Models\File\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
@@ -27,7 +28,7 @@ class FileStoreRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                'string',
+                'regex:/^[A-Za-z0-9_\- ]+$/i',
                 'max:120',
             ],
             'relation' => [
@@ -38,9 +39,9 @@ class FileStoreRequest extends FormRequest
                 'nullable',
                 'integer'
             ],
-            'category' => [
+            'category_id' => [
                 'required',
-                Rule::enum(FileCategory::class),
+                Rule::in(Category::pluck('id')->toArray())
             ],
             'files' => [
                 'required',
@@ -50,6 +51,18 @@ class FileStoreRequest extends FormRequest
                 File::types(['pdf', 'doc', 'docx'])
                     ->max('100mb')
             ]
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.regex' => 'The :attribute field format must only contains alphabet, number, dash, and underscore',
         ];
     }
 }

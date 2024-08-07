@@ -2,12 +2,14 @@
 
 namespace App\Models\Proposal;
 
+use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\File\File;
 use Database\Factories\ProposalFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -35,6 +37,11 @@ class Proposal extends Model
     ];
 
     /**
+     * Eager Load
+     */
+    protected $with = ['kursus', 'files'];
+
+    /**
      * Relationships
      */
     public function event(): HasOne
@@ -49,6 +56,11 @@ class Proposal extends Model
     public function files(): BelongsToMany
     {
         return $this->belongsToMany(File::class, 'proposal_files', 'proposal_id', 'file_id');
+    }
+
+    public function kursus(): BelongsTo
+    {
+        return $this->belongsTo(Kursus::class, 'kd_kursus', 'Sandi');
     }
 
     /**

@@ -82,7 +82,7 @@ export default function Authenticated({ user, header, children }) {
     })
     
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen w-screen bg-gray-100 overflow-auto">
             <Card className={sidebarClassName}>
                 <div className="mb-2 flex justify-between gap-4 p-4">
                     <div className='flex items-start'>

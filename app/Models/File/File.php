@@ -27,8 +27,10 @@ class File extends Model
         'path',
         'mime_type',
         'size',
-        'category',
+        'category_id',
     ];
+
+    protected $with = ['category'];
 
     /**
      * Relationships
@@ -40,5 +42,9 @@ class File extends Model
     public function event_pivot(): HasMany
     {
         return $this->hasMany(EventFile::class, 'file_id', 'id');
+    }
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 }

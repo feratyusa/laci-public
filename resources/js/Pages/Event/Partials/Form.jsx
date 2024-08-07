@@ -6,15 +6,13 @@ import ReactSelect from "react-select";
 import InputError from "@/Components/InputError";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
+import number_types from "@/Base/NumberType";
 
 export default function EventForm({
         method, 
         event=null, 
-        proposal_id=null, 
+        proposal_id, 
         proposals,
-        kursus,
-        number_types,
-        event_categories,
     }){
 
     const s_date = event ? new Date(event.start_date) : new Date()
@@ -24,9 +22,7 @@ export default function EventForm({
     
     const { data, setData, post, put, cancel, processing, errors, reset, transform} = useForm({
         name: event ? event.name : '',
-        proposal_id: proposal_id ? proposal_id : '',
-        kd_kursus: proposal_id ? kursus.find(k => k.value === proposals.find(p => p.value === proposal_id).kd_kursus)?.value : '',
-        event_category: event ? event.event_category : event_categories[0].value,
+        proposal_id: proposal_id ? proposal_id : '',        
         start_date: s_date_string,
         end_date: e_date_string,
         participant_number_type: event ? event.participant_number_type : number_types[0].value,
@@ -34,12 +30,16 @@ export default function EventForm({
         price_per_person: event ? event.price_per_person : 0.00
     });
 
+    const [proposalDetail, setProposalDetail] = useState(
+        proposal_id ? 
+        proposals.find(p => p.value === proposal_id) : ''
+    )
+
     const [numberDisabled, setNumberDisabled] = useState(false)
 
-    function handleProposalChange(proposal_id){
-        setData('proposal_id', proposal_id)
-        
-        setData('kd_kursus', kursus.find(k => k.value === proposals.find(p => p.value === proposal_id).kd_kursus)?.value)
+    function handleProposalChange(id){
+        setData('proposal_id', id)
+        setProposalDetail(proposals.find(p => p.value === id))
     }
 
     function handleSubmit(e){
@@ -64,6 +64,7 @@ export default function EventForm({
     }
 
     console.log(data)
+    console.log(proposal_id)
 
     return(
         <form onSubmit={handleSubmit} 
@@ -125,49 +126,32 @@ export default function EventForm({
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Kursus" htmlFor="kursus" 
+                            <InputLabel value="Kursus" 
                                 className="font-bold text-lg" />
                         </div>
                         <div className="table-cell pb-8">
-                            <ReactSelect
-                                id="kursus"
-                                name="kursus"
+                            <TextInput 
+                                type="text"
                                 placeholder="Kursus"
-                                classNamePrefix="select2-selection"
-                                className="max-w-full focus:border-red-500"
-                                options={kursus}
-                                value={kursus.find(k => k.value === data.kd_kursus) ?? ''}
-                                isSearchable={true}
-                                isDisabled
+                                disabled                                
+                                value={data.proposal_id ? `(${proposalDetail?.kursus.Sandi}) ${proposalDetail?.kursus.Lengkap}` : ''}
                             />
                                 
-                            <InputError message={data.kd_kursus == null ? "Kursus tidak ada / tidak terbaca di Database" : ''} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                            <InputError message={proposalDetail == null || proposalDetail == undefined ? "Kursus tidak ada / tidak terbaca di Database" : ''} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Kategori Event" htmlFor="event-category" 
+                            <InputLabel value="Kategori Event" 
                                 className="font-bold text-lg" />
                         </div>
                         <div className="table-cell pb-8">
-                            <ReactSelect
-                                id="event-category"
-                                name="event-category"
-                                classNamePrefix="select2-selection"
-                                className="max-w-full focus:border-red-500"
-                                options={event_categories}
-                                value={event_categories.find(v => v.value === data.event_category)}
-                                onChange={(e) => setData('event_category', e.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
+                            <TextInput 
+                                type="text"
+                                placeholder="Kategori Event"
+                                disabled
+                                value={data.proposal_id ? proposalDetail?.event_category : ''}
                             />
-
-                            <InputError message={errors.event_category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
                     <div className="table-row">

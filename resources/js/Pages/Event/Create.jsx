@@ -5,7 +5,12 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { Head } from "@inertiajs/react";
 import EventForm from "./Partials/Form";
 
-export default function Create({auth, proposals=null, proposal_id=null, kursus, status, event_categories, number_types}){
+export default function Create({
+        auth, 
+        proposals=null, 
+        proposal_id=null, 
+        status        
+    }){
     return(
         <Authenticated
             user={auth.user}
@@ -46,10 +51,7 @@ export default function Create({auth, proposals=null, proposal_id=null, kursus, 
                         <EventForm 
                             method={'create'} 
                             proposals={proposals} 
-                            event_categories={event_categories} 
-                            number_types={number_types}
                             proposal_id={proposal_id}
-                            kursus={kursus}
                         />
                     </CardBody>
                 </Card>

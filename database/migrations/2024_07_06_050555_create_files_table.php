@@ -12,18 +12,28 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('file_categories', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->string('name');
+            $table->softDeletes('deleted_at', 0);
+            $table->timestamps();
+        });
+
         Schema::create('files', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('category_id');
             $table->string('name');
             $table->string('path');
             $table->string('size');
             $table->string('mime_type');
-            $table->enum('category', array_column(FileCategory::cases(), 'value'));
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
-    }
 
+        
+
+    }
+    
     /**
      * Reverse the migrations.
      */

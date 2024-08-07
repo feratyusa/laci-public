@@ -2,6 +2,7 @@
 
 namespace App\Models\EHC;
 
+use App\Trait\SelectOptions;
 use Database\Factories\KursusFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;

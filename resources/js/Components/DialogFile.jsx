@@ -51,11 +51,8 @@ export default function DialogFile({route, proposals, events, categories}){
     
     function handleSubmit(e){
         e.preventDefault()
-        console.log(data)
         post(route, {forceFormData:true})
-    }
-
-    console.log(categories)
+    }    
 
     return(
         <>

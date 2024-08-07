@@ -21,7 +21,6 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
 
     function handleSubmit(e){
         e.preventDefault()
-        console.log(data.events)
         put(route('calculator.update'), {
             onSuccess: setDirty(false)
         })
@@ -59,8 +58,6 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
         setData('events', oldPrice)
         setDirty(false)
     }
-
-    console.log(errors)
 
     return(
         <Authenticated

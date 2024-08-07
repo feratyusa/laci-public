@@ -43,8 +43,6 @@ export default function DialogAddFile({
         })
     }
 
-    console.log(categories)
-
     return(
         <>
             <Tooltip content="Tambah File">

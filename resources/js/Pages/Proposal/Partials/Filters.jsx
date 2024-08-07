@@ -39,7 +39,6 @@ export default function Filters({filters=null, kursus, categories}){
             e.forEach(element => {
                 elements.push(element.value)
             });
-            console.log(elements)
         }
         if(property === 'status'){
             setData('status', [...elements])
@@ -59,7 +58,6 @@ export default function Filters({filters=null, kursus, categories}){
     
     function handleSubmit(e){
         e.preventDefault()
-        console.log(data)
         get(route('proposal.index'), {
             preserveScroll: true,
             preserveState: true,

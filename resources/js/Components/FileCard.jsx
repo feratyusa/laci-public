@@ -10,15 +10,15 @@ const mimeTypeColor = (mime_type) => {
 
 export default function FileCard({file, ...props}){
     return(        
-        <div className="flex items-center max-w-full justify-between border-2 py-2 px-5 my-2 rounded-lg hover:bg-gray-200" {...props}>
+        <div className="flex items-center max-w-full justify-between border-2 border-gray-500 bg-white py-2 px-5 my-2 rounded-lg hover:bg-gray-200" {...props}>
             <div className="flex items-center gap-5">
-                <DocumentIcon className="w-8" color={mimeTypeColor(file.mime_type)}/>
+                <DocumentIcon className="w-10" color={mimeTypeColor(file.mime_type)}/>
                 <div className="flex flex-col gap-1">
                     <Tooltip content={file.name}>
-                        <p className="text-lg max-w-xl truncate">{file.name}</p>
+                        <p className="text-lg max-w-xl truncate text-black">{file.name}</p>
                     </Tooltip>
-                    <p className="uppercase font-bold">{file.mime_type}</p>
-                    <div className="rounded-md text-white px-2 py-1 text-center w-fit" style={{backgroundColor: "rgb(255, 0, 102)"}}>
+                    <p className="uppercase font-bold text-black">{file.mime_type}</p>
+                    <div className="rounded-md text-white px-2 py-1 text-center w-fit mt-3" style={{backgroundColor: "rgb(255, 0, 102)"}}>
                         <p className="text-xs font-bold truncate">{file.category.name}</p>
                     </div>
                 </div>

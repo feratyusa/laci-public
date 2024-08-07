@@ -63,9 +63,6 @@ export default function EventForm({
         window.history.back()
     }
 
-    console.log(data)
-    console.log(proposal_id)
-
     return(
         <form onSubmit={handleSubmit} 
             action="post" 

@@ -7,7 +7,6 @@ import statuses from "@/Base/Statuses";
 import InputError from "@/Components/InputError";
 import { useState } from "react";
 import event_category from "@/Base/EventCategory";
-import SelectInput from "@/Components/SelectInput";
 
 export default function ProposalForm({method, proposal=null, kursus}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
@@ -30,7 +29,6 @@ export default function ProposalForm({method, proposal=null, kursus}){
 
     function handleSubmit(e){
         e.preventDefault()
-        console.log(data)
         if(method === 'create'){
             post(route('proposal.store'))
         }else if(method === 'edit'){

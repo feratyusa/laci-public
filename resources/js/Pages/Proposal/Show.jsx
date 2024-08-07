@@ -9,6 +9,7 @@ import HeaderTitle from "@/Components/HeaderTitle";
 import ProposalDetails from "./Partials/Details";
 import DisclosureFile from "@/Components/DisclosureFile";
 import FileCard from "@/Components/FileCard";
+import Files from "./Partials/Files";
 
 export default function Show({auth, code, status, proposal, categories, files}){
     const [color, ] = useState(Statuses.find(s => s.value === proposal.status).color)
@@ -52,22 +53,7 @@ export default function Show({auth, code, status, proposal, categories, files}){
                     </CardHeader>
                     <CardBody>
                         <ProposalDetails proposal={proposal} color={color} categories={categories}/>
-                        <div className="flex flex-col justify-start">
-                            <Typography variant="h4">File</Typography>
-                            <div className="w-full">
-                                <DisclosureFile>
-                                    {
-                                        proposal.files.map((file, index) => (
-                                            <FileCard 
-                                                file={file}
-                                            />
-                                        ))
-                                    }
-                                </DisclosureFile>
-                            </div>
-                            <div className="grid grid-cols-5 max-w-full border-y-2 gap-4 my-5 p-2">
-                            </div>
-                        </div>
+                        <Files files={proposal.files}/>
                     </CardBody>
                 </Card>
             </div>

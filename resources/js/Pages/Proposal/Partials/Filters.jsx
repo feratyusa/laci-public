@@ -1,7 +1,7 @@
 import statuses from "@/Base/Statuses";
-import InputDate from "@/Components/InputDate";
-import InputInstruction from "@/Components/InputInstruction";
-import InputLabel from "@/Components/InputLabel";
+import InputDate from "@/Components/Form/InputDate";
+import InputInstruction from "@/Components/Form/InputInstruction";
+import InputLabel from "@/Components/Form/InputLabel";
 import TextInput from "@/Components/TextInput";
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";

@@ -1,10 +1,10 @@
-import InputLabel from "@/Components/InputLabel";
+import InputLabel from "@/Components/Form/InputLabel";
 import TextInput from "@/Components/TextInput";
 import { Button, Typography } from "@material-tailwind/react";
 import { Link, useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
 import statuses from "@/Base/Statuses";
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Form/InputError";
 import { useState } from "react";
 import event_category from "@/Base/EventCategory";
 

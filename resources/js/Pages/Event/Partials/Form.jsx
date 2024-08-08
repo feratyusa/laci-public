@@ -1,9 +1,9 @@
-import InputLabel from "@/Components/InputLabel";
+import InputLabel from "@/Components/Form/InputLabel";
 import TextInput from "@/Components/TextInput";
 import { Button, Tooltip } from "@material-tailwind/react";
 import { useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Form/InputError";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import number_types from "@/Base/NumberType";

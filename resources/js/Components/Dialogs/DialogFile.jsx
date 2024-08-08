@@ -3,11 +3,11 @@ import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { useState } from "react";
-import MultipleFileInput from "../MultipleFileInput";
-import InputError from "../InputError";
+import MultipleFileInput from "../Form/MultipleFileInput";
+import InputError from "../Form/InputError";
 import ReactSelect from "react-select";
-import InputLabel from "../InputLabel";
-import TextInput from "../TextInput";
+import InputLabel from "../Form/InputLabel";
+import TextInput from "../Form/TextInput";
 
 export default function DialogFile({route, proposals, events, categories}){
     const [open, setOpen] = useState(false)

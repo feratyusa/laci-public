@@ -1,5 +1,5 @@
 import HeaderTitle from "@/Components/HeaderTitle";
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Form/InputError";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@inertiajs/react";

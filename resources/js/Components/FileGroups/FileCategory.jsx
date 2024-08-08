@@ -1,6 +1,6 @@
 import AlertStatusFile from "./AlertStatusFile";
 import DisclosureFile from "./DisclosureFile";
-import FileCard from "../FileCard";
+import FileCard from "./FileCard";
 
 export default function FileCategory({files, title=null}){
     return(

@@ -7,8 +7,6 @@ import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import ProposalDetails from "./Partials/Details";
-import DisclosureFile from "@/Components/DisclosureFile";
-import FileCard from "@/Components/FileCard";
 import Files from "./Partials/Files";
 
 export default function Show({auth, code, status, proposal, categories, files}){

@@ -3,10 +3,10 @@ import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
-import InputLabel from "./InputLabel";
-import TextInput from "./TextInput";
-import InputError from "./InputError";
-import MultipleFileInput from "./MultipleFileInput";
+import InputLabel from "../Form/InputLabel";
+import TextInput from "../Form/TextInput";
+import InputError from "../Form/InputError";
+import MultipleFileInput from "../Form/MultipleFileInput";
 import ReactSelect from "react-select";
 
 export default function DialogAddFile({

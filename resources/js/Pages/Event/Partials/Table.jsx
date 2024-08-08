@@ -1,9 +1,7 @@
-import DialogDelete from "@/Components/DialogDelete";
+import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/outline";
+import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
-import { Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList, Tooltip } from "@material-tailwind/react";
-import Statuses from "@/Base/Statuses";
 
 const LinkEvent = ({children, className='', id}) => {
     return(

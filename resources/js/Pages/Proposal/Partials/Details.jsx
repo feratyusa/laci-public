@@ -1,8 +1,8 @@
 import { Chip, Typography } from "@material-tailwind/react";
 import { Cog8ToothIcon } from "@heroicons/react/24/solid";
-import DialogDelete from "@/Components/DialogDelete";
+import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import DialogAddFile from "@/Components/DialogAddFile";
+import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 
 function TableRow({name, value=null, color="red", option=null}){    
     return(

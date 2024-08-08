@@ -1,4 +1,4 @@
-import DialogDelete from "@/Components/DialogDelete";
+import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
 import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";

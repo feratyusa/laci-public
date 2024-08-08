@@ -1,4 +1,3 @@
-import DialogFile from '@/Components/DialogFile';
 import HeaderTitle from '@/Components/HeaderTitle';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';

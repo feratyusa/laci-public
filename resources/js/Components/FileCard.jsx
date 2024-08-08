@@ -1,7 +1,7 @@
 import { DocumentIcon } from "@heroicons/react/24/outline";
-import DialogDelete from "./DialogDelete";
+import DialogDelete from "./Dialogs/DialogDelete";
 import { filesize } from "filesize";
-import DialogInfoFile from "./DialogInfoFile";
+import DialogInfoFile from "./Dialogs/DialogInfoFile";
 
 const mimeTypeColor = (mime_type) => {
     if(mime_type === 'pdf') return "red"

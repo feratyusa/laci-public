@@ -1,6 +1,7 @@
 import { DocumentIcon } from "@heroicons/react/24/outline";
-import { Tooltip } from "@material-tailwind/react";
 import DialogDelete from "./DialogDelete";
+import { filesize } from "filesize";
+import DialogInfoFile from "./DialogInfoFile";
 
 const mimeTypeColor = (mime_type) => {
     if(mime_type === 'pdf') return "red"
@@ -10,27 +11,37 @@ const mimeTypeColor = (mime_type) => {
 
 export default function FileCard({file, ...props}){
     return(        
-        <div className="flex items-center max-w-full justify-between border-2 border-gray-500 bg-white py-2 px-5 my-2 rounded-lg hover:bg-gray-200" {...props}>
-            <div className="flex items-center gap-5">
-                <DocumentIcon className="w-10" color={mimeTypeColor(file.mime_type)}/>
-                <div className="flex flex-col gap-1">
-                    <Tooltip content={file.name}>
-                        <p className="text-lg max-w-xl truncate text-black">{file.name}</p>
-                    </Tooltip>
-                    <p className="uppercase font-bold text-black">{file.mime_type}</p>
-                    <div className="rounded-md text-white px-2 py-1 text-center w-fit mt-3" style={{backgroundColor: "rgb(255, 0, 102)"}}>
-                        <p className="text-xs font-bold truncate">{file.category.name}</p>
-                    </div>
+        <div className="flex items-center gap-2 justify-between border-2 border-gray-500 bg-white py-2 px-5 my-2 rounded-lg hover:bg-gray-200" {...props}>
+            <div className="flex items-center gap-10 w-full">
+                <div className="w-10">
+                    <DocumentIcon className="w-10" color={mimeTypeColor(file.mime_type)}/>
+                </div>
+                <div className="w-full max-w-52 px-2 border-l-2 border-gray-500">
+                    <p className="font-bold max-w-52 truncate">{file.name}</p>
+                </div>
+                <div className="w-full max-w-16 px-2 border-l-2 border-gray-500">
+                    <p className="font-bold uppercase">{file.mime_type}</p>
+                </div>
+                <div className="w-full max-w-28 border-l-2 border-gray-500 px-2">
+                    <p className="font-bold">{filesize(file.size)}</p>
+                </div>
+                <div className="bg-red-600 rounded-lg py-1 px-2 w-full h-fit text-center">
+                    <p className="font-bold text-white text-xs">{file.category.name}</p>
                 </div>
             </div>
             <div className="flex items-center">
-                <DialogDelete
-                    content={'file'}
-                    title={"Hapus File"}
-                    message={"Yakin ingin menghapus file "+ file.name + " ?"}
-                    route={""}
-                    variant="text"
-                />
+                <div className="w-full max-w-52">
+                    <DialogDelete
+                        content={'file'}
+                        title={"Hapus File"}
+                        message={"Yakin ingin menghapus file "+ file.name + " ?"}
+                        route={""}
+                        variant="text"
+                    />
+                </div>
+                <div className="w-full ">
+                    <DialogInfoFile file={file}/>
+                </div>
             </div>
         </div>
     )

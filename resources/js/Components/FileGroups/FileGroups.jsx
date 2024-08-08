@@ -2,7 +2,6 @@ import FileCategory from "./FileCategory";
 import FileGroupTitle from "./GroupTitle";
 
 export default function FileGroups({files=[], mandatoryFiles=[]}){
-    console.log(mandatoryFiles.find(m => m.id == files[2].category.id))
     return(
         <div className="flex flex-col justify-start gap-2">
             <FileGroupTitle title={"File(s)"}/>

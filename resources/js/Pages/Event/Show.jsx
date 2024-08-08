@@ -1,13 +1,11 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import { Card, CardBody, CardHeader, Chip, IconButton, Typography, Alert } from "@material-tailwind/react";
+import { Card, CardBody, CardHeader, IconButton, Typography, Alert } from "@material-tailwind/react";
 import { DocumentIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
 import { Head } from "@inertiajs/react";
-import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import EventDetails from "./Partials/Details";
-import FileCard from "@/Components/FileCard";
+import Files from "./Partials/Files";
 
 export default function Show({auth, code, status, event, files, categories, proposalRoute}){
     return(
@@ -43,18 +41,7 @@ export default function Show({auth, code, status, event, files, categories, prop
                     </CardHeader>
                     <CardBody>
                         <EventDetails event={event} categories={categories} proposalRoute={proposalRoute}/>
-                        <div className="flex flex-col justify-start">
-                            <Typography variant="h4">File(s)</Typography>
-                            <div className="flex flex-wrap gap-5 p-2">
-                                {
-                                    files
-                                    ? files.map((file, index) => (
-                                        <FileCard file={file} categories={categories}/>
-                                    ))
-                                    : ""
-                                }
-                            </div>
-                        </div>
+                        <Files files={event?.files}/>
                     </CardBody>
                 </Card>
             </div>

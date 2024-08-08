@@ -11,7 +11,7 @@ const mimeTypeColor = (mime_type) => {
 
 export default function FileCard({file, ...props}){
     return(        
-        <div className="flex items-center gap-2 justify-between border-2 border-gray-500 bg-white py-2 px-5 my-2 rounded-lg hover:bg-gray-200" {...props}>
+        <div className="flex items-center gap-2 justify-between border-2 border-gray-500 bg-white py-2 px-5 my-2 rounded-lg hover:border-red-500" {...props}>
             <div className="flex items-center gap-10 w-full">
                 <div className="w-10">
                     <DocumentIcon className="w-10" color={mimeTypeColor(file.mime_type)}/>

@@ -10,12 +10,15 @@ use App\Http\Requests\Event\EventFormRequest;
 use App\Http\Requests\NumberTypeRequest;
 use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
+use App\Models\File\Category;
 use App\Models\Proposal\Proposal;
+use App\Trait\InputHelpers;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
+    use InputHelpers;
     /**
      * Display a listing of the resource.
      */
@@ -77,7 +80,7 @@ class EventController extends Controller
             'event' => $event,
             'files' => $files,
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
-            'categories' => FileCategory::selection(),
+            'categories' => $this->selectOptions(new Category(), 'id', 'name'),
         ]);
     }
 

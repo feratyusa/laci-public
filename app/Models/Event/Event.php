@@ -4,6 +4,7 @@ namespace App\Models\Event;
 
 use App\Models\File\File;
 use App\Models\Proposal\Proposal;
+use App\Trait\MissingCategory;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,11 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, MissingCategory;
 
     /**
      * Table init
@@ -28,13 +30,10 @@ class Event extends Model
     protected $fillable = [
         'name',
         'proposal_id',
-        'kd_kursus',
         'start_date',
         'end_date',
-        'event_category',
         'participant_number_type',
         'participant_number',
-        'price_per_person',
     ];
 
     /**
@@ -42,7 +41,7 @@ class Event extends Model
      *
      * @var array
      */
-    protected $with = ['proposal'];
+    protected $with = ['proposal', 'files'];
 
     /**
      * Relationships
@@ -60,6 +59,10 @@ class Event extends Model
         return $this->belongsToMany(File::class, 'event_files', 'event_id', 'file_id');
     }
 
+    public function prices(): HasOne
+    {
+        return $this->hasOne(EventPrices::class, 'event_id', 'id');
+    }
 
     /**
      * Create a new factory instance for the model.

@@ -29,7 +29,7 @@ class ProposalController extends Controller
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),
             'paginator' => $paginator,
-            'kursus' => $this->selectOptions(new Kursus(), 'Sandi', 'Lengkap'),        
+            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),        
             'code' => session('code'),
             'status' => session('status'),
         ]);        
@@ -41,7 +41,7 @@ class ProposalController extends Controller
     public function create()
     {
         return Inertia::render('Proposal/Create', [
-            'kursus' => $this->selectOptions(new Kursus(), 'Sandi', 'Lengkap'),
+            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),
         ]);
     }
 
@@ -80,7 +80,7 @@ class ProposalController extends Controller
     {        
         return Inertia::render('Proposal/Edit', [
             'proposal' => Proposal::find($id),
-            'kursus' => $this->selectOptions(new Kursus(), 'Sandi', 'Lengkap'),
+            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),
         ]);
     }
 

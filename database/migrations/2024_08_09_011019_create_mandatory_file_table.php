@@ -12,11 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('KURSUS', function (Blueprint $table) {
-            $table->integer('sandi');
-            $table->string('lengkap');
-            $table->enum('kategori', array_column(EventCategory::cases(), 'value'));
+        Schema::create('mandatory_file_category', function (Blueprint $table) {
+            $table->id();
+            $table->enum('event_category', array_column(EventCategory::cases(), 'value'));
+            $table->string('category_id');
             $table->timestamps();
+            
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('KURSUS');
+        Schema::dropIfExists('mandatory_file_category');
     }
 };

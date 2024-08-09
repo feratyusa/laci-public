@@ -14,7 +14,7 @@ class Category extends Model
     /**
      * Table init
      */
-    protected $table = 'file_categories';
+    protected $table = 'categories';
     public $incrementing = false;
 
     /**

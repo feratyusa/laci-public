@@ -22,7 +22,6 @@ class EventFactory extends Factory
             'end_date' => fake()->date(),
             'participant_number_type' => fake()->randomElement([ParticipantNumberType::FIXED, ParticipantNumberType::DYNAMIC]),
             'participant_number' => fake()->numberBetween(0, 100),
-            'price_per_person' => fake()->numberBetween(100000, 950000),
         ];
     }
 

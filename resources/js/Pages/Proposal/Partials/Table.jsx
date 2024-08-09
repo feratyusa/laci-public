@@ -52,7 +52,7 @@ export default function TableProposal({proposals}){
                                     {proposal.event_category}
                                 </LinkProposal>
                                 <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {proposal.kursus.Lengkap}
+                                    {proposal.kursus.lengkap}
                                 </LinkProposal>
                                 <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}

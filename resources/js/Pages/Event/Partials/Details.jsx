@@ -52,7 +52,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Nama Event"} value={event.name} />
                 <TableRow name={"Proposal"} option={'link'} link={proposalRoute} value={event.proposal} />
                 <TableRow name={"Kategori"} value={event.proposal.event_category}  />
-                <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.Lengkap}`}  />
+                <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.lengkap}`}  />
                 <TableRow name={"Tanggal Mulai"} value={new Date(event.start_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'chip'} color={color}/>

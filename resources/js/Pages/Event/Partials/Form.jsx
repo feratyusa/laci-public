@@ -131,7 +131,7 @@ export default function EventForm({
                                 type="text"
                                 placeholder="Kursus"
                                 disabled                                
-                                value={data.proposal_id ? `(${proposalDetail?.kursus.Sandi}) ${proposalDetail?.kursus.Lengkap}` : ''}
+                                value={data.proposal_id ? `(${proposalDetail?.kursus.sandi}) ${proposalDetail?.kursus.lengkap}` : ''}
                             />
                                 
                             <InputError message={proposalDetail == null || proposalDetail == undefined ? "Kursus tidak ada / tidak terbaca di Database" : ''} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>

@@ -17,7 +17,7 @@ class ProposalFactory extends Factory
      */
     public function definition(): array
     {
-        $kursus = Kursus::pluck('Sandi')->toArray();
+        $kursus = Kursus::pluck('sandi')->toArray();
 
         return [
             'name' => fake()->name(),

@@ -44,7 +44,7 @@ export default function ProposalDetails({proposal, color, categories}){
                 <TableRow name={"ID Usulan"} value={proposal.id} />
                 <TableRow name={"Nama Usulan"} value={proposal.name}  />
                 <TableRow name={"Kategori"} value={proposal.event_category}  />
-                <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.Lengkap}`}  />
+                <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
                 <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Status"} value={proposal.status} color={color} option={'chip'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />

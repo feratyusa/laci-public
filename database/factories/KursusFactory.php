@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enum\EventCategory;
 use App\Models\EHC\Kursus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -116,9 +117,13 @@ class KursusFactory extends Factory
                     "Pengenalan Analisis Pasar Finansial",
                     "Pelatihan Manajemen Kualitas dan Kepuasan Nasabah"];
 
+        // Kategori
+        $category = array_column(EventCategory::cases(), 'value');
+
         return [
-            'Sandi' => fake()->numberBetween(90000, 99000),
-            'Lengkap' => fake()->unique()->randomElement($kursus)
+            'sandi' => fake()->numberBetween(90000, 99000),
+            'lengkap' => fake()->unique()->randomElement($kursus),
+            'kategori' => fake()->randomElement($category),
         ];
     }
 

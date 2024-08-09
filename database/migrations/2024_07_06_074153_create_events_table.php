@@ -21,8 +21,15 @@ return new class extends Migration
             $table->date('end_date');
             $table->enum('participant_number_type', array_column(ParticipantNumberType::cases(), 'value'));
             $table->integer('participant_number')->nullable()->default(0);
-            $table->decimal('price_per_person', 16)->default(0);
             $table->softDeletes('deleted_at', 0);
+            $table->timestamps();
+        });
+
+        Schema::create('event_prices', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
+            $table->decimal('training_price', 16)->default(0);
+            $table->decimal('accomodation_price', 16)->default(0);
             $table->timestamps();
         });
 
@@ -51,8 +58,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
-        Schema::dropIfExists('event_files');
         Schema::dropIfExists('event_participants');
+        Schema::dropIfExists('event_files');
+        Schema::dropIfExists('events');
     }
 };

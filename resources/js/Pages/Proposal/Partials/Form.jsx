@@ -1,5 +1,5 @@
 import InputLabel from "@/Components/Form/InputLabel";
-import TextInput from "@/Components/TextInput";
+import TextInput from "@/Components/Form/TextInput";
 import { Button, Typography } from "@material-tailwind/react";
 import { Link, useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";

@@ -3,7 +3,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/Form/InputError';
 import InputLabel from '@/Components/Form/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import TextInput from '@/Components/Form/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Register() {

@@ -95,7 +95,7 @@ export default function DialogAddFile({
                                         getOptionValue={(option) => option.value}
                                     />
 
-                                    <InputError message={errors.category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                                    <InputError message={errors.category_id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                                 </div>
                                 <div>
                                     <InputLabel value="Upload File(s)" htmlFor="files" 

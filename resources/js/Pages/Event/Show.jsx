@@ -7,7 +7,7 @@ import HeaderTitle from "@/Components/HeaderTitle";
 import EventDetails from "./Partials/Details";
 import Files from "./Partials/Files";
 
-export default function Show({auth, code, status, event, files, categories, proposalRoute}){
+export default function Show({auth, code, status, event, categories, proposalRoute}){
     return(
         <Authenticated
             user={auth.user}

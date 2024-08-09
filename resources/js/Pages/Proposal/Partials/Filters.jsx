@@ -2,7 +2,7 @@ import statuses from "@/Base/Statuses";
 import InputDate from "@/Components/Form/InputDate";
 import InputInstruction from "@/Components/Form/InputInstruction";
 import InputLabel from "@/Components/Form/InputLabel";
-import TextInput from "@/Components/TextInput";
+import TextInput from "@/Components/Form/TextInput";
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, Collapse, Tooltip, Typography } from "@material-tailwind/react";

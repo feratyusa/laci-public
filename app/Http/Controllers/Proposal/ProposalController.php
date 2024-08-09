@@ -41,7 +41,7 @@ class ProposalController extends Controller
     public function create()
     {
         return Inertia::render('Proposal/Create', [
-            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),
+            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap', true, ['kategori']),
         ]);
     }
 

@@ -5,14 +5,14 @@ import { Link, useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
 import statuses from "@/Base/Statuses";
 import InputError from "@/Components/Form/InputError";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import event_category from "@/Base/EventCategory";
 
-export default function ProposalForm({method, proposal=null, kursus}){
+export default function ProposalForm({method, proposal=null, kursus=[]}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
     const date_string = `${date.getFullYear()}-${('0'+(date.getMonth() + 1)).slice(-2)}-${('0'+(date.getDate())).slice(-2)}`    
     
-    const { data, setData, post, put, cancel, processing, errors, reset } = useForm({
+    const { data, setData, post, put, cancel, processing, errors } = useForm({
         name: proposal ? proposal.name : '',
         event_category: proposal ? proposal.event_category : event_category[0].value,
         entry_date: date_string,
@@ -22,6 +22,11 @@ export default function ProposalForm({method, proposal=null, kursus}){
 
     const [openSelect, setOpenSelect] = useState(false)
     
+    function setEventCategory(kd_kursus){
+        setData('event_category', kursus.find(k => k.value == kd_kursus)?.kategori ?? '')
+        console.log(kursus.find(k => k.value === kd_kursus)?.event_category)
+    }
+
     function handleInputChange(s){
         if(s.length > 2) setOpenSelect(true)
         else setOpenSelect(false)
@@ -40,6 +45,10 @@ export default function ProposalForm({method, proposal=null, kursus}){
         cancel()
         window.history.back()
     }
+
+    useEffect(() => {
+        setEventCategory(data.kd_kursus)
+    }, [data.kd_kursus])
 
     return(
         <form onSubmit={handleSubmit} 
@@ -99,9 +108,9 @@ export default function ProposalForm({method, proposal=null, kursus}){
                                 name="event-category"
                                 classNamePrefix="select2-selection"
                                 className="max-w-2xl focus:border-red-500"
-                                options={event_category}
-                                value={event_category.find(v => v.value === data.event_category)}
-                                onChange={(e) => setData('event_category', e.value)}
+                                value={event_category.find(k => k.value == data.event_category) ?? ''}
+                                options={[...event_category]}
+                                onChange={(e) => setData('event_category', e?.value ?? "")}
                             />
 
                             <InputError message={errors.event_category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
@@ -121,7 +130,7 @@ export default function ProposalForm({method, proposal=null, kursus}){
                                 value={kursus.find(k => k.value == data.kd_kursus) ?? ''}
                                 options={[...kursus]}
                                 openMenuOnClick={false}
-                                onChange={(e) => setData('kd_kursus', e?.value ?? "")}
+                                onChange={(e) => setData('kd_kursus', String(e?.value) ?? "")}
                                 onInputChange={(s) => handleInputChange(s)}
                                 menuIsOpen={openSelect}
                                 isSearchable

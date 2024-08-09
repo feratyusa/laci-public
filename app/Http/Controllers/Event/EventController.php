@@ -37,18 +37,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        $proposals = Proposal::all();
-        $proposalSelection = [];
-        foreach ($proposals as $proposal) {
-            $proposalSelection[] = (object)[
-                'value' => $proposal->id, 
-                'label' => "({$proposal->id}) {$proposal->name}", 
-                'kursus' => $proposal->kursus,
-                'event_category' => $proposal->event_category];
-        }
-
         return Inertia::render('Event/Create', [
-            'proposals' => $proposalSelection,
+            'proposals' => $this->selectOptions(new Proposal(), 'id', 'name', true, ['kursus', 'event_category']),
             'proposal_id' => session('proposal_id') ? intval(session('proposal_id')) : null,
             'status' => session('status'),
         ]);
@@ -91,20 +81,10 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        $proposals = Proposal::all();
-        $proposalSelection = [];
-        foreach ($proposals as $proposal) {
-            $proposalSelection[] = (object)[
-                'value' => $proposal->id, 
-                'label' => "({$proposal->id}) {$proposal->name}", 
-                'kursus' => $proposal->kursus,
-                'event_category' => $proposal->event_category];
-        }
-
         return Inertia::render('Event/Edit', [
             'event' => $event,
             'proposal_id' => $event->proposal->id,
-            'proposals' => $proposalSelection,
+            'proposals' => $this->selectOptions(new Proposal(), 'id', 'name', true, ['kursus', 'event_category']),
         ]);
     }
 

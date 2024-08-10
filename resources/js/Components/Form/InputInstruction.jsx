@@ -1,3 +1,5 @@
-export default function InputInstruction({text='',...props}){
-    <p className="text-sm italic text-gray-400">{text}</p>
+export default function InputInstruction({text='' ,...props}){
+    return(
+        <p className="text-sm italic text-gray-400">{text}</p>
+    )
 }

@@ -73,7 +73,8 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
                                     <div className={headerClassName}>NO</div>
                                     <div className={headerClassName}>EVENT</div>
                                     <div className={headerClassName}>PARTISIPAN</div>
-                                    <div className={headerClassName}>HARGA/PARTISIPAN</div>
+                                    <div className={headerClassName}>BIAYA PENDIDIKAN</div>
+                                    <div className={headerClassName}>BIAYA PELATIHAN</div>
                                     <div className={headerClassName}>TOTAL</div>
                                 </div>
                             </div>
@@ -113,7 +114,23 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
                                                         key={index}
                                                         id="price-per-person"
                                                         name="price-per-person"
-                                                        value={data.events[index].price_per_person}
+                                                        value={data.events[index].prices.training_price}
+                                                        autoComplete="price-per-person"
+                                                        prefix="Rp "
+                                                        className="w-full rounded-md"
+                                                        onValueChange={(value) => handlePriceChange(value, index)}                  
+                                                    />
+                                                </Tooltip>
+
+                                                <InputError message={errors['events.'+index+".price_per_person"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                                            </div>
+                                            <div className={cellClassName + " w-60"}>
+                                                <Tooltip content={"Default: Rp " + Number(prices[index].price_per_person).toLocaleString()}>
+                                                    <CurrencyInput 
+                                                        key={index}
+                                                        id="price-per-person"
+                                                        name="price-per-person"
+                                                        value={data.events[index].prices.accomodation_price}
                                                         autoComplete="price-per-person"
                                                         prefix="Rp "
                                                         className="w-full rounded-md"

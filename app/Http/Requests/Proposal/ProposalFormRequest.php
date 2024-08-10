@@ -28,7 +28,7 @@ class ProposalFormRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z0-9 _-]+$/',
+                'regex:/^[a-zA-Z0-9 _\-]+$/',
                 'max:120', 
             ],
             'event_category' => [

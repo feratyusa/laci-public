@@ -18,27 +18,27 @@ class ProposalFilterController extends Controller
             $search = $request->search;
             $query[] = ["name like ?", ["%".$search."%"]];
         }
-        if($request->filled('start_date') && $request->isNotFilled('end_date')){
+        if($request->filled('entry_date.start') && $request->isNotFilled('entry_date.end')){
             $start_date = $request->validate([
-                'start_date' => ['date']
+                'entry_date.start' => ['date']
             ]);
-            $start_date = date("Y-m-d", strtotime($start_date['start_date']));
+            $start_date = date("Y-m-d", strtotime($start_date['entry_date']['start']));
             $query[] = ["entry_date = ?", [$start_date]]; 
         }
-        if($request->isNotFilled('start_date') && $request->filled('end_date')){
+        if($request->isNotFilled('entry_date.start') && $request->filled('entry_date.end')){
             $end_date = $request->validate([
-                'end_date' => ['date']
+                'entry_date.end' => ['date']
             ]);
-            $end_date = date("Y-m-d", strtotime($end_date['end_date']));
+            $end_date = date("Y-m-d", strtotime($end_date['entry_date']['end']));
             $query[] = ["entry_date = ?", [$end_date]];; 
         }
-        if($request->filled('start_date') && $request->filled('end_date')){
+        if($request->filled('entry_date.start') && $request->filled('entry_date.end')){
             $date = $request->validate([
-                'start_date' => ['date'],
-                'end_date' => ['date']
+                'entry_date.start' => ['date'],
+                'entry_date.end' => ['date']
             ]);
-            $start_date = date("Y-m-d", strtotime($date['start_date']));
-            $end_date = date("Y-m-d", strtotime($date['end_date']));
+            $start_date = date("Y-m-d", strtotime($date['entry_date']['start']));
+            $end_date = date("Y-m-d", strtotime($date['entry_date']['end']));
             $query[] = ["entry_date between ? and ?", [$start_date, $end_date]]; 
         }
         if($request->filled('category')){

@@ -17,7 +17,7 @@ import HeaderTitle from "@/Components/HeaderTitle";
 import TableProposal from "./Partials/Table";
 import Filters from "./Partials/Filters";
 
-export default function Index({ auth, status, code, proposals, kursus, paginator, inputs='', filters=null }) {
+export default function Index({ auth, status, code, proposals, kursus, paginator, inputs='' }) {
     const categories = [
         {value: 'In House Training', label: 'In House Training'},
         {value: 'Public Training', label: 'Public Training'},

@@ -1,0 +1,6 @@
+const TEXT = 'TEXT'
+const DATE = 'DATE'
+const SELECT = 'SELECT'
+const MULTISELECT = 'MULTISELECT'
+
+export {TEXT, DATE, SELECT, MULTISELECT}

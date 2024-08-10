@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from "react-responsive";
 import { Link } from "@inertiajs/react";
-import logo from "../assets/logo.png";
+import ApplicationLogo from "@/Components/ApplicationLogo";
 
 export default function Authenticated({ user, header, children }) {
     const isMobile = useMediaQuery({query: '(max-width: 800px)'});
@@ -86,7 +86,7 @@ export default function Authenticated({ user, header, children }) {
             <Card className={sidebarClassName}>
                 <div className="mb-2 flex justify-between gap-4 p-4">
                     <div className='flex items-start'>
-                        <img src={logo} alt="brand" className="h-8 w-8 mr-5" />
+                        <ApplicationLogo className="h-8 w-8 mr-5"/>
                         <Typography variant="h5" color="blue-gray">
                             Learning Center
                         </Typography>

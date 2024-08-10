@@ -27,7 +27,8 @@ export default function EventForm({
         end_date: e_date_string,
         participant_number_type: event ? event.participant_number_type : number_types[0].value,
         participant_number: event ? event.participant_number : 0,
-        price_per_person: event ? event.price_per_person : 0.00
+        training_price: event?.prices ? event.prices.training_price : 0,
+        accomodation_price: event?.prices ? event.prices.accomodation_price : 0,
     });
 
     const [proposalDetail, setProposalDetail] = useState(
@@ -242,23 +243,44 @@ export default function EventForm({
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Harga Per Orang" htmlFor="price-per-person" 
+                            <InputLabel value="Biaya Pendidikan" htmlFor="training-price" 
                                 className="font-bold text-lg" />
                         </div>
                         <div className="table-cell pb-8">
                             <CurrencyInput 
-                                id="price-per-person"
-                                name="price-per-person"
-                                value={data.price_per_person}
-                                placeholder="Jumlah Partisipan"
-                                autoComplete="price-per-person"
+                                id="training-price"
+                                name="training-price"
+                                value={data.training_price}
+                                placeholder="Biaya Pendidikan"
+                                autoComplete="training_price"
                                 prefix="Rp "
                                 className="w-full rounded-md focus:drop-shadow-lg border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900 focus:border-gray-900 disabled:opacity-30"
-                                onValueChange={(value) => setData('price_per_person', value)}
+                                onValueChange={(value) => setData('training_price', value)}
                             />
                             <p className="text-sm italic text-gray-400">Number only</p>
 
-                            <InputError message={errors.price_per_person} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                            <InputError message={errors.training_price} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                        </div>
+                    </div>
+                    <div className="table-row">
+                        <div className="table-cell pb-8 w-44">
+                            <InputLabel value="Biaya Akomodasi" htmlFor="accomodation-price" 
+                                className="font-bold text-lg" />
+                        </div>
+                        <div className="table-cell pb-8">
+                            <CurrencyInput 
+                                id="accomodation-price"
+                                name="accomodation-price"
+                                value={data.accomodation_price}
+                                placeholder="Biaya Akomodasi"
+                                autoComplete="accomodation_price"
+                                prefix="Rp "
+                                className="w-full rounded-md focus:drop-shadow-lg border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900 focus:border-gray-900 disabled:opacity-30"
+                                onValueChange={(value) => setData('accomodation_price', value)}
+                            />
+                            <p className="text-sm italic text-gray-400">Number only</p>
+
+                            <InputError message={errors.accomodation_price} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
                 </div>

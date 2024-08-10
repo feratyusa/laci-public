@@ -13,7 +13,7 @@ const LinkEvent = ({children, className='', id}) => {
 
 export default function TableEvent({events}){
     const columns = [
-        "ID", "NAMA EVENT", "KATEGORI", "TANGGAL MULAI", "TANGGAL SELESAI", "PARTISIPAN", "HARGA PER ORANG", "OPSI"
+        "ID", "NAMA EVENT", "KATEGORI", "TANGGAL MULAI", "TANGGAL SELESAI", "PARTISIPAN", "BIAYA PEND", "BIAYA AKOM", "OPSI"
     ];
 
     return(
@@ -21,8 +21,8 @@ export default function TableEvent({events}){
             <div className="table-header-group bg-red-600 text-sm text-center">
                 <div className="table-row">
                     {
-                        columns.map((column, index) => (
-                            <div className="table-cell p-4 text-white text-bold"> 
+                        columns.map((column) => (
+                            <div className="table-cell p-4 text-white text-bold align-middle"> 
                                 {column}
                             </div>  
                         ))
@@ -47,7 +47,7 @@ export default function TableEvent({events}){
                                     {event.name}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName + "w-30"} id={event.id}>
-                                    {event.event_category}
+                                    {event.proposal.event_category}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName + "w-60"} id={event.id}>
                                     {new Date(event.start_date).toLocaleDateString('id', dateoptions)}
@@ -59,7 +59,10 @@ export default function TableEvent({events}){
                                     {event.participant_number}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName + "w-60"} id={event.id}>
-                                    {"Rp "+ Number(event.price_per_person).toLocaleString()}
+                                    {"Rp "+ Number(event.prices.training_price).toLocaleString()}
+                                </LinkEvent>
+                                <LinkEvent className={cellClassName + "w-60"} id={event.id}>
+                                    {"Rp "+ Number(event.prices.accomodation_price).toLocaleString()}
                                 </LinkEvent>
                                 <div className={cellClassName+ "w-40"}>
                                     <div className="flex flex-row gap-3 justify-center">

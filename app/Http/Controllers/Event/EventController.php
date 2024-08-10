@@ -51,7 +51,9 @@ class EventController extends Controller
     {
         $validated = $request->validated();
 
-        $event = Event::create($validated);        
+        $event = Event::create($validated);
+        
+        $event->prices()->create($validated);
 
         return redirect()->route('event.show', ['id' => $event->id])
             ->with([]);

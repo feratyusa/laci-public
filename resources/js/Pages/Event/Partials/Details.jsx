@@ -57,7 +57,8 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'chip'} color={color}/>
                 <TableRow name={"Jumlah Partisipan"} value={event.participant_number} />
-                <TableRow name={"Harga Per Kepala"} value={`Rp ${Number(event.price_per_person).toLocaleString()}`} />
+                <TableRow name={"Biaya Pendidikan"} value={`Rp ${Number(event.prices.training_price).toLocaleString()}`} />
+                <TableRow name={"Biaya Akomodasi"} value={`Rp ${Number(event.prices.accomodation_price).toLocaleString()}`} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)}/>
                 <div className="table-row">

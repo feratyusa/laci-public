@@ -12,7 +12,7 @@ import SelectFilter from "./SelectFilter";
 import TextFilter from "./TextFilter";
 import DateFilter from "./DateFilter";
 
-export default function FiltersGroup({filters, filtersAttribute, kursus, categories, route}){
+export default function FiltersGroup({filters, filtersAttribute, route}){
     const {data, setData, get, isDirty, reset, processing} = useForm(filters)
  
     // Collapse State
@@ -33,15 +33,10 @@ export default function FiltersGroup({filters, filtersAttribute, kursus, categor
             e.forEach(element => {
                 elements.push(element.value)
             });
-        }
-        if(property === 'status'){
-            setData('status', [...elements])
-        }
-        else if(property === 'kursus'){
-            setData('kursus', [...elements])
+            setData(property, [...elements])
         }
         else{
-            setData('category', e?.value ?? "")
+            setData(property, e?.value ?? "")
         }
     }
 
@@ -59,7 +54,7 @@ export default function FiltersGroup({filters, filtersAttribute, kursus, categor
         })
     }
 
-    console.log(data)
+
 
     return(
         <div className="w-full">                            
@@ -106,17 +101,18 @@ export default function FiltersGroup({filters, filtersAttribute, kursus, categor
                             }
                             else if(filtersAttribute[index].type === MULTISELECT){
                                 const selections = [...filtersAttribute[index].options]
+                                console.log(filtersAttribute[index].name)
                                 return(
                                     <MultiSelectFilter 
                                         id={filtersAttribute[index].name}
                                         name={filtersAttribute[index].name}
                                         placeholder={filtersAttribute[index].placeholder}
                                         selections={selections}
-                                        instruction={filtersAttribute[index].instruction}
+                                        instruction={filtersAttribute[index].instruction ?? false}
                                         value={data[filter].length != 0 ? selections.filter(k => data[filter].includes(k.value)) : ''}
                                         onChange={(e) => handleSelectChange(filter, e, true)}
                                         filterClassName={filterClassName}
-                                        openMenuOnClick={filtersAttribute[index].name == 'status' ? true : false}
+                                        onClickOpenMenu={filtersAttribute[index].name == 'status' ? true : false}
                                     />
                                 )
                             }

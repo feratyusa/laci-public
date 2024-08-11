@@ -24,7 +24,7 @@ class ProposalController extends Controller
     public function index(Request $request)
     {
         $filter = new ProposalFilterController();
-        $paginator = $filter->filters($request);
+        $paginator = $filter->run($request);
         
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),

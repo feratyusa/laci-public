@@ -2,85 +2,23 @@
 
 namespace App\Http\Controllers\Proposal;
 
-use App\Models\Proposal\Proposal;
 use App\Enum\EventCategory;
 use App\Enum\EventStatus;
-use App\Http\Controllers\Controller;
+use App\Enum\ProposalStatus;
+use App\Models\Proposal\Proposal;
+use App\Http\Controllers\FilterController;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class ProposalFilterController extends Controller
+class ProposalFilterController extends FilterController
 {
-    public function filters(Request $request)
+    public function run(Request $request)
     {
-        $query = [];
-        if($request->filled('search')){
-            $search = $request->search;
-            $query[] = ["name like ?", ["%".$search."%"]];
-        }
-        if($request->filled('entry_date.start') && $request->isNotFilled('entry_date.end')){
-            $start_date = $request->validate([
-                'entry_date.start' => ['date']
-            ]);
-            $start_date = date("Y-m-d", strtotime($start_date['entry_date']['start']));
-            $query[] = ["entry_date = ?", [$start_date]]; 
-        }
-        if($request->isNotFilled('entry_date.start') && $request->filled('entry_date.end')){
-            $end_date = $request->validate([
-                'entry_date.end' => ['date']
-            ]);
-            $end_date = date("Y-m-d", strtotime($end_date['entry_date']['end']));
-            $query[] = ["entry_date = ?", [$end_date]];; 
-        }
-        if($request->filled('entry_date.start') && $request->filled('entry_date.end')){
-            $date = $request->validate([
-                'entry_date.start' => ['date'],
-                'entry_date.end' => ['date']
-            ]);
-            $start_date = date("Y-m-d", strtotime($date['entry_date']['start']));
-            $end_date = date("Y-m-d", strtotime($date['entry_date']['end']));
-            $query[] = ["entry_date between ? and ?", [$start_date, $end_date]]; 
-        }
-        if($request->filled('category')){
-            $category = $request->validate([
-                'category' => [Rule::enum(EventCategory::class)]
-            ]);
-            $category = $category['category'];
-            $query[] = ["event_category = ?", [$category]]; 
-        }
-        if($request->filled('kursus')){
-            $validated = $request->validate([
-                'kursus.*' => ['integer', 'numeric']
-            ]);
-            $tempQ = "kd_kursus in (";
-            $tempD = [];
-            $i = 0;
-            foreach ($validated['kursus'] as $k) {
-                $tempD[] = $k;
-                $tempQ = $tempQ . "?";
-                if($i != count($validated['kursus'])-1) $tempQ = $tempQ . ", ";
-                $i++;
-            }
-            $tempQ = $tempQ . ")";
-            $query[] = [$tempQ, $tempD];
-        }
-        if($request->filled('status')){
-            $status = $request->validate([                    
-                'status.*' => [Rule::enum(EventStatus::class)]
-            ]);    
-            $status = $status['status'];
-            $tempQuery = "status in (";
-            $tempData = [];
-            $i = 0;
-            foreach ($status as $s) {
-                $tempData[] = $s;
-                $tempQuery = $tempQuery."?";
-                if($i != count($status)-1) $tempQuery = $tempQuery.", ";
-                $i++;
-            }
-            $tempQuery = $tempQuery.")";
-            $query[] = [$tempQuery, $tempData];
-        }
+        $rules['event_category'] = [Rule::enum(EventCategory::class)];
+        $rules['kd_kursus'] = ['integer', 'numeric'];
+        $rules['status'] = [Rule::enum(ProposalStatus::class)];
+
+        $query = $this->filters($request, $rules);
 
         if(count($query)){
             $queryConcate = "";

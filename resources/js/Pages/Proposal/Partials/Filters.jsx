@@ -4,18 +4,18 @@ import FiltersGroup from "@/Components/FiltersGroup/FiltersGroup";
 
 export default function Filters({kursus, categories}){
     const filters = {
-        search: '',
+        name: '',
         entry_date: {start: '', end: ''},
-        category: '',
-        kursus: [],
+        event_category: '',
+        kd_kursus: [],
         status: []
     }
 
     const filtersAttribute = [
-        {type: TEXT, name: 'search', placeholder: 'Nama Usulan'},
+        {type: TEXT, name: 'name', placeholder: 'Nama Usulan'},
         {type: DATE, name: 'enry_date', placeholder: 'Tanggal Masuk'},
-        {type: SELECT, name: 'category', placeholder: 'Kategori', options: categories},
-        {type: MULTISELECT, name: 'kursus', placeholder: 'Kursus', options: kursus, instruction: true},
+        {type: SELECT, name: 'event_category', placeholder: 'Kategori', options: categories},
+        {type: MULTISELECT, name: 'kd_kursus', placeholder: 'Kursus', options: kursus, instruction: true},
         {type: MULTISELECT, name: 'status', placeholder: 'Status', options: statuses},
     ]
 
@@ -23,8 +23,6 @@ export default function Filters({kursus, categories}){
         <FiltersGroup 
             filters={filters}
             filtersAttribute={filtersAttribute}
-            kursus={kursus}
-            categories={categories}
             route={route('proposal.index')}
         />
     )

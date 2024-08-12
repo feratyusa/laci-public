@@ -1,7 +1,4 @@
 import { DATE, MULTISELECT, SELECT, TEXT } from "@/Base/FiltersInputType";
-import InputDate from "@/Components/Form/InputDate";
-import InputLabel from "@/Components/Form/InputLabel";
-import TextInput from "@/Components/Form/TextInput";
 import { ArrowDownIcon, ArrowUpIcon, ExclamationCircleIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, Collapse, Tooltip, Typography } from "@material-tailwind/react";
@@ -55,7 +52,7 @@ export default function FiltersGroup({filters, filtersAttribute, route}){
     }
 
 
-
+    // console.log(data)
     return(
         <div className="w-full">                            
             <Collapse open={open} className={collapseClass}>
@@ -101,7 +98,6 @@ export default function FiltersGroup({filters, filtersAttribute, route}){
                             }
                             else if(filtersAttribute[index].type === MULTISELECT){
                                 const selections = [...filtersAttribute[index].options]
-                                console.log(filtersAttribute[index].name)
                                 return(
                                     <MultiSelectFilter 
                                         id={filtersAttribute[index].name}
@@ -109,7 +105,7 @@ export default function FiltersGroup({filters, filtersAttribute, route}){
                                         placeholder={filtersAttribute[index].placeholder}
                                         selections={selections}
                                         instruction={filtersAttribute[index].instruction ?? false}
-                                        value={data[filter].length != 0 ? selections.filter(k => data[filter].includes(k.value)) : ''}
+                                        value={data[filter].length != 0 ? selections.filter(k => data[filter]?.includes(k.value)) : ''}
                                         onChange={(e) => handleSelectChange(filter, e, true)}
                                         filterClassName={filterClassName}
                                         onClickOpenMenu={filtersAttribute[index].name == 'status' ? true : false}

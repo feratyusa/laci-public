@@ -13,7 +13,9 @@ use App\Models\Event\Event;
 use App\Models\File\Category;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -22,13 +24,15 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $paginator = Event::paginate(30);
+        $filter = new EventFilterController();
+        $paginator = $filter->run($request);
 
         return Inertia::render("Event/Index", [
             "events" => $paginator->items(),
             'paginator' => $paginator,
+            "kursus" => $this->selectOptions(new Kursus(), 'sandi', 'lengkap', true),
         ]);
     }
 

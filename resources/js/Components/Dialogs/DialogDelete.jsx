@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/react"
 import { Typography, Button, IconButton, Tooltip } from "@material-tailwind/react"
 import { useState } from "react"
 
-export default function DialogDelete({content, title, message, route, variant="filled", ...props}){
+export default function DialogDelete({content, title, message, route, buttonSize="md", variant="filled", ...props}){
     const {delete: destroy, processing} = useForm()
     const [open, setOpen] = useState(false)
 
@@ -25,8 +25,9 @@ export default function DialogDelete({content, title, message, route, variant="f
                     onClick={handleOpen}
                     color="red"
                     variant={variant}
+                    size={buttonSize}
                 >
-                    <TrashIcon className="h-5 w-5" />
+                    <TrashIcon className="w-5" />
                 </IconButton>
             </Tooltip>
             <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>

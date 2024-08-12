@@ -30,7 +30,11 @@ class CalculatorUpdateEventRequest extends FormRequest
                 'numeric',
                 'integer'
             ],
-            'events.*.price_per_person' => [
+            'events.*.training_price' => [
+                'required',
+                'numeric',
+            ],
+            'events.*.accomodation_price' => [
                 'required',
                 'numeric',
             ]

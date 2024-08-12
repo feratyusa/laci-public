@@ -9,7 +9,7 @@ import CurrencyInput from "react-currency-input-field";
 
 export default function Index({auth, events, prices, totalPrice=0, totalParticipant=0}){
     const [dirty, setDirty] = useState(false)
-    const {data, setData, post, put, processing, errors} = useForm({
+    const {data, setData, put, processing, errors} = useForm({
         events: [...prices],
     })
 
@@ -21,14 +21,17 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
 
     function handleSubmit(e){
         e.preventDefault()
-        put(route('calculator.update'), {
-            onSuccess: setDirty(false)
-        })
+        put(route('calculator.update'))
     }
 
-    function handlePriceChange(value, index){
+    function handlePriceChange(value, index, type){
         const newData = data.events
-        newData[index] = {...newData[index], price_per_person: value, total: newData[index]['participant_number'] * value, dirty: true}
+        if(type === 'training'){
+            newData[index] = {...newData[index], training_price: value, total: newData[index]['participant_number'] * (value + newData[index]['accomodation_price']), dirty: true}
+        }
+        else if(type === 'accomodation'){
+            newData[index] = {...newData[index], accomodation_price: value, total: newData[index]['participant_number'] * (value + newData[index]['training_price']), dirty: true}
+        }
         handleSumPricesChange(newData)
         setData('events', newData)
         setDirty(true)
@@ -36,9 +39,9 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
 
     function handleNumberChange(value, index){
         const newData = data.events
-        newData[index] = {...newData[index], participant_number: value, total: newData[index]['price_per_person'] * value, dirty: true}
-        handleSumPricesChange(newData)
-        handleSumParticipantsChange(newData)
+        newData[index] = {...newData[index], participant_number: value, total: (newData[index]['accomodation_price'] + newData[index]['training_price']) * value, dirty: true}
+        handleSumPricesChange([...newData])
+        handleSumParticipantsChange([...newData])
         setData('events', newData)
         setDirty(true)
     }
@@ -97,7 +100,7 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
                                                 </div>
                                             </div>
                                             <div className={cellClassName + " w-32"}>
-                                                <Tooltip content={"Default: " + prices[index].participant_number}>
+                                                <Tooltip content={"Semula: " + prices[index].participant_number}>
                                                     <input
                                                         className="w-full rounded-md" 
                                                         name="participant-number"
@@ -109,39 +112,39 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
                                                 <InputError message={errors['events.'+index+".participant_number"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                                             </div>
                                             <div className={cellClassName + " w-60"}>
-                                                <Tooltip content={"Default: Rp " + Number(prices[index].price_per_person).toLocaleString()}>
+                                                <Tooltip content={"Semula: Rp " + Number(prices[index].training_price).toLocaleString()}>
                                                     <CurrencyInput 
                                                         key={index}
                                                         id="price-per-person"
                                                         name="price-per-person"
-                                                        value={data.events[index].prices.training_price}
+                                                        value={Number(data.events[index]?.training_price)}
                                                         autoComplete="price-per-person"
                                                         prefix="Rp "
                                                         className="w-full rounded-md"
-                                                        onValueChange={(value) => handlePriceChange(value, index)}                  
+                                                        onValueChange={(value) => handlePriceChange(value, index, 'training')}                  
                                                     />
                                                 </Tooltip>
 
                                                 <InputError message={errors['events.'+index+".price_per_person"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                                             </div>
                                             <div className={cellClassName + " w-60"}>
-                                                <Tooltip content={"Default: Rp " + Number(prices[index].price_per_person).toLocaleString()}>
+                                                <Tooltip content={"Semula: Rp " + Number(prices[index].accomodation_price).toLocaleString()}>
                                                     <CurrencyInput 
                                                         key={index}
                                                         id="price-per-person"
                                                         name="price-per-person"
-                                                        value={data.events[index].prices.accomodation_price}
+                                                        value={Number(data.events[index]?.accomodation_price)}
                                                         autoComplete="price-per-person"
                                                         prefix="Rp "
                                                         className="w-full rounded-md"
-                                                        onValueChange={(value) => handlePriceChange(value, index)}                  
+                                                        onValueChange={(value) => handlePriceChange(value, index, 'accomodation')}                  
                                                     />
                                                 </Tooltip>
 
                                                 <InputError message={errors['events.'+index+".price_per_person"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                                             </div>
                                             <div className={cellClassName + " font-bold"}>
-                                                {"Rp " + Number(Number(data.events[index].participant_number) * Number(data.events[index].price_per_person)).toLocaleString()}
+                                                {"Rp " + Number(Number(data.events[index].participant_number) * (Number(data.events[index].training_price) + Number(data.events[index].accomodation_price))).toLocaleString()}
                                             </div>
                                         </div>
                                     ))
@@ -167,7 +170,7 @@ export default function Index({auth, events, prices, totalPrice=0, totalParticip
                                 </div>
                                 <div className="bg-red-100 p-2">
                                     <Typography variant="h4" color="black">
-                                        {"Rp "+Number(sumPrices).toLocaleString()}
+                                        {"Rp "+ Number(sumPrices).toLocaleString()}
                                     </Typography>
                                 </div>
                             </div>

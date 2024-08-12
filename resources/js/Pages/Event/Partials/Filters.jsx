@@ -24,9 +24,7 @@ export default function Filters({kursus, categories}){
         {type: NUMBER, name: 'accomodation_price', placeholder: 'Biaya Pelatihan'},
         {type: MULTISELECT, name: 'kd_kursus', placeholder: 'Kursus', options: kursus, instruction: true},
     ]
-
-    console.log(filters)
-    console.log(filtersAttribute)
+    
     return(
         <FiltersGroup 
             filters={filters}

@@ -51,8 +51,6 @@ export default function FiltersGroup({filters, filtersAttribute, route}){
         })
     }
 
-
-    // console.log(data)
     return(
         <div className="w-full">                            
             <Collapse open={open} className={collapseClass}>

@@ -7,18 +7,14 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import TableEvent from "./Partials/Table";
 import Pagination from "@/Components/Pagination";
 import Filters from "./Partials/Filters";
+import eventCategories from "@/Base/EventCategory";
 
 export default function Index({
     auth,
     kursus=[],
     events, 
     paginator
-}){
-    const categories = [
-        {value: 'In House Training', label: 'In House Training'},
-        {value: 'Public Training', label: 'Public Training'},
-    ]
-    
+}){ 
     return(
         <Authenticated
             user={auth.user}
@@ -41,7 +37,7 @@ export default function Index({
                                 </Link>
                             </div>
                         </div>
-                        <Filters kursus={kursus} categories={categories}/>
+                        <Filters kursus={kursus} categories={eventCategories}/>
                         <TableEvent events={events}/>
                     </CardBody>
                     <CardFooter className="flex justify-center">

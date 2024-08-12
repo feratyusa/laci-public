@@ -24,7 +24,6 @@ export default function ProposalForm({method, proposal=null, kursus=[]}){
     
     function setEventCategory(kd_kursus){
         setData('event_category', kursus.find(k => k.value == kd_kursus)?.kategori ?? '')
-        console.log(kursus.find(k => k.value === kd_kursus)?.event_category)
     }
 
     function handleInputChange(s){

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\FileController;
@@ -60,8 +61,14 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('calculator')->group(function (){
-        Route::get('', [CalculatorController::class, 'calculator'])->name('calculator.index');
+        Route::get('', [CalculatorController::class, 'index'])->name('calculator.index');
+        Route::get('/reset', [CalculatorController::class, 'reset'])->name('calculator.reset');
         Route::put('/save', [CalculatorController::class, 'updateEvents'])->name('calculator.update');
+    });
+
+    Route::prefix('calendar')->group(function (){
+        Route::get('', [CalendarController::class, 'index'])->name('calendar.index');
+        Route::put('/update', [CalendarController::class, 'update'])->name('calendar.update');
     });
 });
 

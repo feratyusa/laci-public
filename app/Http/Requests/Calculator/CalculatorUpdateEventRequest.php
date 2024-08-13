@@ -22,22 +22,38 @@ class CalculatorUpdateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'events.*.id' => [
+            'public.*.id' => [
                 'required'
             ],
-            'events.*.participant_number' => [
+            'public.*.participant_number' => [
                 'required',
                 'numeric',
                 'integer'
             ],
-            'events.*.training_price' => [
+            'public.*.training_price' => [
                 'required',
                 'numeric',
             ],
-            'events.*.accomodation_price' => [
+            'public.*.accomodation_price' => [
                 'required',
                 'numeric',
-            ]
+            ],
+            'inHouse.*.id' => [
+                'required'
+            ],
+            'inHouse.*.participant_number' => [
+                'required',
+                'numeric',
+                'integer'
+            ],
+            'inHouse.*.training_price' => [
+                'required',
+                'numeric',
+            ],
+            'inHouse.*.accomodation_price' => [
+                'required',
+                'numeric',
+            ],
         ];
     }
 }

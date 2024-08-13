@@ -1,194 +1,96 @@
 import HeaderTitle from "@/Components/HeaderTitle";
-import InputError from "@/Components/Form/InputError";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@inertiajs/react";
 import { Button, Card, CardBody, IconButton, Tooltip, Typography } from "@material-tailwind/react";
-import { useState } from "react";
-import CurrencyInput from "react-currency-input-field";
+import CalculatorTable from "./Partials/CalculatorTable";
+import InputDate from "@/Components/Form/InputDate";
+import InputLabel from "@/Components/Form/InputLabel";
 
-export default function Index({auth, events, prices, totalPrice=0, totalParticipant=0}){
-    const [dirty, setDirty] = useState(false)
-    const {data, setData, put, processing, errors} = useForm({
-        events: [...prices],
+export default function Index({
+    auth, 
+    calc_start_date='',
+    calc_end_date='',
+    publics=[],
+    totalPricePublic=0,
+    totalPartcPublic=0,
+    inHouses=[],
+    totalPriceInHouse=0,
+    totalPartcInHouse=0,
+}){
+    const {data, setData, get, processing} = useForm({
+        calc_start_date: calc_start_date ?? '',
+        calc_end_date: calc_end_date ?? '',
     })
-
-    const [sumPrices, setSumPrice] = useState(totalPrice)
-    const [sumParticipants, setSumParticipants] = useState(totalParticipant)
-
-    const headerClassName = "table-cell p-2 border-b-2 border-r-2 border-gray-500 font-bold bg-red-500 text-white first:rounded-tl-lg last:rounded-tr-lg"
-    const cellClassName = "table-cell p-2 border-b-2 border-r-2 border-gray-500 first:border-l-2"
-
-    function handleSubmit(e){
-        e.preventDefault()
-        put(route('calculator.update'))
-    }
-
-    function handlePriceChange(value, index, type){
-        const newData = data.events
-        if(type === 'training'){
-            newData[index] = {...newData[index], training_price: value, total: newData[index]['participant_number'] * (value + newData[index]['accomodation_price']), dirty: true}
-        }
-        else if(type === 'accomodation'){
-            newData[index] = {...newData[index], accomodation_price: value, total: newData[index]['participant_number'] * (value + newData[index]['training_price']), dirty: true}
-        }
-        handleSumPricesChange(newData)
-        setData('events', newData)
-        setDirty(true)
-    }
-
-    function handleNumberChange(value, index){
-        const newData = data.events
-        newData[index] = {...newData[index], participant_number: value, total: (newData[index]['accomodation_price'] + newData[index]['training_price']) * value, dirty: true}
-        handleSumPricesChange([...newData])
-        handleSumParticipantsChange([...newData])
-        setData('events', newData)
-        setDirty(true)
-    }
     
-    function handleSumPricesChange(data){
-        setSumPrice(data.reduce((d, {total})=> d + total, 0))
-    }
-
-    function handleSumParticipantsChange(data){
-        setSumParticipants(data.reduce((d, {participant_number})=> d + Number(participant_number), 0))
-    }
-
-    function handleCancel(){
-        const oldPrice = [...prices]
-        handleSumPricesChange(oldPrice)
-        handleSumParticipantsChange(oldPrice)
-        setData('events', oldPrice)
-        setDirty(false)
-    }
-
     return(
         <Authenticated
             user={auth.user}
             header={<HeaderTitle title={"Calculator Event"} />}
         >
+            <div className="p-5 mx-5 mb-5 bg-white rounded-b-lg">
+                <div className="text-center mb-5">
+                    <p className="uppercase font-bold">Tanggal Mulai Event</p>
+                </div>
+                <div className="flex gap-5 items-center">
+                    <div className="flex w-full items-center">
+                        <div className="mr-5">
+                            <InputLabel value={"Dari"} htmlFor="calc_start_date"/>
+                        </div>
+                        <InputDate 
+                            id="calc_start_date"
+                            name="calc_start_date"
+                            value={data.calc_start_date}
+                            onChange={(e) => setData('calc_start_date', e.target.value)}
+                        />
+                    </div>
+                    <div className="flex w-full items-center">
+                        <div className="mr-5">
+                            <InputLabel value={"Sampai"} htmlFor="calc_end_date"/>
+                        </div>
+                        <InputDate 
+                            id="calc_end_date"
+                            name="calc_end_date"
+                            value={data.calc_end_date}
+                            onChange={(e) => setData('calc_end_date', e.target.value)}
+                        />
+                    </div>
+                    <div className="flex w-fit h-fit gap-2">
+                        <Button color="blue" onClick={() => get(route('calculator.index'))}>
+                            Cari
+                        </Button>
+                        <Button color="amber" onClick={() => get(route('calculator.reset'))}>
+                            Reset
+                        </Button>
+                    </div>
+                </div>
+            </div>            
             <div className="p-5">
-                <Card className="max-h-screen overflow-auto">
-                    <CardBody>
-                        <div className="table w-full">
-                            <div className="table-header-group">
-                                <div className="table-row">
-                                    <div className={headerClassName}>NO</div>
-                                    <div className={headerClassName}>EVENT</div>
-                                    <div className={headerClassName}>PARTISIPAN</div>
-                                    <div className={headerClassName}>BIAYA PENDIDIKAN</div>
-                                    <div className={headerClassName}>BIAYA PELATIHAN</div>
-                                    <div className={headerClassName}>TOTAL</div>
-                                </div>
-                            </div>
-                            <div className="table-row-group">
-                                {
-                                    events.map((event, index) => (
-                                        <div className="table-row" key={index}>
-                                            <div className={cellClassName + " w-12"}>
-                                                {index+1}
-                                            </div>
-                                            <input type="text" value={data.events[index].id} hidden/>
-                                            <div className={cellClassName }>
-                                                <div className="flex justify-between items-centere">
-                                                    {event.name}
-                                                    <div hidden={!data.events[index].dirty}>
-                                                        <Tooltip content="This event value has recently been changed">
-                                                            <ExclamationCircleIcon className="w-5 text-red-900" hid/>
-                                                        </Tooltip>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={cellClassName + " w-32"}>
-                                                <Tooltip content={"Semula: " + prices[index].participant_number}>
-                                                    <input
-                                                        className="w-full rounded-md" 
-                                                        name="participant-number"
-                                                        value={data.events[index].participant_number}
-                                                        onChange={(e) => handleNumberChange(e.target.value, index)}
-                                                    />
-                                                </Tooltip>
-
-                                                <InputError message={errors['events.'+index+".participant_number"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                                            </div>
-                                            <div className={cellClassName + " w-60"}>
-                                                <Tooltip content={"Semula: Rp " + Number(prices[index].training_price).toLocaleString()}>
-                                                    <CurrencyInput 
-                                                        key={index}
-                                                        id="price-per-person"
-                                                        name="price-per-person"
-                                                        value={Number(data.events[index]?.training_price)}
-                                                        autoComplete="price-per-person"
-                                                        prefix="Rp "
-                                                        className="w-full rounded-md"
-                                                        onValueChange={(value) => handlePriceChange(value, index, 'training')}                  
-                                                    />
-                                                </Tooltip>
-
-                                                <InputError message={errors['events.'+index+".price_per_person"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                                            </div>
-                                            <div className={cellClassName + " w-60"}>
-                                                <Tooltip content={"Semula: Rp " + Number(prices[index].accomodation_price).toLocaleString()}>
-                                                    <CurrencyInput 
-                                                        key={index}
-                                                        id="price-per-person"
-                                                        name="price-per-person"
-                                                        value={Number(data.events[index]?.accomodation_price)}
-                                                        autoComplete="price-per-person"
-                                                        prefix="Rp "
-                                                        className="w-full rounded-md"
-                                                        onValueChange={(value) => handlePriceChange(value, index, 'accomodation')}                  
-                                                    />
-                                                </Tooltip>
-
-                                                <InputError message={errors['events.'+index+".price_per_person"]} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                                            </div>
-                                            <div className={cellClassName + " font-bold"}>
-                                                {"Rp " + Number(Number(data.events[index].participant_number) * (Number(data.events[index].training_price) + Number(data.events[index].accomodation_price))).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    ))
-                                }
-                            </div>
+                {
+                    publics?.length != 0 && inHouses?.length != 0 ? 
+                    <CalculatorTable 
+                        publics={publics}
+                        inHouses={inHouses}
+                        totalPricePublic={totalPricePublic}
+                        totalPriceInHouse={totalPriceInHouse}
+                        totalPartcPublic={totalPartcPublic}
+                        totalPartcInHouse={totalPartcInHouse}
+                    />
+                    :
+                    publics?.length == 0 && inHouses?.length == 0 ?
+                    <div className="flex justify-center">
+                        <div className="w-fit bg-amber-900 py-3 px-5 rounded-lg shadow-lg shadow-amber-900/50">
+                            <p className="uppercase font-bold text-white tracking-widest">Event Kosong!</p>
                         </div>
-                        <div className="flex justify-center items-center gap-5 my-5">
-                            <Tooltip content="Simpan Perubahan">
-                                <Button color="green" onClick={handleSubmit} hidden={!dirty}>
-                                    Simpan
-                                </Button>   
-                            </Tooltip>
-                            <Tooltip content="Kembalikan ke Nilai Semula">
-                                <Button color="yellow" onClick={handleCancel} hidden={!dirty}>
-                                    Reset
-                                </Button>   
-                            </Tooltip>
+                    </div>
+                    :
+                    <div className="flex justify-center">
+                        <div className="w-fit bg-amber-900 py-3 px-5 rounded-lg shadow-lg shadow-amber-900/50">
+                            <p className="uppercase font-bold text-white">Pilih rentang tanggal mulai event terlebih dahulu!</p>
                         </div>
-                        <div className="flex gap-5 items-center justify-center">
-                            <div className="flex border-2 border-gray-500 items-center">
-                                <div className="bg-red-500 p-2 text-white">
-                                    <Typography variant="h4">Total Harga</Typography>
-                                </div>
-                                <div className="bg-red-100 p-2">
-                                    <Typography variant="h4" color="black">
-                                        {"Rp "+ Number(sumPrices).toLocaleString()}
-                                    </Typography>
-                                </div>
-                            </div>
-                            <div className="flex border-2 border-gray-500 items-center">
-                                <div className="bg-red-500 p-2 text-white">
-                                    <Typography variant="h4">Total Peserta</Typography>
-                                </div>
-                                <div className="bg-red-100 p-2">
-                                    <Typography variant="h4" color="black">
-                                        {Number(sumParticipants).toLocaleString()}
-                                    </Typography>
-                                </div>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
+                    </div>
+                }
             </div>
-
+            
         </Authenticated>
     )
 }

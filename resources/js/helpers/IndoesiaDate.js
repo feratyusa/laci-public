@@ -10,4 +10,10 @@ function changeToIndonesiaDateTime(timestamp=0, dateOnly=false){
     else return new Date(timestamp).toLocaleTimeString('id', dateOptions)
 }
 
-export default changeToIndonesiaDateTime
+function changeToInputDate(timestamp=0){
+    const date = new Date(timestamp)
+
+    return(`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
+}
+
+export {changeToIndonesiaDateTime, changeToInputDate}

@@ -67,7 +67,7 @@ export default function Authenticated({ user, header, children }) {
             {name: 'Dashboard', link: 'dashboard', icon: <HomeIcon className="h-5 w-5"/>},
             {name: 'Usulan', link: 'proposal.index', icon: <LightBulbIcon className="h-5 w-5"/>},
             {name: 'Event', link: 'event.index', icon: <AcademicCapIcon className="h-5 w-5"/>},
-            {name: 'Kalender', link: 'dashboard', icon: <CalendarDaysIcon className="h-5 w-5"/>},
+            {name: 'Kalender', link: 'calendar.index', icon: <CalendarDaysIcon className="h-5 w-5"/>},
             {name: 'Kalkulator', link: 'calculator.index', icon: <CalculatorIcon className="h-5 w-5"/>},
             {name: 'Tutorial', link: 'dashboard', icon: <BookOpenIcon className="h-5 w-5"/>},
         ],
@@ -82,7 +82,7 @@ export default function Authenticated({ user, header, children }) {
     })
     
     return (
-        <div className="flex min-h-screen w-screen bg-gray-100 overflow-auto">
+        <div className="flex w-screen min-h-screen bg-gray-100 overflow-auto">
             <Card className={sidebarClassName}>
                 <div className="mb-2 flex justify-between gap-4 p-4">
                     <div className='flex items-start'>
@@ -132,7 +132,7 @@ export default function Authenticated({ user, header, children }) {
                     </Link>
                 </List>
             </Card>
-            <div className="flex-auto">
+            <div className={sidebar ? "w-[calc(100vw-20rem)]" : "w-screen"}>
                 {header && (
                     <div className='bg-red-900'>
                         <div className='flex flex-row gap-5 items-center h-16 pl-3 pt-3 pb-3 pr-10'>

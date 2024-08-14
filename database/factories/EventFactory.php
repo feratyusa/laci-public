@@ -16,10 +16,11 @@ class EventFactory extends Factory
      */
     public function definition(): array
     {
+        $start_date = fake()->dateTimeBetween('-2 months', '-2 days');
         return [
             'name' => fake()->name(),
-            'start_date' => fake()->date(),
-            'end_date' => fake()->date(),
+            'start_date' => $start_date->format('Y-m-d'),
+            'end_date' => fake()->dateTimeBetween($start_date, 'now'),
             'participant_number_type' => fake()->randomElement([ParticipantNumberType::FIXED, ParticipantNumberType::DYNAMIC]),
             'participant_number' => fake()->numberBetween(0, 100),
         ];

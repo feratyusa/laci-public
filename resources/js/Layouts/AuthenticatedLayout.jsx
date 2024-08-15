@@ -132,7 +132,7 @@ export default function Authenticated({ user, header, children }) {
                     </Link>
                 </List>
             </Card>
-            <div className={sidebar ? "w-[calc(100vw-20rem)]" : "w-screen"}>
+            <div className={(sidebar ? "w-[calc(100vw-20rem)]" : "w-screen") + " mb-16"}>
                 {header && (
                     <div className='bg-red-900'>
                         <div className='flex flex-row gap-5 items-center h-16 pl-3 pt-3 pb-3 pr-10'>

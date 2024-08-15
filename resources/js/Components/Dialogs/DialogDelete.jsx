@@ -15,7 +15,9 @@ export default function DialogDelete({content, title, message, route, buttonSize
         setOpen(false)
     }
     function handleDelete(){
-        destroy(route)
+        destroy(route, {
+            onSuccess: handleClose()
+        })
     }
 
     return(

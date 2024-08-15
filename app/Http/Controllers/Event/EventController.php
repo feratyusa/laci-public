@@ -135,7 +135,7 @@ class EventController extends Controller
 
         $event->deleteOrFail();
 
-        return redirect()->route('event.index')
-            ->with([]);
+        return back()
+            ->with(['message' => 'Event berhasil dihapus!']);
     }
 }

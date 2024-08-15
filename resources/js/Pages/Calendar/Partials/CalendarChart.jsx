@@ -1,6 +1,7 @@
 import Colors from '@/Base/Colors';
+import DialogDelete from '@/Components/Dialogs/DialogDelete';
 import InputDate from '@/Components/Form/InputDate';
-import { changeToInputDate } from '@/helpers/IndoesiaDate';
+import { changeToIndonesiaDateTime, changeToInputDate } from '@/helpers/IndoesiaDate';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { useForm } from '@inertiajs/react';
 import { Button, IconButton } from '@material-tailwind/react';
@@ -11,8 +12,10 @@ import { useEffect, useState } from 'react';
 function ToolTipCustom({task}, event){
     return(
         <div className="bg-white p-3 shadow-lg rounded-md">
-            <p>{task.name}</p>
-            <p>{event?.proposal.event_category}</p>
+            <p><span className='font-bold'>Event: </span>{task.name}</p>
+            <p><span className='font-bold'>Kategori: </span>{event?.proposal.event_category}</p>
+            <p><span className='font-bold'>Mulai: </span>{changeToIndonesiaDateTime(task.start, true)}</p>
+            <p><span className='font-bold'>Selesai: </span>{changeToIndonesiaDateTime(task.end, true)}</p>
         </div>
     )
 }
@@ -20,10 +23,27 @@ function ToolTipCustom({task}, event){
 function EventHeaderSelected({onClose}){
     return(
         <div className='flex justify-between items-center my-5 px-2'>
-            <p className='uppercase tracking-widest'>Event</p>
-            <IconButton color='red' onClick={onClose}>
-                <XMarkIcon className='w-5'/>
-            </IconButton>
+            <div className='basis-3/4 flex justify-center'>
+                <p className='uppercase text-black tracking-widest'>Event</p>
+            </div>
+            <div className='basis-1/4 flex justify-center'>
+                <IconButton color='red' onClick={onClose} size='sm'>
+                    <XMarkIcon className='w-5'/>
+                </IconButton>
+            </div>
+        </div>
+    )
+}
+
+function EventTableOptions({event}){
+    return(
+        <div className='flex justify-center p-5'>
+            <DialogDelete 
+                content={'event'}
+                title={'Hapus Event'}
+                message={`Event (${event.id}) ${event.name} akan dihapus. Event yang dihapus tidak dapat dikembalikan. Yakin inging menghapus event?`}
+                route={route('event.destroy', [event.id])}
+            />
         </div>
     )
 }
@@ -41,6 +61,10 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
                 <tr>
                     <th className={attrClassName}>Nama</th>
                     <td className={valueClassName}>{event.name}</td>
+                </tr>
+                <tr>
+                    <th className={attrClassName}>Kursus</th>
+                    <td className={valueClassName}>{event.kursus}</td>
                 </tr>
                 <tr>
                     <th className={attrClassName}>Kategori</th>
@@ -76,7 +100,9 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
 }
 
 export default function CalendarChart({
-    events=[]
+    events=[],
+    start='',
+    end=''
 }){
     const [eventSelected, setEventSelected] = useState(false)
     const [isDirty, setIsDirty] = useState(false)
@@ -128,8 +154,8 @@ export default function CalendarChart({
         setIsDirty(false)
     }
 
-    function handleSubmit(){
-        // put(route())
+    function handleSave(){
+        put(route())
     }
     
     useEffect(() => {
@@ -144,21 +170,28 @@ export default function CalendarChart({
                 type: 'task',
                 progress: 0,
                 styles: { backgroundColor: `${Object.keys(Colors).at(index%43)}`, backgroundSelectedColor: `${Object.keys(Colors).at(index%43)}`},
+                kursus: `(${element.proposal.kursus.sandi}) ${element.proposal.kursus.lengkap}`,
                 event_category: element.proposal.event_category
             })
         });
         setDefaultTasks([...temps])
         setData('tasks', temps)
-    }, [])
+    }, [events])
 
     return(
             <>
+            <div className='flex justify-center mb-5'>
+                <div className='text-black'>
+                    <p className='uppercase tracking-wide font-bold'>Kalender Event {`(${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})`}</p>
+                </div>
+            </div>
             {
                 data.tasks.length != 0 ?
-                <div className='grid grid-cols-12 gap-4'>
+                <>
+                <div className='grid grid-cols-12 gap-5'>
                     {
                         eventSelected ?
-                        <div className={'col-span-4'}>
+                        <div className={'col-span-4 px-4 pb-4 rounded-lg shadow-lg'}>
                             <EventHeaderSelected onClose={() => handleOnClose()} />
                             <EventTableSelected 
                                 event={data.tasks.find(t => t.id == eventSelected)}
@@ -166,6 +199,7 @@ export default function CalendarChart({
                                 onStartChange={(e) => handleOnInputDateChange(e, 'start')}
                                 onEndChange={(e) => handleOnInputDateChange(e, 'end')}
                             />
+                            <EventTableOptions event={data.tasks.find(t => t.id == eventSelected)}/>
                         </div>
                         :
                         ""
@@ -183,22 +217,19 @@ export default function CalendarChart({
                             locale='id'
                         />
                     </div>
-                    <div>
-
-                    </div>
                 </div>
+                <div className='flex justify-center gap-5'>
+                    <Button hidden={!isDirty} onClick={() => handleReset()} color='red'>
+                        Reset
+                    </Button>
+                    <Button hidden={!isDirty} onClick={() => handleSubmit()} color='green'>
+                        Simpan
+                    </Button>
+                </div>
+                </>
                 :
                 ""
             }
-            <div>
-                <Button hidden={!isDirty} onClick={() => handleReset()}>
-                    Reset
-                </Button>
-                <Button>
-                    Simpan
-                </Button>
-            </div>
-
             </>
     )
 }

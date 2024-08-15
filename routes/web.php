@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('calendar')->group(function (){
         Route::get('', [CalendarController::class, 'index'])->name('calendar.index');
+        Route::get('/reset', [CalendarController::class, 'reset'])->name('calendar.reset');
         Route::put('/update', [CalendarController::class, 'update'])->name('calendar.update');
     });
 });

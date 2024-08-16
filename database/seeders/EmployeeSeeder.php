@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\EHC\Kursus;
+use App\Models\EHC\Employee;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class KursusSeeder extends Seeder
+class EmployeeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class KursusSeeder extends Seeder
     public function run(): void
     {
         if(env('EHC_ENV', 'sqlite') == 'sqlite'){
-            Kursus::factory()->count(100)->create();
+            Employee::factory()->count(1000)->create();
         }
         else{
             exit('FORBIDDEN to seed EHC Database');

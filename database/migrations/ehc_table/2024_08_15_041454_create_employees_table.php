@@ -1,6 +1,5 @@
 <?php
 
-use App\Enum\EventCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('KURSUS', function (Blueprint $table) {
-            $table->integer('sandi');
-            $table->string('lengkap');
-            $table->enum('kategori', array_column(EventCategory::cases(), 'value'));
+        Schema::connection('sqlite')->create('employees', function (Blueprint $table) {
+            $table->string('nip')->primary();
+            $table->string('nama');
+            $table->string('jabatan');
+            $table->string('cabang');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('KURSUS');
+        Schema::dropIfExists('employees');
     }
 };

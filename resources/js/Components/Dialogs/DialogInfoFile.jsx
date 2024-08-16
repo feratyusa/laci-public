@@ -1,4 +1,4 @@
-import changeToIndonesiaDateTime from "@/helpers/IndoesiaDate";
+import {changeToIndonesiaDateTime} from "@/helpers/IndoesiaDate";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { Button, IconButton, Tooltip } from "@material-tailwind/react";

@@ -4,6 +4,7 @@ use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
+use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
@@ -41,7 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::post('', [ProposalController::class, 'store'])->name('proposal.store');
         Route::post('/{id}', [ProposalController::class, 'changeStatus'])->name('proposal.status');
         Route::get('/{id}', [ProposalController::class, 'show'])->name('proposal.show');
-        Route::get('/edit/{id}', [ProposalController::class, 'edit'])->name('proposal.edit');
+        Route::get('/{id}/edit', [ProposalController::class, 'edit'])->name('proposal.edit');
         Route::put('/{id}', [ProposalController::class, 'update'])->name('proposal.update');
         Route::delete('/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
     });
@@ -53,11 +54,20 @@ Route::middleware('auth')->group(function () {
     Route::prefix('events')->group(function () {
         Route::get('', [EventController::class, 'index'])->name('event.index');
         Route::get('/create', [EventController::class, 'create'])->name('event.create');
-        Route::post('', [EventController::class, 'store'])->name('event.store');    
-        Route::get('/{id}', [EventController::class, 'show'])->name('event.show');
-        Route::get('/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
-        Route::put('/{id}', [EventController::class, 'update'])->name('event.update');
-        Route::delete('/{id}', [EventController::class, 'destroy'])->name('event.destroy');
+        Route::post('', [EventController::class, 'store'])->name('event.store');   
+        Route::prefix('{id}')->group(function (){
+            Route::get('', [EventController::class, 'show'])->name('event.show');
+            Route::get('/edit', [EventController::class, 'edit'])->name('event.edit');
+            Route::put('', [EventController::class, 'update'])->name('event.update');
+            Route::delete('', [EventController::class, 'destroy'])->name('event.destroy');
+            Route::prefix('participants')->group(function (){
+                Route::get('', [EventParticipantController::class, 'index'])->name('event.participant.index');
+                Route::post('', [EventParticipantController::class, 'store'])->name('event.participant.store');
+                Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
+                Route::delete('', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
+            });
+        }); 
+        
     });
 
     Route::prefix('calculator')->group(function (){

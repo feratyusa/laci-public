@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enum\EventCategory;
 use App\Enum\ProposalStatus;
+use App\Models\EHC\Kursus;
 use App\Models\Proposal\Proposal;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -20,9 +21,11 @@ class ProposalTest extends TestCase
     {
         $base = new BaseData();
 
+        $kursus = Kursus::first();
+
         $response = $this->actingAs($base->user)->post('/proposals', [
             'name' => 'Banking Simulation',
-            'kd_kursus' => '90876',
+            'kd_kursus' => (string)$kursus->sandi,
             'entry_date' => date("Y-m-d H:m:s"),
             'event_category' => EventCategory::PT->value,
             'status' => ProposalStatus::PENDING->value,
@@ -41,9 +44,11 @@ class ProposalTest extends TestCase
         $base = new BaseData();
         $base->createProposal();
 
+        $kursus = Kursus::first();
+
         $response = $this->actingAs($base->user)->put("/proposals/{$base->proposal->id}", [
             'name' => 'Banking Simulation',
-            'kd_kursus' => '9006021',
+            'kd_kursus' => (string)$kursus->sandi,
             'entry_date' => date("Y-m-d"),
             'event_category' => EventCategory::PT->value,
             'status' => ProposalStatus::PENDING->value,
@@ -54,7 +59,7 @@ class ProposalTest extends TestCase
         $this->assertDatabaseHas('proposals', ['id' => $base->proposal->id])
             ->assertDatabaseHas('proposals', [
                 'name' => 'Banking Simulation',
-                'kd_kursus' => '9006021',
+                'kd_kursus' => (string)$kursus->sandi,
                 'entry_date' => date("Y-m-d"),
                 'event_category' => EventCategory::PT->value,
                 'status' => ProposalStatus::PENDING->value,

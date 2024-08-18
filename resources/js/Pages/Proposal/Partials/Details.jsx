@@ -57,13 +57,6 @@ export default function ProposalDetails({proposal, color, categories}){
                     </div>
                     <div className={"table-cell border-b-2 py-4 pl-10 bg-gray-50"}>
                         <div className="flex flex-row gap-5">
-                            <DialogAddFile 
-                                content={"proposal"} 
-                                content_id={proposal.id} 
-                                content_name={proposal.name} 
-                                categories={categories} 
-                                route={route('file.store')}
-                            />
                             <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="yellow" variant="filled">
                                 <Cog8ToothIcon className="w-5"/>
                             </OptionButton>

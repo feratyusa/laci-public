@@ -19,7 +19,7 @@ export default function TableProposal({proposals}){
     ];
 
     return(
-        <div className="table w-full mt-2">
+        <div className="table w-full mt-2 text-xs">
             <div className="table-header-group bg-red-600 text-center">
                 <div className="table-row">
                     {

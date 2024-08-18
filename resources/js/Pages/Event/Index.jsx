@@ -27,7 +27,7 @@ export default function Index({
 
                 <Card>
                     <CardBody className="overflow-scroll px-0">
-                        <div className="flex justify-between mx-5 mt-5 mb-5">
+                        <div className="flex justify-between mx-5 mb-5">
                             <div className="w-max">
                                 <Link href={route('event.create')}>
                                     <Button className="flex items-center gap-3" color="green" variant="filled">

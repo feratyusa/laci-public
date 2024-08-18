@@ -30,24 +30,20 @@ export default function Index({ auth, status, code, proposals, kursus, paginator
                 <BreadcrumbMod menu="proposals" />
                 <Card className="h-max mt-5">
                     <CardBody className="overflow-scroll px-0">
-                        <div className="flex flex-col justify-between m-5 gap-5">
-                            <div className="w-max">
-                                <Link href={route('proposal.create')}>
-                                    <Button className="flex items-center gap-3" color="green" variant="filled">
-                                        <PlusIcon className="h-4 w-4"/>
-                                        Usulan
-                                    </Button>                            
-                                </Link>
-                            </div>
-                            <Filters kursus={kursus} categories={eventCategories    }/>
+                        <div className="w-max px-5 mb-5">
+                            <Link href={route('proposal.create')}>
+                                <Button className="flex items-center gap-3" color="green" variant="filled">
+                                    <PlusIcon className="h-4 w-4"/>
+                                    Usulan
+                                </Button>                            
+                            </Link>
                         </div>
+                        <Filters kursus={kursus} categories={eventCategories}/>
                         {status && 
                             <Alert color={code===0 ? "red" : code===1 ? 'green' : 'amber'}>
                                 {status}
                             </Alert>}
-
                         <TableProposal proposals={proposals}/>
-                        
                     </CardBody>
                     <CardFooter className="flex justify-center">
                         {

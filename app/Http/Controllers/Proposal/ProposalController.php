@@ -29,7 +29,7 @@ class ProposalController extends Controller
         return Inertia::render('Proposal/Index', [
             'proposals' => $paginator->items(),
             'paginator' => $paginator,
-            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),        
+            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap'),        
             'code' => session('code'),
             'status' => session('status'),
         ]);        
@@ -41,7 +41,7 @@ class ProposalController extends Controller
     public function create()
     {
         return Inertia::render('Proposal/Create', [
-            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap', true, ['kategori']),
+            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', true, ['kategori']),
         ]);
     }
 
@@ -66,7 +66,7 @@ class ProposalController extends Controller
 
         return Inertia::render("Proposal/Show", [
             'proposal' => $proposal,
-            'categories' => $this->selectOptions(new Category(), 'id', 'name', false),
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),
             'files' => $proposal->files()->get(),
             'code' => session('code'),
             'status' => session('status'),
@@ -80,7 +80,7 @@ class ProposalController extends Controller
     {        
         return Inertia::render('Proposal/Edit', [
             'proposal' => Proposal::find($id),
-            'kursus' => $this->selectOptions(new Kursus(), 'sandi', 'lengkap'),
+            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap'),
         ]);
     }
 

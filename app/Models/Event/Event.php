@@ -41,7 +41,7 @@ class Event extends Model
      *
      * @var array
      */
-    protected $with = ['proposal', 'files', 'prices'];
+    protected $with = ['proposal', 'files', 'prices', 'participants'];
 
     /**
      * Relationships

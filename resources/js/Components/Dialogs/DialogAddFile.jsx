@@ -13,7 +13,8 @@ export default function DialogAddFile({
     content='', 
     content_name='', 
     content_id='', 
-    categories=null, 
+    categories=null,
+    as="button", 
     route
 }){
     const [open, setOpen] = useState(false)
@@ -45,11 +46,21 @@ export default function DialogAddFile({
 
     return(
         <>
-            <Tooltip content="Tambah File">
-                <IconButton onClick={handleOpen} color="blue">
-                    <DocumentPlusIcon className="h-5 w-5"/>
-                </IconButton>
-            </Tooltip>
+            {
+                as === "button" ? 
+                <Tooltip content="Tambah File">
+                    <IconButton onClick={handleOpen} color="blue">
+                        <DocumentPlusIcon className="h-5 w-5"/>
+                    </IconButton>
+                </Tooltip>
+                :
+                <Tooltip content="Tambah File">
+                    <Button className="flex items-center gap-3" color="blue">
+                        <DocumentPlusIcon className="h-5 w-5"/>
+                        File
+                    </Button>
+                </Tooltip>
+            }
             <Dialog open={open} as="div" className="z-10 focus:outline-none max-h-screen" onClose={handleClose}>
                 {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/5" />

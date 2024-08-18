@@ -8,8 +8,10 @@ use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
 use App\Http\Requests\NumberTypeRequest;
+use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
+use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
@@ -32,7 +34,7 @@ class EventController extends Controller
         return Inertia::render("Event/Index", [
             "events" => $paginator->items(),
             'paginator' => $paginator,
-            "kursus" => $this->selectOptions(new Kursus(), 'sandi', 'lengkap', true),
+            "kursus" => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', true),
         ]);
     }
 
@@ -42,7 +44,7 @@ class EventController extends Controller
     public function create()
     {
         return Inertia::render('Event/Create', [
-            'proposals' => $this->selectOptions(new Proposal(), 'id', 'name', true, ['kursus', 'event_category']),
+            'proposals' => $this->selectOptions(Proposal::all()->toArray(), 'id', 'name', true, ['kursus', 'event_category']),
             'proposal_id' => session('proposal_id') ? intval(session('proposal_id')) : null,
             'status' => session('status'),
         ]);
@@ -70,13 +72,16 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
+        $event_participants = EventParticipant::where('event_id', $event->id)->pluck('nip')->toArray();
+
         $files = $event->files()->get();        
 
         return Inertia::render('Event/Show', [
             'event' => $event,
             'files' => $files,
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
-            'categories' => $this->selectOptions(new Category(), 'id', 'name'),
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name'),
+            'participants' => $this->selectOptions(Employee::whereNotIn('nip', $event_participants)->get()->toArray(), 'nip', 'nama')
         ]);
     }
 
@@ -90,7 +95,7 @@ class EventController extends Controller
         return Inertia::render('Event/Edit', [
             'event' => $event,
             'proposal_id' => $event->proposal->id,
-            'proposals' => $this->selectOptions(new Proposal(), 'id', 'name', true, ['kursus', 'event_category']),
+            'proposals' => $this->selectOptions(Proposal::all()->toArray(), 'id', 'name', true, ['kursus', 'event_category']),
         ]);
     }
 

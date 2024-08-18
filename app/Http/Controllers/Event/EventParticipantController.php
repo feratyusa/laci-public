@@ -70,7 +70,7 @@ class EventParticipantController extends Controller
             }
         }
 
-        return redirect()->route('event.participant.index', ['id' => $event->id]);
+        return redirect()->route('event.show', ['id' => $event->id]);
     }
 
     /**
@@ -122,7 +122,7 @@ class EventParticipantController extends Controller
             }
         }
         
-        return redirect()->route('event.participant.index', ['id' => $event->id]);
+        return redirect()->route('event.show', ['id' => $event->id]);
     }
 
     public function destroy(ParticipantFormRequest $request, string $id)

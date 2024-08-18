@@ -14,11 +14,21 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        $nama = ['Pelatihan RPK', 'Sales Management Development', 'Manajemen Risiko Perbankan'];
-        for ($i=0; $i < 3; $i++) { 
-            Event::factory()->has(EventPrices::factory(), 'prices')->count($i+2)->create([
+        $nama = [
+            'Pelatihan RPK Batch 1',
+            'Sales Management Development Batch 1', 
+            'Manajemen Risiko Perbankan Batch 1',
+            'Pelatihan RPK Batch 2',
+            'Sales Management Development Batch 2', 
+            'Manajemen Risiko Perbankan Batch 2',
+            'Pelatihan RPK Batch 3', 
+            'Sales Management Development Batch 3', 
+            'Manajemen Risiko Perbankan Batch 3',
+        ];
+        for ($i=0; $i < 9; $i++) { 
+            Event::factory()->create([
                 'name' => $nama[$i],
-                'proposal_id' => $i+1
+                'proposal_id' => ($i%3)+1
             ]);
         }
     }

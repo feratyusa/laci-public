@@ -8,13 +8,11 @@ import { useState } from "react";
 
 function TableRow({name, value=null, color="red", option=null, link=null}){    
     return(
-        <div className="table-row">
-            <div className={"table-cell border-b-2 py-4 w-60"}>
-                <Typography variant="h6">
-                    {name}
-                </Typography>
-            </div>
-            <div className={"table-cell border-b-2 py-4 pl-10 bg-gray-50"}>
+        <tr className="">
+            <td className={"border-b-2 py-3 max-w-60"}>
+                <p className="font-bold">{name}</p>
+            </td>
+            <td className={"border-b-2 pl-5 bg-gray-50"}>
                 {
                     option == "chip" ?
                     <Chip 
@@ -23,16 +21,12 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
                         value={value}
                     /> : option == "link" ?
                     <Link href={link} className="underline hover:text-red-900 hover:underline">
-                        <Typography color="blue" variant="h6" className="hover:text-red-900">
-                            {"["+value.id+"] "+value.name+" ("+value.entry_date+")"}
-                        </Typography>        
+                        <p className="text-blue-500 hover:text-red-500">{"["+value.id+"] "+value.name+" ("+value.entry_date+")"}</p>      
                     </Link> :
-                    <Typography variant="h6">
-                        {value}
-                    </Typography>
+                    <p className="">{value}</p>
                 }
-            </div>
-        </div>
+            </td>
+        </tr>
     )
 }
 
@@ -46,8 +40,8 @@ export default function EventDetails({event, categories, proposalRoute}){
     }
 
     return(
-        <div className="table w-full p-2 mb-5">
-            <div className="table-row-group">
+        <table className="table-auto w-full p-2 mb-5">
+            <tbody className="">
                 <TableRow name={"ID Event"} value={event.id} />
                 <TableRow name={"Nama Event"} value={event.name} />
                 <TableRow name={"Proposal"} option={'link'} link={proposalRoute} value={event.proposal} />
@@ -62,20 +56,13 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)}/>
                 <div className="table-row">
-                    <div className={"table-cell border-b-2 py-4 w-60"}>
+                    <div className={"table-cell border-b-2 py-4"}>
                         <Typography variant="h6">
                             Options
                         </Typography>
                     </div>
                     <div className={"table-cell border-b-2 py-4 pl-10 bg-gray-50"}>
                         <div className="flex flex-row gap-5">
-                            <DialogAddFile 
-                                content={"event"} 
-                                content_id={event.id} 
-                                content_name={event.name} 
-                                categories={categories} 
-                                route={route('file.store')}
-                            />
                             <OptionButton tip="Edit Proposal" link={route('event.edit', [event.id])} color="yellow" variant="filled">
                                 <Cog8ToothIcon className="w-5"/>
                             </OptionButton>
@@ -89,7 +76,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </tbody>
+        </table>
     )
 }

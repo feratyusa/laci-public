@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 trait InputHelpers
 {
-    public function selectOptions(Model $model, string $id, string $name, bool $enableIdOnLabel=true, array $additional=[])
-    {
-        $options = $model->all();
+    public function selectOptions(Array $options, string $id, string $name, bool $enableIdOnLabel=true, array $additional=[])
+    {        
         $selectOptions = [];
         foreach ($options as $option) {            
             if($enableIdOnLabel){

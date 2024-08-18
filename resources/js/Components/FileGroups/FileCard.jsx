@@ -1,7 +1,10 @@
-import { DocumentIcon } from "@heroicons/react/24/outline";
+import { ArrowDownOnSquareIcon, ArrowDownOnSquareStackIcon, DocumentIcon } from "@heroicons/react/24/outline";
 import DialogDelete from "../Dialogs/DialogDelete";
 import { filesize } from "filesize";
 import DialogInfoFile from "../Dialogs/DialogInfoFile";
+import { ArrowDownIcon } from "@heroicons/react/24/solid";
+import { Link } from "@inertiajs/react";
+import { IconButton } from "@material-tailwind/react";
 
 const mimeTypeColor = (mime_type) => {
     if(mime_type === 'pdf') return "red"
@@ -15,7 +18,7 @@ export default function FileCard({file, ...props}){
             <div className="col-span-1 w-6">
                 <DocumentIcon className="w-full" color={mimeTypeColor(file.mime_type)}/>
             </div>
-            <div className="col-span-5 grid grid-rows-2 gap-2 items-center w-full text-xs">     
+            <div className="col-span-4 grid grid-rows-2 gap-2 items-center w-full text-xs">     
                 <div className="w-full truncate">
                     <p className="font-bold uppercase truncate">{file.name}</p>
                 </div>
@@ -33,7 +36,7 @@ export default function FileCard({file, ...props}){
                     <p className="font-bold text-white">{file.category.name}</p>
                 </div>
             </div>
-            <div className="col-span-2 grid grid-cols-2 items-center">
+            <div className="col-span-3 grid grid-cols-3 items-center">
                 <div className="w-full max-w-52">
                     <DialogDelete
                         content={'file'}
@@ -45,6 +48,13 @@ export default function FileCard({file, ...props}){
                 </div>
                 <div className="w-full ">
                     <DialogInfoFile file={file}/>
+                </div>
+                <div className="w-full">
+                    <a href={route('file.download', [file.id])}>
+                        <IconButton variant="text">
+                            <ArrowDownOnSquareIcon className="w-5"/>
+                        </IconButton>
+                    </a>
                 </div>
             </div>
         </div>

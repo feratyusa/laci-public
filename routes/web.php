@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('files')->group(function () {
         Route::post('', [FileController::class, 'store'])->name('file.store');
+        Route::get('/{id}', [FileController::class, 'download'])->name('file.download');
     });
     
     Route::prefix('events')->group(function () {

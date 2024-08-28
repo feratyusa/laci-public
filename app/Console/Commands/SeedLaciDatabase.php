@@ -31,7 +31,5 @@ class SeedLaciDatabase extends Command
         $this->call('db:wipe');
         $this->call('migrate');
         $this->call('db:seed');
-        $this->call('db:seed', ['--class' => 'CategorySeeder'] );
-        $this->call('db:seed', ['--class' => 'MandatoryFileCategorySeeder']);
     }
 }

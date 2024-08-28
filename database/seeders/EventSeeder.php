@@ -26,9 +26,12 @@ class EventSeeder extends Seeder
             'Manajemen Risiko Perbankan Batch 3',
         ];
         for ($i=0; $i < 9; $i++) { 
-            Event::factory()->create([
+            $event = Event::factory()->create([
                 'name' => $nama[$i],
                 'proposal_id' => ($i%3)+1
+            ]);
+            EventPrices::factory()->create([
+                'event_id' => $event->id
             ]);
         }
     }

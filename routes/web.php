@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\Master\CategoryController;
+use App\Http\Controllers\Master\MandatoryCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
 use Illuminate\Foundation\Application;
@@ -50,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('files')->group(function () {
         Route::post('', [FileController::class, 'store'])->name('file.store');
         Route::get('/{id}', [FileController::class, 'download'])->name('file.download');
+        Route::delete('/{id}', [FileController::class, 'destroy'])->name('file.destroy');
     });
     
     Route::prefix('events')->group(function () {
@@ -81,6 +84,25 @@ Route::middleware('auth')->group(function () {
         Route::get('', [CalendarController::class, 'index'])->name('calendar.index');
         Route::get('/reset', [CalendarController::class, 'reset'])->name('calendar.reset');
         Route::put('/update', [CalendarController::class, 'update'])->name('calendar.update');
+    });
+
+    Route::prefix('master')->group(function(){
+   
+        Route::prefix('category')->group(function(){
+            Route::get('', [CategoryController::class, 'index'])->name('category.index');
+            Route::post('', [CategoryController::class, 'store'])->name('category.store');
+            Route::put('/{id}', [CategoryController::class, 'update'])->name('category.update');
+            Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+        });
+
+        Route::prefix('mandatory-category')->group(function(){
+            Route::get('', [MandatoryCategoryController::class, 'index'])->name('mandatory-category.index');
+            Route::post('', [MandatoryCategoryController::class, 'store'])->name('mandatory-category.store');
+            Route::get('/{mandatory_type}', [MandatoryCategoryController::class, 'show'])->name('mandatory-category.show');
+            Route::put('/{mandatory_type}', [MandatoryCategoryController::class, 'update'])->name('mandatory-category.update');
+            Route::delete('/{id}', [MandatoryCategoryController::class, 'destroy'])->name('mandatory-category.destroy');
+        });
+
     });
 });
 

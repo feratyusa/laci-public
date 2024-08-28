@@ -14,7 +14,7 @@ class MandatoryFileCategory extends Model
 
     protected $fillable = [
         'category_id',
-        'event_category'
+        'mandatory_type'
     ];
 
     protected $with = ['category'];

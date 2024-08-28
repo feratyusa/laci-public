@@ -1,6 +1,7 @@
 <?php
 
 use App\Enum\EventCategory;
+use App\Enum\MandatoryCategoryLink;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('mandatory_file_category', function (Blueprint $table) {
             $table->id();
-            $table->enum('event_category', array_column(EventCategory::cases(), 'value'));
+            $table->enum('mandatory_type', array_column(MandatoryCategoryLink::cases(), 'value'));
             $table->string('category_id');
             $table->timestamps();
             
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate();
         });
     }
 

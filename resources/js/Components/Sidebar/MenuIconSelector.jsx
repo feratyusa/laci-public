@@ -1,14 +1,29 @@
-import { AcademicCapIcon, ArrowLeftStartOnRectangleIcon, BookOpenIcon, CalculatorIcon, CalendarDaysIcon, Cog8ToothIcon, HandThumbDownIcon, HomeIcon, LightBulbIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { 
+    AcademicCapIcon, 
+    ArrowLeftStartOnRectangleIcon, 
+    BookOpenIcon, 
+    CalculatorIcon, 
+    CalendarDaysIcon, 
+    Cog8ToothIcon, 
+    ComputerDesktopIcon, 
+    ExclamationCircleIcon, 
+    HandThumbDownIcon, 
+    HomeIcon, 
+    LightBulbIcon, 
+    TagIcon, 
+    UserCircleIcon, 
+    UserPlusIcon
+} from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
     return(
         name === 'home' ?
         <HomeIcon className="w-5"/>
         :
-        name === 'proposal' ?
+        name === 'proposals' ?
         <LightBulbIcon className="w-5"/>
         :
-        name === 'event' ?
+        name === 'events' ?
         <AcademicCapIcon className="w-5"/>
         :
         name === 'calendar' ?
@@ -28,6 +43,18 @@ export default function MenuIconSelector({name=''}){
         :
         name === 'logout' ?
         <ArrowLeftStartOnRectangleIcon className="w-5"/>
+        :
+        name === 'master' ?
+        <ComputerDesktopIcon className="w-5"/>
+        :
+        name === 'master/user' ?
+        <UserPlusIcon className="w-5"/>
+        :
+        name === 'master/categories' ? 
+        <TagIcon className="w-5"/>
+        :
+        name === 'master/mandatory-category' ?
+        <ExclamationCircleIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

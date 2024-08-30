@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\CategoryFormRequest;
 use App\Models\File\Category;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -14,7 +16,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        $categories = Category::orderByDesc('created_at')->orderBy('id')->get();
+                
+        return Inertia::render('Master/Category/Index',[
+            "categories" => Category::orderByDesc('created_at')->orderBy('id')->get(),
+            // "flash" => ['new_id' => session('new_id')]
+        ]);
     }
 
     /**
@@ -28,7 +35,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryFormRequest $request)
+    public function store(CategoryFormRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -36,9 +43,9 @@ class CategoryController extends Controller
 
         if($check->count() > 0) return redirect()->back()->withErrors(['id already exists']);
 
-        Category::create($validated);
+        $category = Category::create($validated);
 
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with(['success', "{$category->name} berhasil ditambahkan"]);
     }
 
     /**

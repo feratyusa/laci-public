@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Proposal\ProposalChangeStatusRequest;
 use App\Http\Requests\Proposal\ProposalFormRequest;
 use App\Models\EHC\Kursus;
+use App\Models\Event\Event;
 use App\Models\File\Category;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
@@ -62,7 +63,7 @@ class ProposalController extends Controller
      */
     public function show(string $id)
     {
-        $proposal = Proposal::findOrFail($id);
+        $proposal = Proposal::with('events')->findOrFail($id);
 
         return Inertia::render("Proposal/Show", [
             'proposal' => $proposal,

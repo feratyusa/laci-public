@@ -59,24 +59,24 @@ class EventFilterController extends FilterController
 
             if(count($queryEvent) && count($queryProposal))
             {
-                $paginator = Event::whereHas('proposal', function (Builder $query) use($qConcatProposal, $dConcatProposal) {
+                $paginator = Event::with('proposal')->whereHas('proposal', function (Builder $query) use($qConcatProposal, $dConcatProposal) {
                                             $query->whereRaw($qConcatProposal, $dConcatProposal);
                                         })
                                         ->whereRaw($qConcatEvent, $dConcatEvent)->orderByDesc('id')->paginate(10)->appends($request->all());   
             }
             else if(!count($queryEvent) && count($queryProposal))
             {
-                $paginator = Event::whereHas('proposal', function (Builder $query) use($qConcatProposal, $dConcatProposal) {
+                $paginator = Event::with('proposal')->whereHas('proposal', function (Builder $query) use($qConcatProposal, $dConcatProposal) {
                                             $query->whereRaw($qConcatProposal, $dConcatProposal);
                                         })->orderByDesc('id')->paginate(10)->appends($request->all());
             }
             else if(count($queryEvent) && !count($queryProposal))
             {
-                $paginator = Event::whereRaw($qConcatEvent, $dConcatEvent)->orderByDesc('id')->paginate(10)->appends($request->all());
+                $paginator = Event::with('proposal')->whereRaw($qConcatEvent, $dConcatEvent)->orderByDesc('id')->paginate(10)->appends($request->all());
             }
 
         }else{
-            $paginator = Event::orderByDesc('id')->paginate(10);
+            $paginator = Event::with('proposal')->orderByDesc('id')->paginate(10);
         }
 
         return $paginator;

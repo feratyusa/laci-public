@@ -45,9 +45,9 @@ class Proposal extends Model
     /**
      * Relationships
      */
-    public function event(): HasOne
+    public function events(): HasMany
     {
-        return $this->hasOne(Event::class, 'proposal_id', 'id');
+        return $this->hasMany(Event::class, 'proposal_id', 'id');
     }
     public function files_pivot(): HasMany
     {

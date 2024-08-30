@@ -2,7 +2,49 @@ import { Chip, Typography } from "@material-tailwind/react";
 import { Cog8ToothIcon } from "@heroicons/react/24/solid";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
+
+function TableRowCollapse({events}){
+    const headers = ['ID', 'Nama Event', 'Tanggal Mulai', 'Tanggal Selesai', 'Partisipan', 'Biaya Pendidikan', 'Biaya Akomodasi']
+    return(
+        <>
+        <tr>
+            <td>Event(s)</td>
+            <td>Show</td>
+        </tr>
+        <tr>
+            <td colSpan={2}>
+               <table className="text-xs text-center">
+                    <thead>
+                        {
+                            headers.map(column => (
+                                <td>{column}</td>
+                            ))
+                        }
+                    </thead>
+                    <tbody>
+                        {
+                            events.map((event) => {
+                                const bodyClassName = ""
+                                return(
+                                    <tr>
+                                        <td>{event.id}</td>
+                                        <td>{event.name}</td>
+                                        <td>{event.start_date}</td>
+                                        <td>{event.end_date}</td>
+                                        <td>{event.participant_number}</td>
+                                        <td>{event.prices.training_price}</td>
+                                        <td>{event.prices.accomodation_price}</td>
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </>
+    )
+}
 
 function TableRow({name, value=null, color="red", option=null}){    
     return(
@@ -30,7 +72,7 @@ function TableRow({name, value=null, color="red", option=null}){
 }
 
 
-export default function ProposalDetails({proposal, color, categories}){
+export default function ProposalDetails({proposal, color, events, categories}){
     const dateoptions = {
         weekday: 'long',
         year: 'numeric',
@@ -49,6 +91,7 @@ export default function ProposalDetails({proposal, color, categories}){
                 <TableRow name={"Status"} value={proposal.status} color={color} option={'chip'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
+                <TableRowCollapse events={events} />
                 <div className="table-row">
                     <div className={"table-cell border-b-2 py-4 w-60"}>
                         <Typography variant="h6">

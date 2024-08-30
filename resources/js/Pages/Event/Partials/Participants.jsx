@@ -9,7 +9,7 @@ export default function Participants({event, participants=[]}){
 
     }, [participants])
     return(
-        <table className="w-full table-auto">
+        <table className="w-full table-auto text-center">
             <thead>
                 {
                     headerNames.map(header => (
@@ -19,6 +19,13 @@ export default function Participants({event, participants=[]}){
             </thead>
             <tbody>
                 {
+                    participants.length == 0 ?
+                    <tr>
+                        <td colSpan={5} className="bg-gray-100 py-5">
+                            <p className="uppercase tracking-widest font-bold text-red-500">Partisipan Kosong</p>
+                        </td>
+                    </tr>
+                    :
                     participants.map((participant) => (
                         <tr className="hover:bg-gray-100">
                             {

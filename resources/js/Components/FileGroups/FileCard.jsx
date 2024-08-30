@@ -42,7 +42,7 @@ export default function FileCard({file, ...props}){
                         content={'file'}
                         title={"Hapus File"}
                         message={"Yakin ingin menghapus file "+ file.name + " ?"}
-                        route={""}
+                        route={route('file.destroy', [file.id])}
                         variant="text"
                     />
                 </div>

@@ -17,9 +17,10 @@ return new class extends Migration
             $table->id();
             $table->enum('mandatory_type', array_column(MandatoryCategoryLink::cases(), 'value'));
             $table->string('category_id');
+            $table->boolean('active')->default(true);
             $table->timestamps();
             
-            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate();
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate()->cascadeOnDelete();
         });
     }
 

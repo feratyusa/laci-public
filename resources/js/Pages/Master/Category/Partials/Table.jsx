@@ -1,7 +1,7 @@
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate"
 import { useState } from "react"
 import FormDialog from "./FormDialog"
-import DeleteDialog from "./DeleteDialog"
+import DeleteDialog from "../../Partials/DeleteDialog"
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import TanstackTable from "@/Components/TanstackTable/TanstackTable"
 

@@ -29,7 +29,6 @@ export default function FormDialog({variant="icon", mode='create', route, catego
     }
     else{
       post(route, {
-        preserveState: false,
         onSuccess: () => setIsOpen(false)
       })
     }   
@@ -88,7 +87,7 @@ export default function FormDialog({variant="icon", mode='create', route, catego
                   value={data.id}
                   onChange={(e) => setData('id', e.target.value)}
                 />
-                {errors.id == null ? <InputInstruction text='Uppercase A - Z tanpa whitespace dengan panjang 2 - 5'/> 
+                {errors.id == null ? <InputInstruction text='Uppercase A - Z tanpa whitespace'/> 
                   : <InputError message={errors.id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
               </div>
               <div>
@@ -108,7 +107,7 @@ export default function FormDialog({variant="icon", mode='create', route, catego
             </div>
             <div className="flex justify-center items-center gap-4">
               <Button onClick={() => handleSubmit()} color="blue">Submit</Button>
-              <Button onClick={() => setIsOpen(false)} color="amber">Cancel</Button>
+              <Button onClick={() => handleCancel()} color="amber">Cancel</Button>
             </div>
           </DialogPanel>
         </div>

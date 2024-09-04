@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Master;
 
-use App\Enum\EventCategory;
 use App\Enum\MandatoryCategoryLink;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\MandatoryCategoryFormRequest;
 use App\Models\File\MandatoryFileCategory;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MandatoryCategoryController extends Controller
 {
@@ -16,7 +16,11 @@ class MandatoryCategoryController extends Controller
      */
     public function index()
     {
-        return MandatoryFileCategory::all();
+        $mandatoryTypes = array_column(MandatoryCategoryLink::cases(), 'value');
+        return Inertia::render('Master/MandatoryCategory/Index', [
+            'types' => $mandatoryTypes,
+            'mandatories' => MandatoryFileCategory::all()
+        ]);
     }
 
     /**
@@ -44,7 +48,7 @@ class MandatoryCategoryController extends Controller
             ]);
         }
 
-        return redirect()->route('mandatory-category.show', ['mandatory_type' => MandatoryCategoryLink::tryFrom($validated['mandatory_type'])->name]);
+        return redirect()->route('mandatory-category.index');
     }
 
     /**
@@ -82,6 +86,6 @@ class MandatoryCategoryController extends Controller
 
         $mandatory->deleteOrFail();
 
-        return redirect()->route('mandatory-category.show', ['mandatory_type' => MandatoryCategoryLink::tryFrom($mandatory->mandatory_type)->name]);
+        return redirect()->route('mandatory-category.index');
     }
 }

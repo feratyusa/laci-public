@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Proposal;
 
+use App\Enum\MandatoryCategoryLink;
 use App\Enum\ProposalStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Proposal\ProposalChangeStatusRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\Proposal\ProposalFormRequest;
 use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\File\Category;
+use App\Models\File\MandatoryFileCategory;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
 use Illuminate\Http\RedirectResponse;
@@ -67,7 +69,7 @@ class ProposalController extends Controller
 
         return Inertia::render("Proposal/Show", [
             'proposal' => $proposal,
-            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),            
             'files' => $proposal->files()->get(),
             'code' => session('code'),
             'status' => session('status'),

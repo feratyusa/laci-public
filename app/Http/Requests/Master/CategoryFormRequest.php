@@ -23,7 +23,7 @@ class CategoryFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'regex:/^[A-Z]{2,5}$/'],
+            'id' => ['required', 'regex:/^[A-Z]+$/', 'max:120'],
             'name' => ['required', 'regex:/^[A-Z ]+$/', 'max:120']
         ];
     }
@@ -31,7 +31,7 @@ class CategoryFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.regex' => 'The :attribute must be uppercase alphabet (A-Z) with length of 2 until 5 with no whitespace',
+            'id.regex' => 'The :attribute must be uppercase alphabet (A-Z) with no whitespace',
             'name.regex' => 'The :attribute must be uppercase alphabet (A-Z)'
         ];
     }

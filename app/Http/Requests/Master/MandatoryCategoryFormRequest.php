@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Master;
 
-use App\Enum\EventCategory;
 use App\Enum\MandatoryCategoryLink;
 use App\Models\File\Category;
 use Illuminate\Foundation\Http\FormRequest;

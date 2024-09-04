@@ -13,6 +13,7 @@ use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
+use App\Models\File\MandatoryFileCategory;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
 use Illuminate\Database\Eloquent\Builder;
@@ -79,6 +80,7 @@ class EventController extends Controller
         return Inertia::render('Event/Show', [
             'event' => $event,
             'files' => $files,
+            'mandatory_category' => MandatoryFileCategory::where('mandatory_type', $event->proposal->event_category)->get(),
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
             'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name'),
             'participants' => $this->selectOptions(Employee::whereNotIn('nip', $event_participants)->get()->toArray(), 'nip', 'nama')

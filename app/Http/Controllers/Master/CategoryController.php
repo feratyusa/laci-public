@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\CategoryFormRequest;
 use App\Models\File\Category;
+use App\Trait\InputHelpers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    use InputHelpers;
     /**
      * Display a listing of the resource.
      */
@@ -21,6 +23,13 @@ class CategoryController extends Controller
         return Inertia::render('Master/Category/Index',[
             "categories" => Category::orderByDesc('created_at')->orderBy('id')->get(),
             // "flash" => ['new_id' => session('new_id')]
+        ]);
+    }
+
+    public function getSelections()
+    {
+        return response()->json([
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false)
         ]);
     }
 
@@ -45,7 +54,7 @@ class CategoryController extends Controller
 
         $category = Category::create($validated);
 
-        return redirect()->route('category.index')->with(['success', "{$category->name} berhasil ditambahkan"]);
+        return redirect()->route('category.index');
     }
 
     /**

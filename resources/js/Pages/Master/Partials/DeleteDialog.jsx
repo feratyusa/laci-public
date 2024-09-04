@@ -4,12 +4,18 @@ import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { useState } from "react";
 
-export default function DeleteDialog({variant="icon", route, category}){
+export default function DeleteDialog({variant="icon", 
+    route, 
+    category,
+    title=null,
+    body=null
+}){
     const { delete: destroy } = useForm()
     const [open, setOpen] = useState(false)
 
     function handleDelete(){
         destroy(route, {
+            preserveScroll: true,
             onSuccess: setOpen(false)
         })
     }
@@ -37,15 +43,17 @@ export default function DeleteDialog({variant="icon", route, category}){
                         className="w-full bg-white max-w-2xl rounded-2xl p-12 ease-in duration-200 data-[closed]:opacity-0"
                     >
                         <DialogTitle className="text-center">
-                            <p className="uppercase font-bold">Hapus File Kategori</p>
+                            <p className="uppercase font-bold">{title ?? "Hapus File Kategori"}</p>
                             <p className="italic text-xs text-gray-500">Kategori: {category.name}</p>
                         </DialogTitle>
                         <div className="py-8">
-                            <p className="">Kategori {category.name} akan dihapus. Kategori yang telah dihapus tidak dapat dikembalikan. 
-                                Yakin ingin menghapus kategori ini?</p>
+                            <p className="text-center">
+                                {body ?? `Kategori ${category.name} akan dihapus. Kategori yang telah dihapus tidak dapat dikembalikan. 
+                                Yakin ingin menghapus kategori ini?`}
+                            </p>
                         </div>
                         <div className="flex justify-center items-center gap-4">
-                            <Button  color="red">Hapus</Button>
+                            <Button  color="red" onClick={() => handleDelete()}>Hapus</Button>
                             <Button onClick={() => setOpen(false)} color="blue">Batal</Button>
                         </div>
                     </DialogPanel>

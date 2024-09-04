@@ -106,3 +106,9 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::prefix('api')->group(function (){
+    Route::prefix('categories')->group(function(){
+        Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');
+    });
+});
+

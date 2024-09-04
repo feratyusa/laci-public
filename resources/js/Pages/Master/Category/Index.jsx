@@ -6,7 +6,7 @@ import { Card } from "@material-tailwind/react";
 import CategoriesTable from "./Partials/Table";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
-export default function Index({auth, categories, flash}){
+export default function Index({auth, categories}){
     return(
         <Authenticated
             user={auth.user}

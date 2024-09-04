@@ -4,7 +4,7 @@ import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronDownIcon, Chevron
 
 function Paginator({table=useReactTable({})}){
     return(
-        <div className="grid grid-rows-2 gap-2 my-3">
+        <div className="grid grid-rows-2 gap-2">
             <div className="grid grid-cols-5 mx-auto items-center w-fit">
                 <div>
                     <IconButton variant="text" onClick={() => table.firstPage()} disabled={!table.getCanPreviousPage()}>
@@ -61,20 +61,22 @@ function Paginator({table=useReactTable({})}){
     )
 }
 
+function ShowingCurrent({rowCount, pageIndex: n, pageSize: b}){
+    const upperCurrentPage = 1 + (n)*b
+    const tempLower = b * (n+1)
+    const lowerCurrentPge = rowCount > tempLower ? tempLower : rowCount
+    const showingRowCountString = `Menampilkan ${upperCurrentPage} - ${lowerCurrentPge} dari ${rowCount}`
+    return(
+        <p className="text-sm">{showingRowCountString}</p>
+    )
+}
+
 function BodyCellComponent({key, children, ...props}){
     return <td key={key} className="p-3" {...props}>{children}</td>
 }
 
 function RowComponent({key, children}){
     return <tr key={key} className="border-b-2 border-red-100 hover:bg-gray-200 cursor-default">{children}</tr>
-}
-
-function HeaderCellComponent({key, children, ...props}){
-    return(
-        <th key={key} className="p-3">
-            {children}
-        </th>
-    )
 }
 
 function HeaderComponent({key, children}){
@@ -85,9 +87,9 @@ function HeaderComponent({key, children}){
     )
 }
 
-export default function TanstackTable({table=useReactTable({})}){
+export default function TanstackTable({table=useReactTable({}), className=""}){
     return(
-        <table className="table-fixed w-full text-center">
+        <table className={"table-fixed w-full text-center " + className}>
             <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <HeaderComponent key={headerGroup.id}>
@@ -120,7 +122,7 @@ export default function TanstackTable({table=useReactTable({})}){
             <tbody>
                 {table.getRowModel().rows.length == 0 ? 
                     <RowComponent>
-                        <BodyCellComponent colSpan={5}>
+                        <BodyCellComponent colSpan={table.getAllColumns().length}>
                             Kosong
                         </BodyCellComponent>
                     </RowComponent>
@@ -136,9 +138,14 @@ export default function TanstackTable({table=useReactTable({})}){
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan={5}>
-                        <Paginator table={table}/>
-                    </td>
+                    {
+                        table.options.getPaginationRowModel !== undefined ?
+                        <td colSpan={table.getAllColumns().length} className="py-3">
+                            <ShowingCurrent rowCount={table.getRowCount()} pageIndex={table.getState().pagination.pageIndex} pageSize={table.getState().pagination.pageSize}/>
+                            <Paginator table={table}/>
+                        </td>
+                        : ''
+                    }
                 </tr>
             </tfoot>
         </table>

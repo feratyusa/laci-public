@@ -44,7 +44,7 @@ function MainMenuList({menus, open, menuSelected='home'}){
         <div className="w-full border-b-2 border-red-500 py-3">
             {
                 menus?.map((menu) => {
-                    if(Array.isArray(menu.link)) return <DropdownMenu menu={menu} open={open}/>
+                    if(Array.isArray(menu.link)) return <DropdownMenu menu={menu} open={open} menuSelected={menuSelected}/>
                     else return <MenuItem menu={menu} open={open} selected={menuSelected === menu.url}/>   
                 })
             }
@@ -124,10 +124,10 @@ function MenuItemDropdown({menu, open, selected=false}){
 
 function DropdownMenu({menu, open, menuSelected='home'}){
     const [chevronDown, setChevronDown] = useState(menuSelected === menu.url ? true : false)
-    const urlExt = menuSelected + window.location.href.split[4]
+    const urlExt = menuSelected + "/" + window.location.href.split('/')[4]
 
     return(
-        <Disclosure>
+        <Disclosure defaultOpen={chevronDown}>
             <DisclosureButton className="w-full" onClick={() => setChevronDown(!chevronDown)}>
                 <DropdownMenuButton menu={menu} open={open} chevronDown={chevronDown}/>
             </DisclosureButton>
@@ -145,7 +145,7 @@ function DropdownMenu({menu, open, menuSelected='home'}){
     )
 }
 
-function MenuHeader({open, setOpen, menuSelected='user'}){
+function MenuHeader({open, setOpen}){
     return(
         <>
         {

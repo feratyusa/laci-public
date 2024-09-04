@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('master')->group(function(){
    
-        Route::prefix('category')->group(function(){
+        Route::prefix('categories')->group(function(){
             Route::get('', [CategoryController::class, 'index'])->name('category.index');
             Route::post('', [CategoryController::class, 'store'])->name('category.store');
             Route::put('/{id}', [CategoryController::class, 'update'])->name('category.update');

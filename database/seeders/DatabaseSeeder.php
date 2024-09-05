@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             CategorySeeder::class,
             MandatoryFileCategorySeeder::class,
+            BudgetSeeder::class,
         ]);
     }
 }

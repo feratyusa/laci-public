@@ -7,14 +7,14 @@ use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\MandatoryFileCategorySeeder;
 use Illuminate\Console\Command;
 
-class SeedLaciDatabase extends Command
+class LocalDBSetup extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'refresh:local';
+    protected $signature = 'local:db-setup';
 
     /**
      * The console command description.

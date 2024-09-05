@@ -83,7 +83,7 @@ function Table({categories=[]}){
 
     return (
         <>
-            <div className="grid grid-cols-8 items-center gap-2 p-5">
+            <div className="grid grid-cols-8 items-center gap-2 mb-5">
                 <div className="col-span-6">
                     <FormDialog variant="text" route={route('category.store')}/>
                 </div>

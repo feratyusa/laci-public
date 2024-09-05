@@ -2,9 +2,9 @@ import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Card } from "@material-tailwind/react";
+import { Card, CardBody } from "@material-tailwind/react";
 import CategoriesTable from "./Partials/Table";
-import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { TagIcon } from "@heroicons/react/24/outline";
 
 export default function Index({auth, categories}){
     return(
@@ -13,14 +13,15 @@ export default function Index({auth, categories}){
             header={<HeaderTitle title={'File Kategori'}/>}
         >
             <Head title="File Kategori"/>
-
-            <BreadcrumbMod />
-            <Card className="m-5 py-5">
-                <div className="flex items-center gap-4 px-5 text-red-500">
-                    <DocumentMagnifyingGlassIcon className="w-8"/>
-                    <p className="uppercase text-lg font-bold">List File Kategori</p>
-                </div>
-                <CategoriesTable categories={categories}/>
+                        
+            <Card className="m-5 p-3">
+                <CardBody>
+                    <div className="flex items-center gap-5 text-red-500 mb-10">
+                        <TagIcon className="w-8"/>
+                        <p className="text-2xl font-bold">Master Kategori File</p>
+                    </div>
+                    <CategoriesTable categories={categories}/>
+                </CardBody>
             </Card>
         </Authenticated>
     )

@@ -21,7 +21,7 @@ return new class extends Migration
 
         Schema::create('files', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('category_id');
+            $table->string('category_id')->nullable();
             $table->string('name');
             $table->string('path');
             $table->string('size');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate()->nullOnDelete();
         });
 
     }

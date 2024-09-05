@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('proposal_id')->constrained();
+            $table->foreignId('proposal_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
@@ -35,7 +35,7 @@ return new class extends Migration
 
         Schema::create('event_participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->string('nip');
             $table->string('nama');
             $table->string('jabatan');
@@ -46,8 +46,8 @@ return new class extends Migration
 
         Schema::create('event_files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained();
-            $table->foreignUuid('file_id')->constrained();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('file_id')->constrained()->cascadeOnDelete();
             $table->softDeletes('deleted_at', precision: 0);
             $table->timestamps();
         });
@@ -58,6 +58,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('event_prices');
         Schema::dropIfExists('event_participants');
         Schema::dropIfExists('event_files');
         Schema::dropIfExists('events');

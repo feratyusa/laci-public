@@ -26,9 +26,9 @@ return new class extends Migration
 
         Schema::create('proposal_files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('proposal_id')->constrained();
-            $table->foreignUuid('file_id')->constrained();
-            $table->softDeletes('deleted_at', precision: 0);
+            $table->foreignId('proposal_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('file_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }
@@ -38,7 +38,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('proposals');
         Schema::dropIfExists('proposal_files');
+        Schema::dropIfExists('proposals');
     }
 };

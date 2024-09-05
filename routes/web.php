@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\Master\BudgetController;
 use App\Http\Controllers\Master\CategoryController;
 use App\Http\Controllers\Master\MandatoryCategoryController;
 use App\Http\Controllers\ProfileController;
@@ -95,12 +96,24 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
         });
 
-        Route::prefix('mandatory-category')->group(function(){
+        Route::prefix('mandatory-categories')->group(function(){
             Route::get('', [MandatoryCategoryController::class, 'index'])->name('mandatory-category.index');
             Route::post('', [MandatoryCategoryController::class, 'store'])->name('mandatory-category.store');
             Route::get('/{mandatory_type}', [MandatoryCategoryController::class, 'show'])->name('mandatory-category.show');
             Route::put('/{mandatory_type}', [MandatoryCategoryController::class, 'update'])->name('mandatory-category.update');
             Route::delete('/{id}', [MandatoryCategoryController::class, 'destroy'])->name('mandatory-category.destroy');
+        });
+
+        Route::prefix('budgets')->group(function (){
+            Route::get('', [BudgetController::class, 'index'])->name('budget.index');
+            Route::post('', [BudgetController::class, 'store'])->name('budget.store');
+            Route::put('/{id}', [BudgetController::class, 'update'])->name('budget.update');
+            Route::delete('/{id}', [BudgetController::class, 'destroy'])->name('budget.destroy');
+            Route::prefix('{id}/details')->group(function (){
+                Route::post('', [BudgetController::class, 'detailStore'])->name('budget.details.store');
+                Route::put('', [BudgetController::class, 'detailUpdate'])->name('budget.detail.update');
+                Route::delete('/{detail_id}', [BudgetController::class, 'detailDestroy'])->name('budget.detail.destroy');
+            });
         });
 
     });

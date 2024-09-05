@@ -7,7 +7,8 @@ const MainMenu = [
         {name: 'Master', link: [
             {name: 'User', link: 'dashboard', url: 'master/user'},
             {name: 'File Kategori', link: 'category.index', url: 'master/categories'},
-            {name: 'Mandatory Kategori', link: 'mandatory-category.index', url: 'master/mandatory-category'},
+            {name: 'Mandatory Kategori', link: 'mandatory-category.index', url: 'master/mandatory-categories'},
+            {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
         ], url: 'master'},
         {name: 'Tutorial', link: 'dashboard', url: 'tutorial'},
     ]

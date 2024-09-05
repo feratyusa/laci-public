@@ -67,7 +67,7 @@ function ShowingCurrent({rowCount, pageIndex: n, pageSize: b}){
     const lowerCurrentPge = rowCount > tempLower ? tempLower : rowCount
     const showingRowCountString = `Menampilkan ${upperCurrentPage} - ${lowerCurrentPge} dari ${rowCount}`
     return(
-        <p className="text-sm">{showingRowCountString}</p>
+        rowCount ? <p className="text-sm">{showingRowCountString}</p> : ''
     )
 }
 
@@ -139,7 +139,7 @@ export default function TanstackTable({table=useReactTable({}), className=""}){
             <tfoot>
                 <tr>
                     {
-                        table.options.getPaginationRowModel !== undefined ?
+                        table.options.getPaginationRowModel !== undefined && table.getRowCount() > 0?
                         <td colSpan={table.getAllColumns().length} className="py-3">
                             <ShowingCurrent rowCount={table.getRowCount()} pageIndex={table.getState().pagination.pageIndex} pageSize={table.getState().pagination.pageSize}/>
                             <Paginator table={table}/>

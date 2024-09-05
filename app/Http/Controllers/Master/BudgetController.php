@@ -7,6 +7,8 @@ use App\Http\Requests\Master\BudgetDetailsFormRequest;
 use App\Http\Requests\Master\BudgetFormRequest;
 use App\Models\Master\Budget;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class BudgetController extends Controller
 {
@@ -15,7 +17,9 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        return Budget::with('details')->get();
+        return Inertia::render('Master/Budget/Index', [
+            'budgets' => Budget::with('details')->orderByDesc('year')->get()
+        ]);
     }
 
     /**
@@ -33,6 +37,8 @@ class BudgetController extends Controller
     {
         $validated = $request->validated();
 
+        if(Budget::where('year', $validated['year'])->get()->count() > 0) throw ValidationException::withMessages(['year' => "The year {$validated['year']} already exists"]);
+        
         $budget = Budget::create($validated);
 
         return redirect()->route('budget.index');
@@ -63,6 +69,9 @@ class BudgetController extends Controller
 
         $validated = $request->validated();
 
+        if(Budget::where('year', $validated['year'])->get()->count() > 0 && $validated['year'] != $budget->year) 
+            throw ValidationException::withMessages(['year' => "The year {$validated['year']} is already exists"]);
+
         $budget->update($validated);
 
         return redirect()->route('budget.index');
@@ -77,7 +86,7 @@ class BudgetController extends Controller
 
         $budget->deleteOrFail();
 
-        return redirect()->route('budget.destroy');
+        return redirect()->route('budget.index');
     }
 
     public function detailStore(BudgetDetailsFormRequest $request, string $id)
@@ -99,8 +108,24 @@ class BudgetController extends Controller
         
         $validated = $request->validated();
 
+        foreach($budget->details as $detail){
+            $deleteFlag = true;
+            foreach($validated['details'] as $check){
+                if($check['id'] == $detail->id){
+                    $deleteFlag = false;
+                    break;
+                }
+            }
+            if($deleteFlag){
+                $detail->deleteOrFail();
+            }
+        }
+
         foreach($validated['details'] as $detail){
-            $budget->details()->find($detail['id'])->update(['name' => $detail['name'], 'value' => $detail['value']]);
+            $budget->details()->updateOrCreate(
+                ['id' => $detail['id']],
+                ['name' => $detail['name'], 'value' => $detail['value']]
+            );
         }
 
         return redirect()->route('budget.index');
@@ -110,7 +135,9 @@ class BudgetController extends Controller
     {
         $budget = Budget::findOrFail($id);
 
-        $budget->details()->find($detail_id)->deleteOrFail();
+        $detail = $budget->details()->find($detail_id);
+
+        $detail->deleteOrFail();
 
         return redirect()->route('budget.index');
     }

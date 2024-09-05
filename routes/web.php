@@ -111,8 +111,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [BudgetController::class, 'destroy'])->name('budget.destroy');
             Route::prefix('{id}/details')->group(function (){
                 Route::post('', [BudgetController::class, 'detailStore'])->name('budget.details.store');
-                Route::put('', [BudgetController::class, 'detailUpdate'])->name('budget.detail.update');
-                Route::delete('/{detail_id}', [BudgetController::class, 'detailDestroy'])->name('budget.detail.destroy');
+                Route::put('', [BudgetController::class, 'detailUpdate'])->name('budget.details.update');
+                Route::delete('/{detail_id}', [BudgetController::class, 'detailDestroy'])->name('budget.details.destroy');
             });
         });
 

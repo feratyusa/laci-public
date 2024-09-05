@@ -23,7 +23,14 @@ class BudgetFormRequest extends FormRequest
     {
         return [
             'year' => ['required', 'integer', 'digits:4'],
-            'value' => ['required', 'integer']
+            'value' => ['required', 'integer', 'max_digits:15']
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'value' => "That's a lot of money. The :attribute maximum digits is 15"
         ];
     }
 }

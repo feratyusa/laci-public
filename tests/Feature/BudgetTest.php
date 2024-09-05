@@ -18,14 +18,14 @@ class BudgetTest extends TestCase
     public function test_user_can_make_budget_and_details(): void
     {
         $base = new BaseData();
-
+        
         $response = $this->actingAs($base->user)->post('/master/budgets', [
             'year' => 2023,
             'value' => 250e9
         ]);
-
+        
         $response->assertRedirect(route('budget.index'));
-
+        
         $this->assertDatabaseCount('budgets', 1);
 
         $budget = Budget::first();
@@ -87,7 +87,7 @@ class BudgetTest extends TestCase
             ->assertDatabaseHas('budget_details', ['id' => $budgetDetails[0]->id, 'name' => 'IHT2', 'value' => 250e9]);
     }
 
-    public function user_test_can_delete_budget_and_budget_details(): void
+    public function test_user_can_delete_budget_and_budget_details(): void
     {
         $budget = Budget::create([
             'year' => 2023,
@@ -113,7 +113,12 @@ class BudgetTest extends TestCase
 
         $response->assertRedirect(route('budget.index'));
 
-        $this->assertDatabaseCount('budget_details', 1);
+        $this->assertDatabaseCount('budget_details', 1)
+            ->assertDatabaseCount('budgets', 1);
+
+        $budget->refresh();        
+
+        echo $budget;
 
         $response = $this->actingAs($base->user)->delete("/master/budgets/{$budget->id}");
 

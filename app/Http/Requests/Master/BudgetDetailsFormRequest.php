@@ -22,11 +22,10 @@ class BudgetDetailsFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'budget_id' => ['required', 'integer'],
             'details' => ['required', 'array'],
             'details.*.id' => ['nullable', 'integer'],
-            'details.*.name' => ['required', 'regex:/^[A-Za-z ]/'],
-            'details.*.value' => ['required', 'integer']
+            'details.*.name' => ['required', 'regex:/^[A-Za-z ]+$/'],
+            'details.*.value' => ['required', 'integer', 'max_digits:15']
         ];
     }
 

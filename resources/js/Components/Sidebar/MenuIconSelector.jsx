@@ -1,6 +1,7 @@
 import { 
     AcademicCapIcon, 
     ArrowLeftStartOnRectangleIcon, 
+    BanknotesIcon, 
     BookOpenIcon, 
     CalculatorIcon, 
     CalendarDaysIcon, 
@@ -53,8 +54,11 @@ export default function MenuIconSelector({name=''}){
         name === 'master/categories' ? 
         <TagIcon className="w-5"/>
         :
-        name === 'master/mandatory-category' ?
+        name === 'master/mandatory-categories' ?
         <ExclamationCircleIcon className="w-5"/>
+        :
+        name === 'master/budgets' ?
+        <BanknotesIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

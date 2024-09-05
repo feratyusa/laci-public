@@ -19,7 +19,7 @@ class CategoryTest extends TestCase
     {
         $base = new BaseData();
 
-        $response = $this->actingAs($base->user)->post('/master/category', [
+        $response = $this->actingAs($base->user)->post('/master/categories', [
             'id' => 'SK',
             'name' => 'SURAT KEPUTUSAN'
         ]);
@@ -38,7 +38,7 @@ class CategoryTest extends TestCase
             'name' => 'BERITA ACARA NEGOSIASI'
         ]);
 
-        $response = $this->actingAs($base->user)->put("/master/category/SK", [
+        $response = $this->actingAs($base->user)->put("/master/categories/SK", [
             'id' => 'SKK',
             'name' => 'SURAT KELUARAN KERJA'
         ]);
@@ -48,7 +48,7 @@ class CategoryTest extends TestCase
         $this->assertDatabaseCount('categories', 2)
             ->assertDatabaseMissing('categories', ['id' => 'SK']);
 
-        $response = $this->actingAs($base->user)->put("/master/category/SKK", [
+        $response = $this->actingAs($base->user)->put("/master/categories/SKK", [
             'id' => 'BAN',
             'name' => 'SURAT KERJA'
         ]);
@@ -61,7 +61,7 @@ class CategoryTest extends TestCase
     {
         $base = new BaseData();
 
-        $response = $this->actingAs($base->user)->delete("/master/category/BAN");
+        $response = $this->actingAs($base->user)->delete("/master/categories/BAN");
 
         $response->assertRedirect(route('category.index'));
 
@@ -81,16 +81,16 @@ class CategoryTest extends TestCase
             'name' => 'SURAT UNDANGAN'
         ]);
 
-        $response = $this->actingAs($base->user)->post("/master/mandatory-category/", [
+        $response = $this->actingAs($base->user)->post("/master/mandatory-categories/", [
             'mandatory_type' => 'Public Training',
             'categories' => ['BAN', 'SKK']
         ]);
 
-        $response->assertRedirect(route('mandatory-category.show', ['mandatory_type' => 'PT']));
+        $response->assertRedirect(route('mandatory-category.index'));
 
         $this->assertDatabaseCount('mandatory_file_category', 2);
 
-        $response = $this->actingAs($base->user)->post("/master/mandatory-category/", [
+        $response = $this->actingAs($base->user)->post("/master/mandatory-categories/", [
             'mandatory_type' => 'Public Training',
             'categories' => ['BAN']
         ]);
@@ -104,9 +104,9 @@ class CategoryTest extends TestCase
 
         $mandatory = MandatoryFileCategory::where(['mandatory_type' => 'Public Training', 'category_id' => 'BAN'])->first();
         
-        $response = $this->actingAs($base->user)->delete("/master/mandatory-category/{$mandatory->id}");
+        $response = $this->actingAs($base->user)->delete("/master/mandatory-categories/{$mandatory->id}");
 
-        $response->assertRedirect(route('mandatory-category.show', ['mandatory_type' => 'PT']));
+        $response->assertRedirect(route('mandatory-category.index'));
 
         $this->assertDatabaseCount('mandatory_file_category', 1);
     }

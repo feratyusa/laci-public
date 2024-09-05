@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-            $table->integer('year')->unique();
+            $table->string('year', 5)->unique();
             $table->decimal('value', 15, 0)->default(0);
             $table->timestamps();
         });

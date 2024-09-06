@@ -1,7 +1,7 @@
 import Colors from '@/Base/Colors';
-import DialogDelete from '@/Components/Dialogs/DialogDelete';
 import InputDate from '@/Components/Form/InputDate';
 import { changeToIndonesiaDateTime, changeToInputDate } from '@/helpers/IndoesiaDate';
+import { CalendarIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { useForm } from '@inertiajs/react';
 import { Button, IconButton } from '@material-tailwind/react';
@@ -13,37 +13,28 @@ function ToolTipCustom({task}, event){
     return(
         <div className="bg-white p-3 shadow-lg rounded-md">
             <p><span className='font-bold'>Event: </span>{task.name}</p>
+            <p><span className='font-bold'>Kursus: </span>{task?.kursus}</p>
             <p><span className='font-bold'>Kategori: </span>{event?.proposal.event_category}</p>
             <p><span className='font-bold'>Mulai: </span>{changeToIndonesiaDateTime(task.start, true)}</p>
             <p><span className='font-bold'>Selesai: </span>{changeToIndonesiaDateTime(task.end, true)}</p>
+            <p className='italic text-xs mt-2 text-blue-500'>Click to see more</p>
+            <p className='italic text-xs text-blue-500'>Double click to reset</p>
         </div>
     )
 }
 
 function EventHeaderSelected({onClose}){
     return(
-        <div className='flex justify-between items-center my-5 px-2'>
-            <div className='basis-3/4 flex justify-center'>
-                <p className='uppercase text-black tracking-widest'>Event</p>
+        <div className='grid grid-cols-12 items-center mb-5'>
+            <div className='col-span-11 flex items-center gap-5 text-red-500'>
+                <CalendarIcon className='w-8'/>
+                <p className='text-lg font-bold uppercase'>Event</p>
             </div>
-            <div className='basis-1/4 flex justify-center'>
+            <div className='col-span-1'>
                 <IconButton color='red' onClick={onClose} size='sm'>
                     <XMarkIcon className='w-5'/>
                 </IconButton>
             </div>
-        </div>
-    )
-}
-
-function EventTableOptions({event}){
-    return(
-        <div className='flex justify-center p-5'>
-            <DialogDelete 
-                content={'event'}
-                title={'Hapus Event'}
-                message={`Event (${event.id}) ${event.name} akan dihapus. Event yang dihapus tidak dapat dikembalikan. Yakin inging menghapus event?`}
-                route={route('event.destroy', [event.id])}
-            />
         </div>
     )
 }
@@ -79,6 +70,7 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
                             value={changeToInputDate(event.start)}
                             max={changeToInputDate(event.end)}
                             onChange={onStartChange}
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                     </td>
                 </tr>
@@ -91,6 +83,7 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
                             value={changeToInputDate(event.end)}
                             min={changeToInputDate(event.start)}
                             onChange={onEndChange}
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                     </td>
                 </tr>
@@ -115,22 +108,33 @@ export default function CalendarChart({
         setEventSelected(false)
     }
 
-    function handleTaskClick(task){
+    function handleShowTaskDetails(task){
         const temp = events.find(e => e.id == task.id)
         if(eventSelected.id != task.id) setEventSelected(temp.id)
+    }
+
+    function handleResetTask(task){
+        const newTasks = [...data.tasks]
+        const indexTask = newTasks.findIndex(t => t.id == task.id)
+
+        newTasks[indexTask] = {...defaultTasks[indexTask]}
+
+        setData('tasks', newTasks)
     }
 
     function handleOnInputDateChange(e, position){
         const newTasks = [...data.tasks]
         const indexTasks = newTasks.findIndex(t => t.id == e.target.id)
+
+        const newDate = new Date(e.target.value)
         if(position == 'start'){
-            newTasks[indexTasks] = {...newTasks[indexTasks], start: new Date(e.target.value)}
+            newTasks[indexTasks] = {...newTasks[indexTasks], start: newDate, dirty: +newDate != +defaultTasks[indexTasks].start}
         }
         else if(position == 'end'){
-            newTasks[indexTasks] = {...newTasks[indexTasks], end: new Date(e.target.value)}
+            newTasks[indexTasks] = {...newTasks[indexTasks], end: newDate, dirty: +newDate != +defaultTasks[indexTasks].end}
         }
+        
         setData('tasks', newTasks)
-        setIsDirty(true)
 
         console.log('Task date change on input: ' + e.target.id)
     }
@@ -138,27 +142,33 @@ export default function CalendarChart({
     function handleDateChange(task){
         const newTasks = [...data.tasks]
         const indexTask = newTasks.findIndex(t => t.id == task.id)
-        newTasks[indexTask] = task
+
+        const isTaskDirty = (+task.start != +defaultTasks[indexTask].start || +task.end != +defaultTasks[indexTask].end)
+        newTasks[indexTask] = {...task, dirty: isTaskDirty}
+
         setData('tasks', newTasks)
+
         const temp = events.find(e => e.id == task.id)
+
         setEventSelected(temp.id)
-        setIsDirty(true)
 
         console.log("Expander Click: " + task.id + " start: " + task.start + " end: " + task.end)
         console.log(data.tasks)
     }
 
-    function handleReset(){
+    function handleResetAll(){
         setData('tasks', [...defaultTasks])
         setEventSelected(false)
-        setIsDirty(false)
     }
 
     function handleSave(){
-        put(route())
+        console.log(data)
+        put(route('calendar.update'), {
+            preserveState: false
+        })
     }
     
-    useEffect(() => {
+    function generateTasks(){
         var temps = []
         events.forEach((element, index) => {
             console.log(Object.keys(Colors).at(index))
@@ -174,56 +184,69 @@ export default function CalendarChart({
                 event_category: element.proposal.event_category
             })
         });
+
         setDefaultTasks([...temps])
         setData('tasks', temps)
-    }, [events])
+    }
+
+    function checkDirtyTasks(){
+        var flag = false
+        data.tasks.map(element => {
+            if(element.dirty == true) flag = true
+        })
+        setIsDirty(flag)
+    }
+    
+    useEffect(() => {
+        if(data.tasks.length == 0){
+            generateTasks()
+        }
+        else{
+            checkDirtyTasks()
+        }
+    }, [data])
 
     return(
             <>
-            <div className='flex justify-center mb-5'>
-                <div className='text-black'>
-                    <p className='uppercase tracking-wide font-bold'>Kalender Event {`(${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})`}</p>
-                </div>
-            </div>
             {
                 data.tasks.length != 0 ?
                 <>
-                <div className='grid grid-cols-12 gap-5'>
-                    {
-                        eventSelected ?
-                        <div className={'col-span-4 px-4 pb-4 rounded-lg shadow-lg'}>
-                            <EventHeaderSelected onClose={() => handleOnClose()} />
-                            <EventTableSelected 
-                                event={data.tasks.find(t => t.id == eventSelected)}
-                                color={data.tasks.find(t => t.id == eventSelected).styles.backgroundColor}
-                                onStartChange={(e) => handleOnInputDateChange(e, 'start')}
-                                onEndChange={(e) => handleOnInputDateChange(e, 'end')}
-                            />
-                            <EventTableOptions event={data.tasks.find(t => t.id == eventSelected)}/>
+                <div className='relative'>
+                    <Gantt 
+                        tasks={data.tasks}
+                        viewMode={ViewMode.Day}
+                        TooltipContent={(component) => ToolTipCustom(component, events.find(e => e.id == component.task.id))}
+                        preStepsCount={2}
+                        listCellWidth=''
+                        timeStep={8.64e+7} // One day
+                        onDateChange={(task) => handleDateChange(task)}
+                        onClick={(task) => handleShowTaskDetails(task)}
+                        onDoubleClick={(task) => handleResetTask(task)}                        
+                        locale='id'
+                    />
+                        <div className={`absolute top-5 left-5 border-gray-500 border-2 bg-white max-w-md shadow-xl rounded-lg p-5 pb-10 duration-300 ease-in-out ${eventSelected == false ? "opacity-0" : ''}`}>
+                            {
+                                eventSelected ?
+                                <>
+                                    <EventHeaderSelected onClose={() => handleOnClose()} />
+                                    <EventTableSelected 
+                                        event={data.tasks.find(t => t.id == eventSelected)}
+                                        color={data.tasks.find(t => t.id == eventSelected).styles.backgroundColor}
+                                        onStartChange={(e) => handleOnInputDateChange(e, 'start')}
+                                        onEndChange={(e) => handleOnInputDateChange(e, 'end')}
+                                    />
+                                </>
+                                :
+                                ''
+                            }
                         </div>
-                        :
-                        ""
-                    }
-                    <div className={(eventSelected ? 'col-span-8' : 'col-span-12')}>
-                        <Gantt 
-                            tasks={data.tasks}
-                            viewMode={ViewMode.Day}
-                            TooltipContent={(component) => ToolTipCustom(component, events.find(e => e.id == component.task.id))}
-                            preStepsCount={2}
-                            listCellWidth=''
-                            timeStep={8.64e+7} // One day
-                            onDateChange={(task) => handleDateChange(task)}
-                            onClick={(task) => handleTaskClick(task)}                        
-                            locale='id'
-                        />
-                    </div>
                 </div>
                 <div className='flex justify-center gap-5'>
-                    <Button hidden={!isDirty} onClick={() => handleReset()} color='red'>
-                        Reset
-                    </Button>
-                    <Button hidden={!isDirty} onClick={() => handleSubmit()} color='green'>
+                    <Button hidden={!isDirty} onClick={() => handleSave()} color='green' loading={processing}>
                         Simpan
+                    </Button>
+                    <Button hidden={!isDirty} onClick={() => handleResetAll()} color='red'>
+                        Reset
                     </Button>
                 </div>
                 </>

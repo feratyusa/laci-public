@@ -5,8 +5,6 @@ import BetweenDates from "@/Components/BetweenDates";
 import { Card, CardBody } from "@material-tailwind/react";
 import EventList from "./Partials/EventList";
 
-
-
 export default function Index({
     auth,
     events=[],

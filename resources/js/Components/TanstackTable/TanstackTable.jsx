@@ -89,7 +89,7 @@ function HeaderComponent({key, children}){
 
 export default function TanstackTable({table=useReactTable({}), className=""}){
     return(
-        <table className={"table-fixed w-full text-center " + className}>
+        <table className={"table-fixed w-full text-center shadow-lg rounded-lg " + className}>
             <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <HeaderComponent key={headerGroup.id}>

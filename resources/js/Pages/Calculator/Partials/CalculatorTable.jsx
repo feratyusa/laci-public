@@ -1,4 +1,5 @@
 import InputError from "@/Components/Form/InputError";
+import EmptyRow from "@/Components/Table/EmptyRow";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { ExclamationTriangleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
@@ -180,11 +181,7 @@ export default function CalculatorTable({
                                 <tbody className="text-left">
                                     {
                                         publics.length == 0 ?
-                                        <tr>
-                                            <td colSpan={6} className="bg-gray-500 text-center p-5">
-                                                <p className="text-white font-bold text-xl">KOSONG</p>
-                                            </td>
-                                        </tr>
+                                        <EmptyRow colSpan={6}/>
                                         :
                                         publics.map((event, index) => (
                                             <tr>
@@ -270,11 +267,7 @@ export default function CalculatorTable({
                                 <tbody className="text-left">
                                     {
                                         inHouses.length == 0 ?
-                                        <tr>
-                                            <td colSpan={6} className="bg-gray-500 text-center p-5">
-                                                <p className="text-white font-bold text-xl">KOSONG</p>
-                                            </td>
-                                        </tr>
+                                        <EmptyRow colSpan={6}/>
                                         :
                                         inHouses.map((event, index) => (
                                             <tr>

@@ -6,6 +6,8 @@ use App\Enum\EventCategory;
 use App\Http\Requests\Calculator\CalculatorUpdateEventRequest;
 use App\Models\Event\Event;
 use App\Models\Event\EventPrices;
+use App\Models\Master\Budget;
+use App\Trait\InputHelpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
@@ -14,8 +16,11 @@ use Inertia\Inertia;
 
 class CalculatorController extends Controller
 {    
+    use InputHelpers;
+
     public function index(Request $request)
     {
+        // Check and get the value for input field or session key of 'start' and 'end' for the events
         if($request->filled('start') && $request->filled('end'))
         {
             $validated = $request->validate([
@@ -32,6 +37,7 @@ class CalculatorController extends Controller
             $start_date = session('calc_start_date');
             $end_date = session('calc_end_date');
         }
+        // If there's none yet return index as is
         else
         {
             return Inertia::render('Calculator/Index');
@@ -94,7 +100,18 @@ class CalculatorController extends Controller
             $totPartcPublic += $event->participant_number;
             $totPricePublic += $event->participant_number * ($event->prices->training_price + $event->prices->accomodation_price);
         }
-        
+
+        // Check and get input field of 'budget_id' for the budget
+        if($request->filled('budget_id')){
+            $validated = $request->validate([
+                'budget_id' => ['numeric']
+            ]);
+
+            $budget = Budget::with('details')->findOrFail($validated['budget_id']);
+        }
+
+        $request->flash();
+
         return Inertia::render('Calculator/Index',[
             'calc_start_date' => session('calc_start_date'),
             'calc_end_date' => session('calc_end_date'),
@@ -104,6 +121,8 @@ class CalculatorController extends Controller
             'inHouses' => $inHousePrices,
             'totalPriceInHouse' => $totPriceInHouse,
             'totalPartcInHouse' => $totPartcInHouse,
+            'budget' => $budget ?? null,
+            'budgets' => $this->selectOptions(Budget::all()->toArray(), 'id', 'year', false),
         ]);
     }
 

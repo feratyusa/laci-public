@@ -16,14 +16,14 @@ class CalculatorController extends Controller
 {    
     public function index(Request $request)
     {
-        if($request->filled('calc_start_date') && $request->filled('calc_end_date'))
+        if($request->filled('start') && $request->filled('end'))
         {
             $validated = $request->validate([
-                'calc_start_date' => ['date'],
-                'calc_end_date' => ['date']
+                'start' => ['date'],
+                'end' => ['date']
             ]);
-            $start_date = $validated['calc_start_date'];
-            $end_date = $validated['calc_end_date'];
+            $start_date = $validated['start'];
+            $end_date = $validated['end'];
 
             session(['calc_start_date' => $start_date, 'calc_end_date' => $end_date]);
         }   
@@ -144,6 +144,6 @@ class CalculatorController extends Controller
             ]);
         }
 
-        return redirect()->route('calculator.index')->withInput(['message' => "Penyimpanan berhasil"]);
+        return redirect()->route('calculator.index');
     }
 }

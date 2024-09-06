@@ -2,6 +2,7 @@ import { useForm } from "@inertiajs/react"
 import { Button } from "@material-tailwind/react"
 import InputDate from "./Form/InputDate"
 import InputLabel from "./Form/InputLabel"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 export default function BetweenDates({
     title,
@@ -27,8 +28,11 @@ export default function BetweenDates({
 
     return(
         <>
-            <div className="text-center mb-5">
-                <p className="uppercase font-bold">{title}</p>
+            <div className="flex justify-center ">
+                <div className="flex items-center text-white gap-2 bg-red-500 mb-5 py-1 px-2 rounded-md">
+                    <MagnifyingGlassIcon className="w-5"/>
+                    <p className="uppercase font-bold">{title}</p>
+                </div>
             </div>
             <div className="flex gap-5 items-center">
                 <div className="flex w-full items-center">

@@ -18,7 +18,7 @@ function PercentageNumber({number}){
 }
 
 function BudgetTable({budget, sumPrices, sumParticipants}){
-    const totalBudget = Number(budget.value)
+    const totalBudget = Number(budget.details.find(d => d.name == 'In House Training').value) + Number(budget.details.find(d => d.name == 'Public Training').value)
     const totalPrices = Number(sumPrices.public) + Number(sumPrices.inHouse)
     const remainder = totalBudget - totalPrices
     const totalPercentage = (totalPrices/totalBudget) * 100
@@ -48,24 +48,26 @@ function BudgetTable({budget, sumPrices, sumParticipants}){
             <tbody>
                 {
                     budget.details.map(detail => {
-                        const price = detail.name == 'In House Training' ? sumPrices.inHouse : sumPrices.public
-                        const remainder = Number(detail.value) - Number(price)
-                        const pricePercentage = (Number(price)/Number(detail.value)) * 100
-                        const remainderPercentage = (Number(remainder)/Number(detail.value)) * 100
-                        return(
-                            <tr className="border-b-2 border-red-500 text-black">
-                                <td className={bodyClass}>{detail.name}</td>
-                                <td className={bodyClass}>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
-                                <td className={bodyClass}>{`Rp ${Number(price).toLocaleString()}`}</td>
-                                <td className={bodyClass}>{`Rp ${Number(remainder).toLocaleString()}`}</td>
-                                <td className={bodyClass}>
-                                    <PercentageNumber number={pricePercentage}/>
-                                </td>
-                                <td className={bodyClass}>
-                                    <PercentageNumber number={remainderPercentage}/>
-                                </td>
-                            </tr>
-                        )
+                        if(detail.name == 'In House Training' || detail.name == 'Public Training') {
+                            const price = detail.name == 'In House Training' ? sumPrices.inHouse : sumPrices.public
+                            const remainder = Number(detail.value) - Number(price)
+                            const pricePercentage = (Number(price)/Number(detail.value)) * 100
+                            const remainderPercentage = (Number(remainder)/Number(detail.value)) * 100
+                            return(
+                                <tr className="border-b-2 border-red-500 text-black">
+                                    <td className={bodyClass}>{detail.name}</td>
+                                    <td className={bodyClass}>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
+                                    <td className={bodyClass}>{`Rp ${Number(price).toLocaleString()}`}</td>
+                                    <td className={bodyClass}>{`Rp ${Number(remainder).toLocaleString()}`}</td>
+                                    <td className={bodyClass}>
+                                        <PercentageNumber number={pricePercentage}/>
+                                    </td>
+                                    <td className={bodyClass}>
+                                        <PercentageNumber number={remainderPercentage}/>
+                                    </td>
+                                </tr>
+                            )
+                        }
                     })
                 }
                 <tr className="border-b-2 border-red-500 font-bold text-xl text-red-500">

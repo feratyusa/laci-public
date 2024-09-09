@@ -1,9 +1,11 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
 import { Link } from "@inertiajs/react";
-import { Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList, Tooltip } from "@material-tailwind/react";
+
 import Statuses from "@/Base/Statuses";
 import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { DropdownMenuOption } from "@/Components/DropdownOptions";
+import { MenuItem } from "@headlessui/react";
 
 const LinkProposal = ({children, className='', id}) => {
     return(
@@ -19,7 +21,7 @@ export default function TableProposal({proposals}){
     ];
 
     return(
-        <div className="table w-full mt-2 text-xs">
+        <div className="table table-auto w-full mt-2 text-xs">
             <div className="table-header-group bg-red-600 text-center">
                 <div className="table-row">
                     {
@@ -102,20 +104,27 @@ export default function TableProposal({proposals}){
                                             }
                                         </MenuList>
                                     </Menu> */}
-                                    <OptionButton tip="Lihat Usulan" color="blue" link={route('proposal.show', [proposal.id])}>
-                                        <EyeIcon className="w-full" />
-                                    </OptionButton>
-                                    <OptionButton tip="Edit Usulan" color="amber" link={route('proposal.edit', [proposal.id])}>
-                                        <Cog8ToothIcon className="h-5 w-5"/>
-                                    </OptionButton>
-                                    <DialogDelete 
-                                        key={proposal.id}
-                                        content="Proposal"
-                                        title={"Hapus Usulan?"}
-                                        variant="text"
-                                        message={"Usulan "+proposal.name+" akan dihapus. Usulan yang telah dihapus tidak dapat dikembalikan."}
-                                        route={route('proposal.destroy', [proposal.id])}
-                                    />
+                                    <DropdownMenuOption>
+                                        <MenuItem>
+                                            <Link href={route('proposal.show', [proposal.id])} className="block p-2 data-[focus]:bg-blue-100">
+                                                <div className="flex items-center gap-2 text-blue-500">
+                                                    <EyeIcon className="w-5"/>
+                                                    Lihat Usulan
+                                                </div>
+                                            </Link>   
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <Link href={route('proposal.edit', [proposal.id])} className="block p-2 data-[focus]:bg-amber-100">
+                                                <div className="flex items-center gap-2 text-amber-500">
+                                                    <Cog8ToothIcon className="w-5"/>
+                                                    Edit Usulan
+                                                </div>
+                                            </Link>   
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <DialogDelete mode="text" route={route('proposal.destroy', [proposal.id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${proposal.name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
+                                        </MenuItem>
+                                    </DropdownMenuOption>
                                 </div>
                             </div>
                         )

@@ -124,20 +124,45 @@ class EventController extends Controller
             ->with([]);
     }
 
-    public function changeNumberType(NumberTypeRequest $request, string $id): RedirectResponse
+    // public function changeNumberType(NumberTypeRequest $request, string $id): RedirectResponse
+    // {
+    //     $event = Event::findOrFail($id);
+
+    //     $validated = $request->validated();
+
+    //     if($validated === ParticipantNumberType::DYNAMIC->value){
+    //         $numbers = $event->participants()->count();
+    //         $event->update([
+    //             'participant_number_type' => $validated['participant_number_type'],
+    //             'participant_number' => $numbers,
+    //         ]);
+    //     }
+        
+    //     return redirect()->route('event.show', ['id' => $event->id]);
+    // }
+
+
+    public function changeNumberType(string $id)
     {
         $event = Event::findOrFail($id);
 
-        $validated = $request->validated();
+        switch($event->participant_number_type){
+            case ParticipantNumberType::FIXED->value:
+                $event->update([
+                    'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+                ]);
+                break;
 
-        if($validated === ParticipantNumberType::DYNAMIC->value){
-            $numbers = $event->participants()->count();
-            $event->update([
-                'participant_number_type' => $validated['participant_number_type'],
-                'participant_number' => $numbers,
-            ]);
+            case ParticipantNumberType::DYNAMIC->value:
+                $event->update([
+                    'participant_number_type' => ParticipantNumberType::FIXED->value
+                ]);
+                break;
+            
+            default:
+                break;
         }
-        
+
         return redirect()->route('event.show', ['id' => $event->id]);
     }
 

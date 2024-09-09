@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Event;
 
+use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\ParticipantFormRequest;
 use App\Models\EHC\Employee;
@@ -64,6 +65,10 @@ class EventParticipantController extends Controller
                     }
                 }
 
+                $event->update([
+                    'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+                ]);
+
                 DB::commit();
             }catch(Error){
                 DB::rollBack();
@@ -120,6 +125,10 @@ class EventParticipantController extends Controller
                     ]);
                 }
             }
+
+            $event->update([
+                'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+            ]);
         }
         
         return redirect()->route('event.show', ['id' => $event->id]);
@@ -141,6 +150,10 @@ class EventParticipantController extends Controller
         }catch(Error){
             DB::rollBack();
         }
+
+        $event->update([
+            'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+        ]);
 
         return redirect()->back();   
     }

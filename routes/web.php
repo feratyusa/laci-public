@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/edit', [EventController::class, 'edit'])->name('event.edit');
             Route::put('', [EventController::class, 'update'])->name('event.update');
             Route::delete('', [EventController::class, 'destroy'])->name('event.destroy');
+            Route::put('/change-number-type', [EventController::class, 'changeNumberType'])->name('event.number-type');
             Route::prefix('participants')->group(function (){
                 Route::get('', [EventParticipantController::class, 'index'])->name('event.participant.index');
                 Route::post('', [EventParticipantController::class, 'store'])->name('event.participant.store');

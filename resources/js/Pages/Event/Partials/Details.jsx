@@ -1,5 +1,5 @@
-import { Chip, Typography } from "@material-tailwind/react";
-import { Cog8ToothIcon } from "@heroicons/react/24/solid";
+import { Chip, IconButton, Tooltip, Typography } from "@material-tailwind/react";
+import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
 import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
@@ -19,10 +19,29 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
                         className="w-fit"
                         color={color}
                         value={value}
-                    /> : option == "link" ?
+                    /> 
+                    : 
+                    option == "link" ?
                     <Link href={link} className="underline hover:text-red-900 hover:underline">
                         <p className="text-blue-500 hover:text-red-500">{"["+value.id+"] "+value.name+" ("+value.entry_date+")"}</p>      
-                    </Link> :
+                    </Link> 
+                    :
+                    option == 'number_type' ?
+                    <div className="flex items-center gap-3">
+                        <Chip 
+                            className="w-fit"
+                            color={color}
+                            value={value}
+                        /> 
+                        <Tooltip content="Ganti Tipe">
+                            <Link href={link} method="put" as="div">
+                                <IconButton color="green" size="sm" variant="text">
+                                    <ArrowPathIcon className="w-full"/>
+                                </IconButton>
+                            </Link>
+                        </Tooltip>
+                    </div>
+                    :
                     <p className="">{value}</p>
                 }
             </td>
@@ -31,7 +50,7 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
 }
 
 export default function EventDetails({event, categories, proposalRoute}){
-    const [color, ] = useState(event.participant_number_type === "DYNAMIC" ? 'purple' : 'teal')
+    const [color, ] = useState(event.participant_number_type == "DYNAMIC" ? 'purple' : 'teal')
     const dateoptions = {
         weekday: 'long',
         year: 'numeric',
@@ -49,8 +68,8 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.lengkap}`}  />
                 <TableRow name={"Tanggal Mulai"} value={new Date(event.start_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
-                <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'chip'} color={color}/>
-                <TableRow name={"Jumlah Partisipan"} value={event.participant_number} />
+                <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'number_type'} color={color} link={route('event.number-type', [event.id])}/>
+                <TableRow name={"Jumlah Partisipan"} value={event.participant_number_type == 'FIXED' ? event.participant_number : event.participants.length} />
                 <TableRow name={"Biaya Pendidikan"} value={`Rp ${Number(event.prices.training_price).toLocaleString()}`} />
                 <TableRow name={"Biaya Akomodasi"} value={`Rp ${Number(event.prices.accomodation_price).toLocaleString()}`} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />

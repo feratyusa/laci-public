@@ -11,7 +11,7 @@ import Files from "./Partials/Files";
 import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 
 export default function Show({auth, code, status, proposal, events, categories, mandatoryFiles=[]}){
-    const [color, ] = useState(Statuses.find(s => s.value === proposal.status).color)
+    const [color, ] = useState('amber')
 
     return(
         <Authenticated
@@ -27,25 +27,32 @@ export default function Show({auth, code, status, proposal, events, categories, 
                     <div>
                         <Card className="w-full mt-5">
                             <CardHeader 
-                                className={"flex items-center justify-between px-20 py-3"}>
-                                    <IconButton
-                                        variant="text"
-                                        color={color}
-                                        ripple={false}
-                                    >
-                                        <DocumentTextIcon className="w-10"/>
-                                    </IconButton>
-                                    <Typography
-                                        variant="h4"
-                                        color={color}
-                                    >
-                                        {proposal.name}
-                                    </Typography>
-                                    <Chip
-                                        variant="ghost"
-                                        color={color}
-                                        value={proposal.status}
-                                    />                            
+                                className={"grid grid-cols-12 items-center px-20 py-3"}>
+                                    <div className="col-span-2">
+                                        <IconButton
+                                            variant="text"
+                                            color={color}
+                                            ripple={false}
+                                        >
+                                            <DocumentTextIcon className="w-10"/>
+                                        </IconButton>
+                                    </div>
+                                    <div className="col-span-10">
+                                        <Typography
+                                            variant="h4"
+                                            color={color}
+                                        >
+                                            {proposal.name}
+                                        </Typography>
+                                    </div>
+                                    <div className="col-span-3" hidden>
+                                        <Chip
+                                            variant="ghost"
+                                            color={color}
+                                            value={proposal.status}
+                                            className="w-fit"
+                                        />
+                                    </div>
                             </CardHeader>
                             <CardBody>
                                 <ProposalDetails proposal={proposal} color={color} categories={categories} events={proposal.events}/>

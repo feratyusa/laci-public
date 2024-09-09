@@ -71,7 +71,7 @@ class ProposalController extends Controller
             'proposal' => $proposal,
             'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),            
             'files' => $proposal->files()->get(),
-            'mandatoryFiles' => MandatoryFileCategory::where(['mandatory_type' => MandatoryCategoryLink::USULAN->value])->get(),
+            'mandatoryFiles' => $this->mandatoriesOptions(MandatoryFileCategory::where(['mandatory_type' => MandatoryCategoryLink::USULAN->value])->get()->toArray()),
             'code' => session('code'),
             'status' => session('status'),
         ]);

@@ -42,11 +42,19 @@ class EventController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $proposal_id =  intval(session('proposal_id'));
+        if($request->filled('proposal_id')){
+            $validated = $request->validate([
+                'proposal_id' => ['integer']
+            ]);
+            $proposal_id = $validated['proposal_id'];
+        }
+
         return Inertia::render('Event/Create', [
             'proposals' => $this->selectOptions(Proposal::all()->toArray(), 'id', 'name', true, ['kursus', 'event_category']),
-            'proposal_id' => session('proposal_id') ? intval(session('proposal_id')) : null,
+            'proposal_id' => $proposal_id,
             'status' => session('status'),
         ]);
     }

@@ -1,8 +1,9 @@
 import { Button, Chip, Typography } from "@material-tailwind/react";
-import { Cog8ToothIcon } from "@heroicons/react/24/solid";
+import { Cog8ToothIcon, PlusIcon } from "@heroicons/react/24/solid";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
 import DialogEventList from "./DialogEventList";
+import { Link } from "@inertiajs/react";
 
 function TableRow({name, value=null, color="red", option=null, proposal=null, events=null, ...props}){    
     return(
@@ -21,7 +22,15 @@ function TableRow({name, value=null, color="red", option=null, proposal=null, ev
                         value={value}
                     /> :
                     option == 'event' ?
-                    <DialogEventList events={events} proposal={proposal}/>
+                    <div className="flex items-center gap-5">
+                        <Link href={route('event.create')} method="get" data={{proposal_id: proposal.id}}>
+                            <Button className="flex items-center gap-2" color="green" size="sm">
+                                <PlusIcon className="w-5"/>
+                                Event
+                            </Button>
+                        </Link>
+                        <DialogEventList events={events} proposal={proposal}/>
+                    </div>
                     :
                     <Typography variant="h6">
                         {value}

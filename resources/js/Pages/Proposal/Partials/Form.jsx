@@ -141,7 +141,7 @@ export default function ProposalForm({method, proposal=null, kursus=[]}){
                             <InputError message={errors.kd_kursus} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
                     </div>
-                    <div className="table-row">
+                    {/* <div className="table-row" hidden={true}>
                         <div className="table-cell pb-8 w-44">
                             <InputLabel value="Status" htmlFor="status" 
                                 className="font-bold text-lg" />
@@ -154,11 +154,12 @@ export default function ProposalForm({method, proposal=null, kursus=[]}){
                                 options={statuses}
                                 value={statuses.find(s => s.value === data.status)}
                                 onChange={(e) => setData('status', e.value)}
+                                
                             />
                             
                             <InputError message={errors.status} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex flex-row gap-10 justify-center">

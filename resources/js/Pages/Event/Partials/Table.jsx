@@ -62,7 +62,7 @@ export default function TableEvent({events}){
                                     {new Date(event.end_date).toLocaleDateString('id', dateoptions)}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.participant_number}
+                                    {event.participant_number_type == 'DYNAMIC' ? event.participants.length : event.participant_number}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName } id={event.id}>
                                     {"Rp "+ Number(event.prices.training_price).toLocaleString()}

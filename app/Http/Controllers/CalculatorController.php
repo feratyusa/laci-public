@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enum\EventCategory;
+use App\Enum\ParticipantNumberType;
 use App\Http\Requests\Calculator\CalculatorUpdateEventRequest;
 use App\Models\Event\Event;
 use App\Models\Event\EventPrices;
@@ -70,17 +71,18 @@ class CalculatorController extends Controller
         $totPartcInHouse = 0;
         $inHousePrices = [];
         foreach ($inHouses as $event) {
+            $partc_number = $event->participant_number_type == ParticipantNumberType::FIXED->value ? $event->participant_number : $event->participants()->count();
             $inHousePrices[] = (object)[
                 'id' => $event->id, 
                 'name' => $event->name,
-                'participant_number' => $event->participant_number, 
+                'participant_number' => $partc_number, 
                 'training_price' => $event->prices->training_price, 
                 'accomodation_price' => $event->prices->accomodation_price, 
-                'total' => intval($event->participant_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
+                'total' => intval($partc_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
                 'dirty' => false,
             ];
-            $totPartcInHouse += $event->participant_number;
-            $totPriceInHouse += $event->participant_number * ($event->prices->training_price + $event->prices->accomodation_price);
+            $totPartcInHouse += $partc_number;
+            $totPriceInHouse += $partc_number * ($event->prices->training_price + $event->prices->accomodation_price);
         }
         
 
@@ -88,17 +90,18 @@ class CalculatorController extends Controller
         $totPartcPublic = 0;
         $publicPrices = [];
         foreach ($publics as $event) {
+            $partc_number = $event->participant_number_type == ParticipantNumberType::FIXED->value ? $event->participant_number : $event->participants()->count();
             $publicPrices[] = (object)[
                 'id' => $event->id, 
                 'name' => $event->name,
-                'participant_number' => $event->participant_number, 
+                'participant_number' => $partc_number,
                 'training_price' => $event->prices->training_price, 
                 'accomodation_price' => $event->prices->accomodation_price, 
-                'total' => intval($event->participant_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
+                'total' => intval($partc_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
                 'dirty' => false,
             ];
-            $totPartcPublic += $event->participant_number;
-            $totPricePublic += $event->participant_number * ($event->prices->training_price + $event->prices->accomodation_price);
+            $totPartcPublic += $partc_number;
+            $totPricePublic += $partc_number * ($event->prices->training_price + $event->prices->accomodation_price);
         }
 
         // Check and get input field of 'budget_id' for the budget

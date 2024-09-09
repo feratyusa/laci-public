@@ -97,6 +97,7 @@ export default function AddDialog({type, route, mandatories=[]}){
                     isSearchable
                     isClearable
                     isMulti
+                    maxMenuHeight={200}
                 />
               </div>
             <div className="flex justify-center items-center gap-4">

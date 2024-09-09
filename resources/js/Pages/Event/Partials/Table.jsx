@@ -1,7 +1,10 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
+import { DropdownMenuOption } from "@/Components/DropdownOptions";
 import OptionButton from "@/Components/OptionButton";
-import { Cog8ToothIcon } from "@heroicons/react/24/outline";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Cog8ToothIcon, EllipsisVerticalIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
+import { IconButton } from "@material-tailwind/react";
 
 const LinkEvent = ({children, className='', id}) => {
     return(
@@ -17,7 +20,7 @@ export default function TableEvent({events}){
     ];
 
     return(
-        <div className="table w-full mt-2">
+        <div className="table table-auto w-full mt-2">
             <div className="table-header-group bg-red-600 text-sm text-center">
                 <div className="table-row">
                     {
@@ -33,10 +36,6 @@ export default function TableEvent({events}){
                 {                                    
                     events?.map((event, index) => {
                         const cellClassName = "table-cell border-y p-4 align-middle ";
-                        const options = [
-                            {name: "Edit", route: route('event.edit', [event.id])},
-                            {name: "Delete", route: route('event.destroy', [event.id])}
-                        ]
                         const dateoptions = {
                             year: 'numeric',
                             month: 'long',
@@ -56,38 +55,43 @@ export default function TableEvent({events}){
                                 <LinkEvent className={cellClassName} id={event.id}>
                                     {event.proposal.kursus.lengkap}
                                 </LinkEvent>
-                                <LinkEvent className={cellClassName + "w-36"} id={event.id}>
+                                <LinkEvent className={cellClassName} id={event.id}>
                                     {new Date(event.start_date).toLocaleDateString('id', dateoptions)}
                                 </LinkEvent>
-                                <LinkEvent className={cellClassName + "w-36"} id={event.id}>
+                                <LinkEvent className={cellClassName } id={event.id}>
                                     {new Date(event.end_date).toLocaleDateString('id', dateoptions)}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName} id={event.id}>
                                     {event.participant_number}
                                 </LinkEvent>
-                                <LinkEvent className={cellClassName + "w-28"} id={event.id}>
+                                <LinkEvent className={cellClassName } id={event.id}>
                                     {"Rp "+ Number(event.prices.training_price).toLocaleString()}
                                 </LinkEvent>
-                                <LinkEvent className={cellClassName + " w-28"} id={event.id}>
+                                <LinkEvent className={cellClassName } id={event.id}>
                                     {"Rp "+ Number(event.prices.accomodation_price).toLocaleString()}
                                 </LinkEvent>
                                 <div className={cellClassName}>
-                                    <div className="flex flex-row gap-3 justify-center">
-                                        <OptionButton 
-                                            link={route('event.edit', [event.id])}
-                                            tip="Edit Event"
-                                        >
-                                            <Cog8ToothIcon className="w-5"/>
-                                        </OptionButton>
-                                        <DialogDelete 
-                                            content={'event'}
-                                            title={"Hapus Event " + event.name + " ?"}
-                                            message={"Event yang akan dihapus tidak dapat dikembalikan."}
-                                            route={route('event.destroy', [event.id])}
-                                            buttonSize="sm"
-                                            variant="text"
-                                        />
-                                    </div>
+                                    <DropdownMenuOption>
+                                        <MenuItem>
+                                            <Link href={route('event.show', [event.id])} className="block p-2 data-[focus]:bg-blue-100">
+                                                <div className="flex items-center gap-2 text-blue-500">
+                                                    <EyeIcon className="w-5"/>
+                                                    Lihat Event
+                                                </div>
+                                            </Link>   
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <Link href={route('event.edit', [event.id])} className="block p-2 data-[focus]:bg-amber-100">
+                                                <div className="flex items-center gap-2 text-amber-500">
+                                                    <Cog8ToothIcon className="w-5"/>
+                                                    Edit Event
+                                                </div>
+                                            </Link>   
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <DialogDelete mode="text" route={route('event.destroy', [event.id])} content={'event'} title={'Hapus Event'} message={`Yakin ingin menghapus (${event.name})? Event yang telah dihapus tidak dapat dikembalikan`}/>  
+                                        </MenuItem>
+                                    </DropdownMenuOption>
                                 </div>
                             </div>
                         )

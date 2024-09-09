@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/react"
 import { Typography, Button, IconButton, Tooltip } from "@material-tailwind/react"
 import { useState } from "react"
 
-export default function DialogDelete({content, title, message, route, buttonSize="md", variant="filled", ...props}){
+export default function DialogDelete({mode='icon', content, title, message, route, buttonSize="md", variant="filled", ...props}){
     const {delete: destroy, processing} = useForm()
     const [open, setOpen] = useState(false)
 
@@ -22,16 +22,26 @@ export default function DialogDelete({content, title, message, route, buttonSize
 
     return(
         <>
-            <Tooltip content={"Hapus "+content}>
-                <IconButton
-                    onClick={handleOpen}
-                    color="red"
-                    variant={variant}
-                    size={buttonSize}
-                >
-                    <TrashIcon className="w-5" />
-                </IconButton>
-            </Tooltip>
+            {
+                mode == 'text' ?
+                <div className="block p-2 cursor-pointer hover:bg-red-100" onClick={() => setOpen(true)}>
+                    <div className="flex items-center gap-2 text-red-500">
+                        <TrashIcon className="w-5"/>
+                        Hapus Event
+                    </div>
+                </div>                 
+                :
+                <Tooltip content={"Hapus "+content}>
+                    <IconButton
+                        onClick={handleOpen}
+                        color="red"
+                        variant={variant}
+                        size={buttonSize}
+                    >
+                        <TrashIcon className="w-5" />
+                    </IconButton>
+                </Tooltip>
+            }
             <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>
                 {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />

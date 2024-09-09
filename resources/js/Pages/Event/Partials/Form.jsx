@@ -7,6 +7,7 @@ import InputError from "@/Components/Form/InputError";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import number_types from "@/Base/NumberType";
+import { useEffect } from "react";
 
 export default function EventForm({
         method, 
@@ -32,15 +33,13 @@ export default function EventForm({
     });
 
     const [proposalDetail, setProposalDetail] = useState(
-        proposal_id ? 
-        proposals.find(p => p.value === proposal_id) : ''
+        proposal_id ? proposals.find(p => p.value == proposal_id) : ''
     )
 
     const [numberDisabled, setNumberDisabled] = useState(false)
 
     function handleProposalChange(id){
-        setData('proposal_id', id)
-        setProposalDetail(proposals.find(p => p.value === id))
+        setProposalDetail(proposals.find(p => p.value == id))
     }
 
     function handleSubmit(e){
@@ -63,6 +62,10 @@ export default function EventForm({
         reset()
         window.history.back()
     }
+
+    useEffect(() => {
+        handleProposalChange(data.proposal_id)
+    }, [data.proposal_id])
 
     return(
         <form onSubmit={handleSubmit} 
@@ -106,17 +109,9 @@ export default function EventForm({
                                 classNamePrefix="select2-selection"
                                 className="max-w-full focus:border-red-500"
                                 options={proposals}
-                                value={proposals.find(p => p.value === data.proposal_id)}
+                                value={proposals.find(p => p.value == data.proposal_id)}
                                 isSearchable={true}
-                                isDisabled={proposal_id != null}
-                                onChange={(e) => handleProposalChange(e.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
+                                onChange={(e) => setData('proposal_id', e.value)}
                             />
 
                             <InputError message={errors.proposal_id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
@@ -207,13 +202,6 @@ export default function EventForm({
                                     if(e.value === 'FIXED') setNumberDisabled(false)
                                     else setNumberDisabled(true)
                                 }}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary: 'red',
-                                    },
-                                })}
                             />
 
                             <InputError message={errors.participant_number_type} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>

@@ -43,7 +43,7 @@ export default function Create({
                                     variant="h6"
                                     color="red"
                                 >
-                                    Event untuk Usulan {proposals.find(p => p.value === proposal_id).label}
+                                    Event untuk Usulan {proposals.find(p => p.value == proposal_id)?.label}
                                 </Typography> : ''
                             }
                         </div>

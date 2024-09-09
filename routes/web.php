@@ -52,7 +52,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('files')->group(function () {
         Route::post('', [FileController::class, 'store'])->name('file.store');
-        Route::get('/{id}', [FileController::class, 'download'])->name('file.download');
+        Route::get('/{id}', [FileController::class, 'show'])->name('file.show');
+        Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
         Route::delete('/{id}', [FileController::class, 'destroy'])->name('file.destroy');
     });
     

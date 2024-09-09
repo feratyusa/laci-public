@@ -31,6 +31,11 @@ export default function DialogDelete({mode='icon', content, title, message, rout
                     </div>
                 </div>                 
                 :
+                mode == 'button' ?
+                <Button onClick={() => setOpen(true)} color="red" size={buttonSize}>
+                    Hapus
+                </Button>
+                :
                 <Tooltip content={"Hapus "+content}>
                     <IconButton
                         onClick={handleOpen}

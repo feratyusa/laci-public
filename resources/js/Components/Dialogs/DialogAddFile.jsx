@@ -49,13 +49,13 @@ export default function DialogAddFile({
             {
                 as === "button" ? 
                 <Tooltip content="Tambah File">
-                    <IconButton onClick={handleOpen} color="blue">
+                    <IconButton onClick={handleOpen} color="green">
                         <DocumentPlusIcon className="h-5 w-5"/>
                     </IconButton>
                 </Tooltip>
                 :
                 <Tooltip content="Tambah File">
-                    <Button className="flex items-center gap-3" onClick={handleOpen} color="blue">
+                    <Button className="flex items-center gap-3" onClick={handleOpen} color="green">
                         <DocumentPlusIcon className="h-5 w-5"/>
                         File
                     </Button>

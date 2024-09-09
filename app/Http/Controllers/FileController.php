@@ -93,7 +93,12 @@ class FileController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $file = File::findOrFail($id);
+        $file_path = Storage::path($file->path);
+
+        header("Content-type: application/pdf");
+        header("Content-Disposition: inline; filename={$file_path}");
+        @readfile($file_path);
     }
 
     /**

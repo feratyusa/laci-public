@@ -2,9 +2,9 @@ import { ArrowDownOnSquareIcon, ArrowDownOnSquareStackIcon, DocumentIcon } from 
 import DialogDelete from "../Dialogs/DialogDelete";
 import { filesize } from "filesize";
 import DialogInfoFile from "../Dialogs/DialogInfoFile";
-import { ArrowDownIcon } from "@heroicons/react/24/solid";
+import { ArrowDownIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
-import { IconButton } from "@material-tailwind/react";
+import { IconButton, Tooltip } from "@material-tailwind/react";
 
 const mimeTypeColor = (mime_type) => {
     if(mime_type === 'pdf') return "red"
@@ -37,6 +37,18 @@ export default function FileCard({file, ...props}){
                 </div>
             </div>
             <div className="col-span-3 grid grid-cols-3 items-center">
+                <div className="w-full">
+                    <Tooltip content="Lihat File">
+                        <IconButton variant="text" color="blue" size="sm">
+                            <a href={route('file.show', [file.id])} target="__blank">
+                                <EyeIcon className="w-5"/>
+                            </a>
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <div className="w-full ">
+                    <DialogInfoFile file={file}/>
+                </div>
                 <div className="w-full max-w-52">
                     <DialogDelete
                         content={'file'}
@@ -44,17 +56,8 @@ export default function FileCard({file, ...props}){
                         message={"Yakin ingin menghapus file "+ file.name + " ?"}
                         route={route('file.destroy', [file.id])}
                         variant="text"
+                        buttonSize="sm"
                     />
-                </div>
-                <div className="w-full ">
-                    <DialogInfoFile file={file}/>
-                </div>
-                <div className="w-full">
-                    <a href={route('file.download', [file.id])}>
-                        <IconButton variant="text">
-                            <ArrowDownOnSquareIcon className="w-5"/>
-                        </IconButton>
-                    </a>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { filesize } from "filesize";
 import { useState } from "react";
+import DialogDelete from "./DialogDelete";
 
 function LabelRow({children, ...props}){
     return(
@@ -48,7 +49,7 @@ export default function DialogInfoFile({file}){
     return(
         <>
             <Tooltip content="Detail File">
-                <IconButton onClick={handleOpen} color="" variant="text">
+                <IconButton onClick={handleOpen} color="amber" variant="text" size="sm">
                     <ExclamationCircleIcon className="h-5 w-5"/>
                 </IconButton>
             </Tooltip>
@@ -61,19 +62,37 @@ export default function DialogInfoFile({file}){
                     <div className="flex min-h-full items-center justify-center p-4">
                         <DialogPanel
                             transition
-                            className="w-full max-w-2xl rounded-xl bg-white p-10 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 overflow-auto"
+                            className="w-full max-w-2xl max-h-screen overflow-auto rounded-xl bg-white p-10 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 overflow-auto"
                             >
                             <DialogTitle className="font-bold text-2xl text-center">Informasi File</DialogTitle>
                             
                             <div className="flex flex-col mb-10 mt-5">
+                                <RowContent label={"ID"} info={file.id}/>
                                 <RowContent label={"Nama"} info={file.name}/>
                                 <RowContent label={"Tipe File"} info={file.mime_type.toUpperCase()} />
                                 <RowContent label={"Ukuran"} info={filesize(file.size)} />
-                                <RowContent label={"Diupload Tanggal"} info={changeToIndonesiaDateTime(file.created_at)} />
+                                <RowContent label={"Diupload Tanggal"} info={changeToIndonesiaDateTime(file.created_at)}/>
                             </div>
-                            <div className="flex flex-row justify-center">
+                            <div className="flex gap-5 justify-center">
+                                <a href={route('file.show', [file.id])} target="__blank">
+                                    <Button color="blue">
+                                        Lihat File
+                                    </Button>
+                                </a>
+                                <a href={route('file.download', [file.id])}>
+                                    <Button color="green">
+                                        Download
+                                    </Button>
+                                </a>
+                                <DialogDelete
+                                    content={'file'}
+                                    title={"Hapus File"}
+                                    message={"Yakin ingin menghapus file "+ file.name + " ?"}
+                                    route={route('file.destroy', [file.id])}
+                                    mode="button"
+                                />
                                 <Button
-                                    color="red"
+                                    color="amber"
                                     onClick={handleClose}
                                     >
                                     Tutup

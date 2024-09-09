@@ -65,7 +65,7 @@ export default function BudgetDetailShow({budget}){
                         <p className='text-xs italic text-gray-500'>ID: {budget.id}</p>
                     </DialogTitle>
                     <div className='mb-5'>
-                        <BudgetTable budget={budget}/>
+                        <BudgetTable budget={budget} details={budget.details}/>
                     </div>
                     <div>
                         <BudgetDetailTable details={budget.details}/>

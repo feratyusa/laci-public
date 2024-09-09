@@ -40,12 +40,12 @@ function TanstackBudgetTable({budgets}){
             enableColumnFilter: true,
             filterFn: 'CustomFilter', 
         }),
-        columnHelper.accessor(row => row.value, {
-            id: 'value',
-            header: () => <span>Anggaran</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
-            footer: info => info.column.id,
-        }),
+        // columnHelper.accessor(row => row.value, {
+        //     id: 'value',
+        //     header: () => <span>Anggaran</span>,
+        //     cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
+        //     footer: info => info.column.id,
+        // }),
         columnHelper.accessor(row => row.id, {
             id: 'actions',
             header: () => 'Actions',

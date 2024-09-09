@@ -5,6 +5,7 @@ import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import BudgetTable from "./BudgetTable";
+import eventCategories from "@/Base/EventCategory";
 
 export default function DetailsFormDialog({variant="icon", budget=[], details=[]}){
     const {data, setData, processing, post, put, delete: destroy} = useForm({
@@ -14,7 +15,14 @@ export default function DetailsFormDialog({variant="icon", budget=[], details=[]
     const [open, setOpen] = useState(localStorage.getItem('dialog') ? true : false )
 
     function handleAddDetailForm(){
-        const newDetail = [...data.details, {id: null, name: '', value: 0}]
+        let defaultName = ''
+        if(!details.find(d => d.name == 'In House Training') && !data.details.find(d => d.name == 'In House Training')){
+            defaultName = 'In House Training'
+        }
+        else if(! details.find(d => d.name == 'Public Training') && !data.details.find(d => d.name == 'Public Training')){
+            defaultName = 'Public Training'
+        }
+        const newDetail = [...data.details, {id: null, name: defaultName, value: 0}]
         setData('details', newDetail)
     }
 
@@ -82,7 +90,7 @@ export default function DetailsFormDialog({variant="icon", budget=[], details=[]
                     </DialogTitle>
                         <div className='py-5'>
                             <div className="mb-5">
-                                <BudgetTable budget={budget}/>
+                                <BudgetTable budget={budget} details={data.details}/>
                             </div>
                             {
                                 localStorage.getItem('error') && 

@@ -12,7 +12,7 @@ export default function BudgetFormDialog({variant="icon", mode='create', route, 
   const [isOpen, setIsOpen] = useState(false)
   const {data, setData, errors, clearErrors, post, put, processing, reset} = useForm({
     year: budget?.year ?? "",
-    value: budget?.value ?? "0",
+    value: "0",
     details: []
   })
   const title = mode == 'create' ? 'Buat Tahun Anggaran Baru' : 'Edit Tahun Anggaran'
@@ -78,8 +78,8 @@ export default function BudgetFormDialog({variant="icon", mode='create', route, 
               <p className='uppercase font-bold'>{title}</p>
               {budget.length > 0 ? <p className='text-xs italic text-gray-500'>Tahun: {budget.year}</p> : ''}
             </DialogTitle>
-            <div className='grid grid-rows-2 gap-5 py-5'>
-              <div>
+            <div className='py-5'>
+              <div className='mb-5'>
                   <label htmlFor='year'>
                     Tahun Anggaran
                   </label>
@@ -92,7 +92,7 @@ export default function BudgetFormDialog({variant="icon", mode='create', route, 
                   {errors.year == null ? <InputInstruction text='Input berupa angka tahun'/> 
                     : <InputError message={errors.year} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
               </div>
-              <div>
+              <div className='mb-5' hidden>
                   <label htmlFor='value'>
                     Total Anggaran
                   </label>

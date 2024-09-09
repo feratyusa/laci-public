@@ -10,9 +10,9 @@ export default function Index({auth, categories}){
     return(
         <Authenticated
             user={auth.user}
-            header={<HeaderTitle title={'File Kategori'}/>}
+            header={<HeaderTitle title={'Kategori File'}/>}
         >
-            <Head title="File Kategori"/>
+            <Head title="Kategori File"/>
                         
             <Card className="m-5 p-3">
                 <CardBody>

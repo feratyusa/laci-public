@@ -42,9 +42,9 @@ export default function Index({
         <Authenticated
             user={auth.user}
             header={
-            <HeaderTitle title={"Calculator Event"} />}
+            <HeaderTitle title={"Kalkulator"} />}
         >
-            <Head title="Calculator"/>
+            <Head title="Kalkulator"/>
 
             <Card className="m-5 p-10 max-h-screen overflow-auto">
                 <div className="flex items-center gap-5 mb-10 text-red-500">

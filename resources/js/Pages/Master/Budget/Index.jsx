@@ -98,7 +98,7 @@ export default function Index({auth, budgets}){
             user={auth.user}
             header={<HeaderTitle title={"Anggaran"}/>}
         >
-            <Head title="Master Anggaran"/>
+            <Head title="Anggaran"/>
 
             <Card className="m-5 p-3">
                 <CardBody>

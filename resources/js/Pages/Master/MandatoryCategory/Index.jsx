@@ -33,15 +33,15 @@ export default function Index({auth, types, mandatories}){
     return(
         <Authenticated
             user={auth.user}
-            header={<HeaderTitle title={'Kategori Wajib'}/>}
+            header={<HeaderTitle title={'Kategori File Wajib'}/>}
         >
-            <Head title="Mandatory Category" />
+            <Head title="Kategori Wajib" />
 
             <Card className="m-5 p-3">
                 <CardBody>
                     <div className="flex items-center gap-5 text-red-500 mb-10">
                         <ExclamationCircleIcon className="w-8"/>
-                        <p className="text-2xl font-bold">Kategori File Wajib</p>
+                        <p className="text-2xl font-bold">Master Kategori File Wajib</p>
                     </div>
                     {
                         types.map(type => (

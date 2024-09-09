@@ -97,7 +97,6 @@ export default function AddDialog({type, route, mandatories=[]}){
                     isSearchable
                     isClearable
                     isMulti
-                    menuShouldBlockScroll
                 />
               </div>
             <div className="flex justify-center items-center gap-4">

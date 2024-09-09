@@ -84,7 +84,7 @@ class ProposalController extends Controller
     {        
         return Inertia::render('Proposal/Edit', [
             'proposal' => Proposal::find($id),
-            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap'),
+            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', true, ['kategori']),
         ]);
     }
 

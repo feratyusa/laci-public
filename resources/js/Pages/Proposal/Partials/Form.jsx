@@ -20,9 +20,9 @@ export default function ProposalForm({method, proposal=null, kursus=[]}){
         status: proposal ? proposal.status : statuses[0].value,
     });
 
-    const [openSelect, setOpenSelect] = useState(false)
-    
-    function setEventCategory(kd_kursus){
+    const [openSelect, setOpenSelect] = useState(false) 
+
+    function setEventCategory(kd_kursus){      
         setData('event_category', kursus.find(k => k.value == kd_kursus)?.kategori ?? '')
     }
 
@@ -109,7 +109,8 @@ export default function ProposalForm({method, proposal=null, kursus=[]}){
                                 className="max-w-2xl focus:border-red-500"
                                 value={event_category.find(k => k.value == data.event_category) ?? ''}
                                 options={[...event_category]}
-                                onChange={(e) => setData('event_category', e?.value ?? "")}
+                                onChange={(e) => setData('event_category', e.value ?? "")}
+                                isDisabled
                             />
 
                             <InputError message={errors.event_category} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>

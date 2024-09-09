@@ -30,9 +30,9 @@ class ProposalFilterController extends FilterController
                     $dataConcate[] = $data;
                 }
             }
-            $paginator = Proposal::whereRaw($queryConcate, $dataConcate)->paginate(10)->appends($request->all());
+            $paginator = Proposal::whereRaw($queryConcate, $dataConcate)->orderByDesc('id')->paginate(10)->appends($request->all());
         }else{
-            $paginator = Proposal::paginate(10);
+            $paginator = Proposal::orderByDesc('id')->paginate(10);
         }
 
         return $paginator;

@@ -34,7 +34,7 @@ export default function DialogDelete({content, title, message, route, buttonSize
             </Tooltip>
             <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>
                 {/* Backdrop */}
-                <DialogBackdrop className="fixed inset-0 bg-black/5" />
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
 
                 {/* Dialog Content */}
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">

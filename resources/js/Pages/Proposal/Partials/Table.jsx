@@ -1,9 +1,9 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
 import { Chip, IconButton, Menu, MenuHandler, MenuItem, MenuList, Tooltip } from "@material-tailwind/react";
 import Statuses from "@/Base/Statuses";
+import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 const LinkProposal = ({children, className='', id}) => {
     return(
@@ -15,7 +15,7 @@ const LinkProposal = ({children, className='', id}) => {
 
 export default function TableProposal({proposals}){
     const columns = [
-        "ID", "NAMA USULAN", "KATEGORI","KURSUS", "TANGGAL MASUK", "STATUS", "OPSI"
+        "ID", "NAMA USULAN", "KATEGORI","KURSUS", "TANGGAL MASUK", "OPSI"
     ];
 
     return(
@@ -57,16 +57,16 @@ export default function TableProposal({proposals}){
                                 <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}
                                 </LinkProposal>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
+                                {/* <LinkProposal className={cellClassName + ""} id={proposal.id}>
                                     {
                                         <Chip color={Statuses.find(status => status.value === proposal.status).color} 
                                             value={proposal.status}
                                             variant="ghost"
                                         />
                                     }
-                                </LinkProposal>
+                                </LinkProposal> */}
                                 <div className={cellClassName + "w-40"}>
-                                    <Menu>
+                                    {/* <Menu>
                                         <Tooltip content="Ganti Status">
                                             <MenuHandler>
                                                 <IconButton variant="text" color="green">
@@ -101,16 +101,19 @@ export default function TableProposal({proposals}){
                                                 )
                                             }
                                         </MenuList>
-                                    </Menu>
-                                    <OptionButton tip="Edit Proposal" color="yellow" link={route('proposal.edit', [proposal.id])}>
+                                    </Menu> */}
+                                    <OptionButton tip="Lihat Usulan" color="blue" link={route('proposal.show', [proposal.id])}>
+                                        <EyeIcon className="w-full" />
+                                    </OptionButton>
+                                    <OptionButton tip="Edit Usulan" color="amber" link={route('proposal.edit', [proposal.id])}>
                                         <Cog8ToothIcon className="h-5 w-5"/>
                                     </OptionButton>
                                     <DialogDelete 
                                         key={proposal.id}
                                         content="Proposal"
-                                        title={"Hapus Proposal?"}
+                                        title={"Hapus Usulan?"}
                                         variant="text"
-                                        message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
+                                        message={"Usulan "+proposal.name+" akan dihapus. Usulan yang telah dihapus tidak dapat dikembalikan."}
                                         route={route('proposal.destroy', [proposal.id])}
                                     />
                                 </div>

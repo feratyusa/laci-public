@@ -60,7 +60,7 @@ export default function ProposalDetails({proposal, color, events, categories}){
                 </div>
                 <div className={"col-span-4 p-4 bg-gray-50"}>
                     <div className="flex flex-row gap-5">
-                        <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="yellow" variant="filled">
+                        <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
                             <Cog8ToothIcon className="w-5"/>
                         </OptionButton>
                         <DialogDelete

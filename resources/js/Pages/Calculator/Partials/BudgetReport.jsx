@@ -27,7 +27,7 @@ function BudgetTable({budget, sumPrices, sumParticipants}){
     const headerClass = 'border-l-2 last:border-r-2 border-white p-2'
     const bodyClass = 'px-2 py-5'
 
-    const colorAware = totalPercentage > 80 ? "text-red-500" : totalPercentage > 50 ? "text-yellow-900" : "text-green-500"
+    const colorAware = totalPercentage > 80 ? "text-red-500" : totalPercentage > 50 ? "text-amber-500" : "text-green-500"
 
     return(
         <table className="table-auto w-full text-center">
@@ -53,16 +53,17 @@ function BudgetTable({budget, sumPrices, sumParticipants}){
                             const remainder = Number(detail.value) - Number(price)
                             const pricePercentage = (Number(price)/Number(detail.value)) * 100
                             const remainderPercentage = (Number(remainder)/Number(detail.value)) * 100
+                            const colorAwareDetail = pricePercentage > 80 ? "text-red-500" : pricePercentage > 50 ? "text-yellow-900" : "text-green-500"
                             return(
                                 <tr className="border-b-2 border-red-500 text-black">
-                                    <td className={bodyClass}>{detail.name}</td>
-                                    <td className={bodyClass}>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
-                                    <td className={bodyClass}>{`Rp ${Number(price).toLocaleString()}`}</td>
-                                    <td className={bodyClass}>{`Rp ${Number(remainder).toLocaleString()}`}</td>
-                                    <td className={bodyClass}>
+                                    <td className={`${bodyClass}`}>{detail.name}</td>
+                                    <td className={`${bodyClass}`}>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
+                                    <td className={`${bodyClass} ${colorAwareDetail}`}>{`Rp ${Number(price).toLocaleString()}`}</td>
+                                    <td className={`${bodyClass} ${colorAwareDetail}`}>{`Rp ${Number(remainder).toLocaleString()}`}</td>
+                                    <td className={`${bodyClass} ${colorAwareDetail}`}>
                                         <PercentageNumber number={pricePercentage}/>
                                     </td>
-                                    <td className={bodyClass}>
+                                    <td className={`${bodyClass} ${colorAwareDetail}`}>
                                         <PercentageNumber number={remainderPercentage}/>
                                     </td>
                                 </tr>
@@ -70,7 +71,7 @@ function BudgetTable({budget, sumPrices, sumParticipants}){
                         }
                     })
                 }
-                <tr className="border-b-2 border-red-500 font-bold text-xl text-red-500">
+                <tr className="border-b-2 border-red-500 font-bold text-xl text-black">
                     <td className={bodyClass}>Total</td>
                     <td className={bodyClass}>{`Rp ${totalBudget.toLocaleString()}`}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{`Rp ${totalPrices.toLocaleString()}`}</td>

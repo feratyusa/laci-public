@@ -122,6 +122,10 @@ class FileController extends Controller
      */
     public function destroy(string $id)
     {
-        
+        $file = File::findOrFail($id);
+
+        $file->deleteOrFail();
+
+        return redirect()->back();
     }
 }

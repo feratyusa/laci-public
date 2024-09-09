@@ -16,6 +16,8 @@ export default function DialogDelete({mode='icon', content, title, message, rout
     }
     function handleDelete(){
         destroy(route, {
+            preserveState: false,
+            preserveScroll: true,
             onSuccess: handleClose()
         })
     }

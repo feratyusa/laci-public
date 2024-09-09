@@ -10,7 +10,7 @@ import ProposalDetails from "./Partials/Details";
 import Files from "./Partials/Files";
 import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 
-export default function Show({auth, code, status, proposal, events, categories, files}){
+export default function Show({auth, code, status, proposal, events, categories, mandatoryFiles=[]}){
     const [color, ] = useState(Statuses.find(s => s.value === proposal.status).color)
 
     return(
@@ -73,7 +73,7 @@ export default function Show({auth, code, status, proposal, events, categories, 
                                         route={route('file.store')}
                                     />
                                 </div>
-                                <Files files={proposal.files}/>
+                                <Files files={proposal.files} mandatoryFiles={mandatoryFiles}/>
                             </CardBody>
                         </Card>
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Trait;
 
+use App\Models\File\MandatoryFileCategory;
 use Illuminate\Database\Eloquent\Model;
 
 trait InputHelpers
@@ -29,5 +30,14 @@ trait InputHelpers
         }
 
         return $selectOptions;
+    }
+
+    public function mandatoriesOptions(Array $mandatories){
+        $mandatoriesArray = [];
+        foreach($mandatories as $m){
+            $mandatoriesArray[] = (object)['id' => $m['category']['id'], 'name' => $m['category']['name']];
+        }
+
+        return $mandatoriesArray;
     }
 }

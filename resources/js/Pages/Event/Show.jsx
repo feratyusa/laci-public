@@ -26,7 +26,7 @@ function TabButton({name}){
     )
 }
 
-function EventTabs({event, categories, participants}){
+function EventTabs({event, categories, participants, mandatoryFiles}){
     const tabClass = "flex items-center justify-center p-4 text-red-500 hover:bg-red-500 hover:text-white ring-0 border-0"
     const [selectedIndex, setSelectedIndex] = useState(0)
     console.log(selectedIndex)
@@ -54,7 +54,7 @@ function EventTabs({event, categories, participants}){
                             route={route('file.store')}
                         />
                     </div>
-                    <Files files={event?.files}/>
+                    <Files files={event?.files} mandatoryFiles={mandatoryFiles}/>
                 </TabPanel>
                 <TabPanel>
                     <div className="flex justify-between mb-5">
@@ -74,7 +74,7 @@ function EventTabs({event, categories, participants}){
     )
 }
 
-export default function Show({auth, code, status, event, categories, proposalRoute, participants=[]}){
+export default function Show({auth, code, status, event, categories, proposalRoute, participants=[], mandatoryFiles=[]}){
     return(
         <Authenticated
             user={auth.user}
@@ -108,7 +108,7 @@ export default function Show({auth, code, status, event, categories, proposalRou
                     </div>
                     <div>
                         <div className="rounded-md bg-white shadow-lg w-full">
-                            <EventTabs event={event} categories={categories} participants={participants}/>                                                             
+                            <EventTabs event={event} categories={categories} participants={participants} mandatoryFiles={mandatoryFiles}/>                                                             
                         </div>
                     </div>
                 </div>

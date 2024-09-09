@@ -80,9 +80,9 @@ class EventController extends Controller
         return Inertia::render('Event/Show', [
             'event' => $event,
             'files' => $files,
-            'mandatory_category' => MandatoryFileCategory::where('mandatory_type', $event->proposal->event_category)->get(),
+            'mandatoryFiles' => $this->mandatoriesOptions(MandatoryFileCategory::where(['mandatory_type' => $event->proposal->event_category])->get()->toArray()),
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
-            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name'),
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),
             'participants' => $this->selectOptions(Employee::whereNotIn('nip', $event_participants)->get()->toArray(), 'nip', 'nama')
         ]);
     }

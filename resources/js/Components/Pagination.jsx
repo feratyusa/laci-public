@@ -10,7 +10,7 @@ export default function Pagination({paginator}) {
       <Link href={paginator['prev_page_url']} 
         as="button" 
         disabled={paginator['current_page'] === 1}
-        only={['proposals', 'paginator']}
+        only={['proposals', 'paginator', 'events']}
         preserveState={true}
       >
           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" hidden={paginator['current_page'] === 1}/>
@@ -22,7 +22,7 @@ export default function Pagination({paginator}) {
       <Link href={paginator['next_page_url']}
             as="button"
             disabled={paginator['current_page'] === paginator['last_page']}
-            only={['proposals', 'paginator']}
+            only={['proposals', 'paginator', 'events']}
             preserveState={true}
       >
           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" hidden={paginator['current_page'] === paginator['last_page']}/>

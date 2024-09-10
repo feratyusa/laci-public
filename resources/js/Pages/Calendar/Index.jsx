@@ -6,6 +6,8 @@ import EventList from "./Partials/EventList";
 import { CalendarDateRangeIcon, NumberedListIcon } from "@heroicons/react/24/outline";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { Head } from "@inertiajs/react";
+import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Index({
     auth,
@@ -14,6 +16,20 @@ export default function Index({
     end='',
 }){
     const dateString = start && end ? ` (${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})` : null
+
+    const [filter, setFilter] = useState('')
+    const [eventsFiltered, setEventsFiltered] = useState([...events])
+    function handleEventChange(value){
+        setFilter(value)
+        var temp = events.filter(e => String(e.name).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        String(e.id).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        String(e.prices.training_price).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        String(e.prices.accomodation_price).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        changeToIndonesiaDateTime(e.start_date, true).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        changeToIndonesiaDateTime(e.end_date, true).toLowerCase().includes(String(value).toLowerCase())
+                                )
+        setEventsFiltered([...temp])
+    }
 
     return(
         <Authenticated
@@ -38,7 +54,7 @@ export default function Index({
                         routeSubmit={route('calendar.index')}
                         routeReset={route('calendar.reset')}
                     />
-                </div>
+                </div>            
                 {
                     events == null ?
                     <div className="flex justify-center">
@@ -54,7 +70,7 @@ export default function Index({
                         </div>
                     </div>
                     :
-                    <CalendarChart events={events} start={start} end={end}/>
+                    <CalendarChart events={eventsFiltered} start={start} end={end}/>
                 }
             </div>
 
@@ -73,7 +89,15 @@ export default function Index({
                         </div>
                     </div>
                     :
-                    <EventList start={start} end={end} events={events} className="mx-5 mb-5 pb-5"/>
+                    <>
+                        <input 
+                            placeholder="Search..."
+                            value={filter}
+                            onChange={(e) => handleEventChange(e.target.value)}
+                            className="rounded-md mb-5"
+                        />
+                        <EventList start={start} end={end} events={eventsFiltered} className="mx-5 mb-5 pb-5"/>
+                    </>
                 }
             </div>
         </Authenticated>

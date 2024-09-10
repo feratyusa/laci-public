@@ -1,58 +1,65 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import EmptyRow from "@/Components/Table/EmptyRow";
+import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { Card, CardBody } from "@material-tailwind/react";
-
-function EventRow({event}){
-    const rowClassName = "border-l-2 border-b-2 last:border-r-2 border-blue-500 p-3"
-    return(
-        <tr>
-            <td className={rowClassName}>
-                {event.id}
-            </td>
-            <td className={rowClassName}>
-                {event.name}
-            </td>
-            <td className={rowClassName}>
-                {`(${event.proposal.kursus.sandi}) ${event.proposal.kursus.lengkap}`}
-            </td>
-            <td className={rowClassName}>
-                {event.participant_number}
-            </td>
-            <td className={rowClassName}>
-                {"Rp " + Number(event.prices.training_price).toLocaleString()}
-            </td>
-            <td className={rowClassName}>
-                {"Rp " + Number(event.prices.accomodation_price).toLocaleString()}
-            </td>            
-        </tr>
-    )
-}
+import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 
 export default function EventList({events=[], start='', end='', className='', ...props}){
-    const headerClassName = "border-l-2 border-b-2 border-t-2 last:border-r-2 bg-blue-500 border-blue-300 p-3 text-white"
+    const columnHelper = createColumnHelper()
+
+    const columns = [
+        columnHelper.accessor('id', {
+            header: <span>ID</span>,
+            cell: info => info.getValue()
+        }),
+        columnHelper.accessor('name', {
+            header: <span>Nama</span>,
+            cell: info => info.getValue()
+        }),
+        columnHelper.accessor(row => row.proposal, {
+            id: 'kursus',
+            header: <span>Kursus</span>,
+            cell: info => `(${info.getValue().kursus.sandi}) ${info.getValue().kursus.lengkap})`
+        }),
+        columnHelper.accessor(row => row.participant_number_type == 'DYNAMIC' ? row.participants.length : row.participant_number, {
+            id: 'partisipan',
+            header: <span>Partisipan</span>,
+            cell: info => info.getValue()
+        }),
+        columnHelper.accessor(row => row.start_date, {
+            id: 'start_date',
+            header: <span>Tanggal Mulai</span>,
+            cell: info => `${changeToIndonesiaDateTime(info.getValue(), true)}`
+        }),
+        columnHelper.accessor(row => row.end_date, {
+            id: 'end_date',
+            header: <span>Tanggal Selesai</span>,
+            cell: info => `${changeToIndonesiaDateTime(info.getValue(), true)}`
+        }),
+        columnHelper.accessor(row => row.prices.training_price, {
+            id: 'training_price',
+            header: <span>Biaya Pendidikan</span>,
+            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`
+        }),
+        columnHelper.accessor(row => row.prices.accomodation_price, {
+            id: 'accomodation_price',
+            header: <span>Biaya Akomodasi</span>,
+            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`
+        })
+    ]
+
+    const table = useReactTable({
+        data: events,
+        columns: columns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+    })
+    
     return(
         <>
-            <table className="w-full text-center align-middle text-black">
-                <thead>
-                    <th className={headerClassName}>ID</th>
-                    <th className={headerClassName}>Nama</th>
-                    <th className={headerClassName}>Kursus</th>
-                    <th className={headerClassName}>Partisipan</th>
-                    <th className={headerClassName}>Biaya Pendidikan</th>
-                    <th className={headerClassName}>Biaya Akomodasi</th>                    
-                </thead>
-                <tbody>
-                    {
-                        events.length == 0 ?
-                            <EmptyRow colSpan={6}/>
-                        :
-                        events.map((event, index) => (
-                            <EventRow event={event} />
-                        ))
-                    }
-                </tbody>
-            </table>
+            <TanstackTable table={table} alignTable="table-auto" className="text-sm"/>
         </>
     )
 }

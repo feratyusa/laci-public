@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 function ToolTipCustom({task}, event){
     return(
         <div className="bg-white p-3 shadow-lg rounded-md">
+            <p><span className='font-bold'>ID: </span>{task.id}</p>
             <p><span className='font-bold'>Event: </span>{task.name}</p>
             <p><span className='font-bold'>Kursus: </span>{task?.kursus}</p>
             <p><span className='font-bold'>Kategori: </span>{event?.proposal.event_category}</p>
@@ -120,6 +121,8 @@ export default function CalendarChart({
         newTasks[indexTask] = {...defaultTasks[indexTask]}
 
         setData('tasks', newTasks)
+
+        checkDirtyTasks(newTasks)
     }
 
     function handleOnInputDateChange(e, position){
@@ -135,6 +138,8 @@ export default function CalendarChart({
         }
         
         setData('tasks', newTasks)
+
+        checkDirtyTasks(newTasks)
 
         console.log('Task date change on input: ' + e.target.id)
     }
@@ -152,13 +157,15 @@ export default function CalendarChart({
 
         setEventSelected(temp.id)
 
+        checkDirtyTasks(newTasks)
+
         console.log("Expander Click: " + task.id + " start: " + task.start + " end: " + task.end)
-        console.log(data.tasks)
     }
 
     function handleResetAll(){
         setData('tasks', [...defaultTasks])
         setEventSelected(false)
+        checkDirtyTasks([...defaultTasks])
     }
 
     function handleSave(){
@@ -170,8 +177,9 @@ export default function CalendarChart({
     
     function generateTasks(){
         var temps = []
+        console.log(events)
         events.forEach((element, index) => {
-            console.log(Object.keys(Colors).at(index))
+            var color = element.proposal.event_category == 'In House Training' ? "rgba(0,0,255)" : "rgb(0,155,0)"
             temps.push({
                 start: new Date(element.start_date),
                 end: new Date(element.end_date),
@@ -179,7 +187,7 @@ export default function CalendarChart({
                 id: element.id,
                 type: 'task',
                 progress: 0,
-                styles: { backgroundColor: `${Object.keys(Colors).at(index%43)}`, backgroundSelectedColor: `${Object.keys(Colors).at(index%43)}`},
+                styles: { backgroundColor: color, backgroundSelectedColor: "rgb(255,0,0)" },
                 kursus: `(${element.proposal.kursus.sandi}) ${element.proposal.kursus.lengkap}`,
                 event_category: element.proposal.event_category
             })
@@ -189,22 +197,24 @@ export default function CalendarChart({
         setData('tasks', temps)
     }
 
-    function checkDirtyTasks(){
+    function checkDirtyTasks(tasks){
         var flag = false
-        data.tasks.map(element => {
-            if(element.dirty == true) flag = true
+        tasks.map(element => {
+            if(element?.dirty == true) flag = true
         })
         setIsDirty(flag)
     }
+
+    function checkEventsChange(){
+        defaultTasks.forEach(element => {            
+            if(events.find(e => e.id == element.id)) return true
+        });
+        return false
+    }
     
-    useEffect(() => {
-        if(data.tasks.length == 0){
-            generateTasks()
-        }
-        else{
-            checkDirtyTasks()
-        }
-    }, [data])
+    useEffect(() => {        
+        generateTasks()
+    }, [events])
 
     return(
             <>
@@ -217,7 +227,7 @@ export default function CalendarChart({
                         viewMode={ViewMode.Day}
                         TooltipContent={(component) => ToolTipCustom(component, events.find(e => e.id == component.task.id))}
                         preStepsCount={2}
-                        ganttHeight={500}
+                        ganttHeight={events.length > 10 ? 500 : ''}
                         listCellWidth=''
                         timeStep={8.64e+7} // One day
                         onDateChange={(task) => handleDateChange(task)}

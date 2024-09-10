@@ -134,19 +134,16 @@ class EventParticipantController extends Controller
         return redirect()->route('event.show', ['id' => $event->id]);
     }
 
-    public function destroy(ParticipantFormRequest $request, string $id)
+    public function destroy(string $id, string $nip)
     {
         $event = Event::findOrFail($id);
-
-        $validated = $request->validated();
 
         DB::beginTransaction();
 
         try{
-            $employees_nip = $validated['nip'];
-            foreach($employees_nip as $nip){
-                $delete = EventParticipant::where('event_id', $event->id)->where('nip', $nip)->delete();
-            }
+            $event->participants()->where('nip', $nip)->first()->deleteOrFail();
+
+            DB::commit();
         }catch(Error){
             DB::rollBack();
         }

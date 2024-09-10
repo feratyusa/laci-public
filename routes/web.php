@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('', [EventParticipantController::class, 'index'])->name('event.participant.index');
                 Route::post('', [EventParticipantController::class, 'store'])->name('event.participant.store');
                 Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
-                Route::delete('', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
+                Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
         }); 
         

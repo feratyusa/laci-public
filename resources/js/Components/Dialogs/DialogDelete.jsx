@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/react"
 import { Typography, Button, IconButton, Tooltip } from "@material-tailwind/react"
 import { useState } from "react"
 
-export default function DialogDelete({mode='icon', content, title, message, route, buttonSize="md", variant="filled", ...props}){
+export default function DialogDelete({mode='icon', content, title, message, route, buttonSize="md", variant="filled", statePreserve=false, ...props}){
     const {delete: destroy, processing} = useForm()
     const [open, setOpen] = useState(false)
 
@@ -16,7 +16,7 @@ export default function DialogDelete({mode='icon', content, title, message, rout
     }
     function handleDelete(){
         destroy(route, {
-            preserveState: false,
+            preserveState: statePreserve,
             preserveScroll: true,
             onSuccess: handleClose()
         })

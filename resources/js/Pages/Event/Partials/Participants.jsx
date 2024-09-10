@@ -1,7 +1,63 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete"
+import TanstackTable from "@/Components/TanstackTable/TanstackTable"
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
+import { useState } from "react"
 import { useEffect } from "react"
 
 export default function Participants({event, participants=[]}){
+    const [globalFilter, setGlobalFilter] = useState()
+
+    const columnHelper = createColumnHelper()
+
+    const column = [
+        columnHelper.accessor(row => row.nip, {
+            id: 'nip',
+            header: <span>NIP</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor(row => row.nama, {
+            id: 'nama',
+            header: <span>Nama</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor(row => row.jabatan, {
+            id: 'jabatan',
+            header: <span>Jabatan</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor(row => row.cabang, {
+            id: 'cabang',
+            header: <span>Cabang</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor(row => row.nip, {
+            id: 'action',
+            header: <span>Aksi</span>,
+            cell: ({cell, row}) => <DialogDelete 
+                                        content={'Partisipan'}
+                                        title={'Hapus Partisipan'}
+                                        message={`Hapus partisipan (${row.original.nip}) ${row.original.nama}?`}
+                                        buttonSize="sm"
+                                        route={route('event.participant.destroy', [event.id, row.original.nip])}
+                                        statePreserve={true}
+                                    />,
+            enableSorting: false
+        }),
+    ]
+
+    const table = useReactTable({
+        data: participants,
+        columns: column,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onGlobalFilterChange: setGlobalFilter,
+        state: {
+            globalFilter
+        }
+    })
+
     const headerClassName = 'bg-red-500 border-red-300 border-x-2 text-white p-2'
     const headerNames = ['NIP', 'Nama', 'Jabatan', 'Cabang', 'Aksi']
     const bodyClassName = 'text-black border-l-2 border-b-2 last:border-r-2 border-red-300 p-2'
@@ -9,47 +65,14 @@ export default function Participants({event, participants=[]}){
 
     }, [participants])
     return(
-        <table className="w-full table-auto text-center">
-            <thead>
-                {
-                    headerNames.map(header => (
-                        <th className={headerClassName}>{header}</th>
-                    ))
-                }
-            </thead>
-            <tbody>
-                {
-                    participants.length == 0 ?
-                    <tr>
-                        <td colSpan={5} className="bg-gray-100 py-5">
-                            <p className="uppercase tracking-widest font-bold text-red-500">Partisipan Kosong</p>
-                        </td>
-                    </tr>
-                    :
-                    participants.map((participant) => (
-                        <tr className="hover:bg-gray-100">
-                            {
-                                Object.keys(participant).map((key) => {
-                                    const columnUsed = ['nip', 'nama', 'jabatan', 'cabang']
-                                    if(columnUsed.includes(key))
-                                    return(
-                                        <td className={bodyClassName}>{participant[key]}</td>
-                                    )   
-                                })
-                            }
-                            <td className={bodyClassName}>
-                                <DialogDelete 
-                                    content={'Partisipan'}
-                                    title={'Hapus Partisipan'}
-                                    message={`Hapus partisipan (${participant.nip}) ${participant.nama}?`}
-                                    buttonSize="sm"
-                                    route={route('event.participant.destroy', [event.id])}
-                                />
-                            </td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+        <>
+            <input 
+                placeholder="Search Participant..."
+                value={globalFilter ?? ''}
+                onChange={(e) => setGlobalFilter(String(e.target.value))}
+                className="mb-5 rounded-md"
+            />
+            <TanstackTable table={table}/>
+        </>
     )
 }

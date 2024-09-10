@@ -72,11 +72,10 @@ class EventFilterController extends FilterController
             }
             else if(count($queryEvent) && !count($queryProposal))
             {
-                $paginator = Event::with('proposal')->whereRaw($qConcatEvent, $dConcatEvent)->orderByDesc('id')->paginate(10)->appends($request->all());
+                $paginator = Event::with('proposal')->whereHas('proposal')->whereRaw($qConcatEvent, $dConcatEvent)->orderByDesc('id')->paginate(10)->appends($request->all());
             }
-
         }else{
-            $paginator = Event::with('proposal')->orderByDesc('id')->paginate(10);
+            $paginator = Event::with('proposal')->whereHas('proposal')->orderByDesc('id')->paginate(10);
         }
 
         return $paginator;

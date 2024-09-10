@@ -80,10 +80,14 @@ class FileController extends Controller
     }
 
     public function download(string $id)
-    {
+    {        
         $file = File::findOrFail($id);
 
-        $file_name = "{$file->name}.{$file->mime_type}";
+        $paths = explode("/", $file->path);
+        $type = strtoupper($paths[0]);
+        $resource_id = $paths[1];
+
+        $file_name = "{$type}_{$resource_id}_{$file->category->name}_{$file->name}.{$file->mime_type}";
 
         return Storage::download($file->path, $file_name);
     }

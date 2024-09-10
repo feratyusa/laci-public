@@ -155,6 +155,7 @@ export default function CalculatorTable({
                 <thead className="border-x-4 border-red-500">
                     <tr className="bg-red-500 text-white">
                         <th className="py-2">TIPE TRAINING</th>
+                        <th>JUMLAH EVENT</th>
                         <th>TOTAL PARTISIPAN</th>
                         <th>TOTAL BIAYA </th>                                    
                     </tr>
@@ -162,11 +163,12 @@ export default function CalculatorTable({
                 <tbody>
                     <tr className="font-bold text-black border-b-2 border-red-300">
                         <td className="py-4">PUBLIC TRAINING</td>
+                        <th>{publics.length}</th>
                         <td>{sumParticipants.public}</td>
                         <td>{"Rp " + Number(sumPrices.public).toLocaleString()}</td>
                     </tr>
                     <tr>
-                        <td colSpan={3} className="py-5 px-10">
+                        <td colSpan={4} className="py-5 px-10">
                             <table className="w-full table-auto border-2">
                                 <thead>
                                     <tr>
@@ -248,11 +250,12 @@ export default function CalculatorTable({
                     </tr>
                     <tr className="border-red-500 border-b-2 font-bold text-black">
                         <td className="py-4">IN HOUSE TRAINING</td>
+                        <td>{inHouses.length}</td>
                         <td>{sumParticipants.inHouse}</td>
                         <td>{"Rp " + Number(sumPrices.inHouse).toLocaleString()}</td>
                     </tr>
                     <tr>
-                        <td colSpan={3} className="px-10 py-5">
+                        <td colSpan={4} className="px-10 py-5">
                             <table className="w-full table-auto">
                                 <thead>
                                     <tr>
@@ -354,6 +357,16 @@ export default function CalculatorTable({
                 </Tooltip>
             </div>
             <div className="flex gap-5 items-center justify-center">
+                <div className="flex border-2 border-gray-500 items-center">
+                    <div className="bg-red-500 p-2 text-white">
+                        <Typography variant="h4">Total Event</Typography>
+                    </div>
+                    <div className="bg-red-100 p-2">
+                        <Typography variant="h4" color="black">
+                            {Number(Number(publics.length) + Number(inHouses.length)).toLocaleString()}
+                        </Typography>
+                    </div>
+                </div>
                 <div className="flex border-2 border-gray-500 items-center">
                     <div className="bg-red-500 p-2 text-white">
                         <Typography variant="h4">Total Biaya</Typography>

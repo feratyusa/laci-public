@@ -33,35 +33,35 @@ class BudgetSeeder extends Seeder
             [
                  [
                     'name' => 'In House Training',
-                    'value' => 400e12,
+                    'value' => 400e9,
                 ],
                  [
                     'name' => 'Public Training',
-                    'value' => 100e12,
+                    'value' => 100e9,
                 ]
             ],
             [
                  [
                     'name' => 'In House Training',
-                    'value' => 350e12,
+                    'value' => 350e9,
                 ],
                  [
                     'name' => 'Public Training',
-                    'value' => 300e12,
+                    'value' => 300e9,
                 ]
             ],
             [
                  [
                     'name' => 'In House Training',
-                    'value' => 400e12,
+                    'value' => 400e9,
                 ],
                  [
                     'name' => 'Public Training',
-                    'value' => 300e12,
+                    'value' => 300e9,
                 ],
                  [
                     'name' => 'Etcetera Training',
-                    'value' => 100e12,
+                    'value' => 100e9,
                 ]
             ]
         ];

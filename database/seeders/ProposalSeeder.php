@@ -18,7 +18,7 @@ class ProposalSeeder extends Seeder
     public function run(): void
     {
         $kursus = Kursus::all();
-        $proposalNum = 300;
+        $proposalNum = 70;
 
         for ($i=0; $i < $proposalNum; $i++) { 
             $k = $kursus[rand(0,99)];
@@ -28,7 +28,7 @@ class ProposalSeeder extends Seeder
                     'name' => "{$k->lengkap} {$n}",
                     'status' => ProposalStatus::ACCEPTED,
                     'event_category' => $k->kategori,
-                    'entry_date' => fake()->dateTimeBetween('-5 months', '-2 days')                    
+                    'entry_date' => fake()->dateTimeBetween('-7 months', '-2 days')                    
                 ]);
         }
     }

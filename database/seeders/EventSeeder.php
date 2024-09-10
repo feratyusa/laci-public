@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Enum\ParticipantNumberType;
+use App\Models\EHC\Employee;
 use App\Models\Event\Event;
+use App\Models\Event\EventParticipant;
 use App\Models\Event\EventPrices;
+use App\Models\Proposal\Proposal;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,25 +18,29 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        $nama = [
-            'Pelatihan RPK Batch 1',
-            'Sales Management Development Batch 1', 
-            'Manajemen Risiko Perbankan Batch 1',
-            'Pelatihan RPK Batch 2',
-            'Sales Management Development Batch 2', 
-            'Manajemen Risiko Perbankan Batch 2',
-            'Pelatihan RPK Batch 3', 
-            'Sales Management Development Batch 3', 
-            'Manajemen Risiko Perbankan Batch 3',
-        ];
-        for ($i=0; $i < 9; $i++) { 
-            $event = Event::factory()->create([
-                'name' => $nama[$i],
-                'proposal_id' => ($i%3)+1
-            ]);
-            EventPrices::factory()->create([
-                'event_id' => $event->id
-            ]);
+        $proposals = Proposal::all();
+
+        foreach($proposals as $proposal){
+            $random = rand(1,2);
+            for ($i=0; $i < $random; $i++) { 
+                $batch = $i + 1;
+                $start_date = fake()->dateTimeInInterval($proposal->entry_date, '+1 month');
+                $end_date = fake()->dateTimeInInterval($start_date, '+1 week');
+                $rand = rand(1,5);
+
+                $event = Event::create([
+                    'name' => "{$proposal->name} Batch {$batch}",
+                    'start_date' => $start_date->format('Y-m-d'),
+                    'end_date' => $end_date->format('Y-m-d'),
+                    'participant_number_type' => $rand == 1 ? ParticipantNumberType::FIXED->value : ParticipantNumberType::DYNAMIC->value,
+                    'participant_number' => fake()->numberBetween(50, 1000),
+                    'proposal_id' => $proposal->id
+                ]);
+
+                EventPrices::factory()->create([
+                    'event_id' => $event->id
+                ]);
+            }
         }
     }
 }

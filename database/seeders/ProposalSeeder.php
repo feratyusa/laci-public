@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enum\EventCategory;
 use App\Enum\ProposalStatus;
+use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\Proposal\Proposal;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,22 +17,19 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        Proposal::factory()
-            ->create([
-                'name' => "Pelatihan RPK",
-                'status' => ProposalStatus::ACCEPTED,
-                'event_category' => EventCategory::IHT->value,
-            ]);
-        Proposal::factory()->create([
-            'name' => "Pelatihan Sales Management Development for AO",
-            'status' => ProposalStatus::PENDING,
-            'event_category' => EventCategory::PT->value,
-        ]);
-        Proposal::factory()->create([
-            'name' => 'Sertifikasi Manajemen Risiko Kualifikasi 7 Tanpa Jenjang',
-            'status' => ProposalStatus::REJECTED,
-            'event_category' => EventCategory::IHT->value,
-        ]);
-        Proposal::factory()->count(20)->create();
+        $kursus = Kursus::all();
+        $proposalNum = 300;
+
+        for ($i=0; $i < $proposalNum; $i++) { 
+            $k = $kursus[rand(0,99)];
+            $n = rand(1,100);
+            Proposal::factory()
+                ->create([
+                    'name' => "{$k->lengkap} {$n}",
+                    'status' => ProposalStatus::ACCEPTED,
+                    'event_category' => $k->kategori,
+                    'entry_date' => fake()->dateTimeBetween('-5 months', '-2 days')                    
+                ]);
+        }
     }
 }

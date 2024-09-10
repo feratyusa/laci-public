@@ -15,8 +15,8 @@ class EventPricesFactory extends Factory
     public function definition(): array
     {
         return [
-            'training_price' => fake()->numberBetween(200000, 500000),
-            'accomodation_price' => fake()->numberBetween(300000, 600000),
+            'training_price' => fake()->numberBetween(1e6, 8e6),
+            'accomodation_price' => fake()->numberBetween(300e3, 800e3),
         ];
     }
 

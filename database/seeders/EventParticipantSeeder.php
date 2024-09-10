@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enum\ParticipantNumberType;
 use App\Models\EHC\Employee;
 use App\Models\Event\Event;
+use App\Models\Event\EventParticipant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,19 +16,23 @@ class EventParticipantSeeder extends Seeder
      */
     public function run(): void
     {
-        $employees = Employee::all()->take(100);
-        $index = 0;
-        for ($i=0; $i < 3; $i++) { 
-            $event = Event::find($i+1);
-            for($j=0; $j < 30; $j++){
-                $event->participants()->create([
-                    'nip' => $employees[$index]->nip,
+        $events = Event::all();
+        $employees = Employee::all();
+        
+        foreach ($events as $event) {
+            if($event->participant_number_type == ParticipantNumberType::FIXED->value) continue;
+            
+            $number = rand(1, 100);
+            $participants = fake()->randomElements($employees, $number, false);
+
+            foreach ($participants as $participant) {
+                EventParticipant::create([
                     'event_id' => $event->id,
-                    'nama' => $employees[$index]->nama,
-                    'jabatan' => $employees[$index]->jabatan,
-                    'cabang' => $employees[$index]->cabang,
+                    'nip' => $participant->nip,
+                    'nama' => $participant->nama,
+                    'jabatan' => $participant->jabatan,
+                    'cabang' => $participant->cabang,
                 ]);
-                $index++;
             }
         }
     }

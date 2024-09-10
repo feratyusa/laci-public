@@ -18,7 +18,7 @@ class ProposalSeeder extends Seeder
     public function run(): void
     {
         $kursus = Kursus::all();
-        $proposalNum = 70;
+        $proposalNum = 100;
 
         for ($i=0; $i < $proposalNum; $i++) { 
             $k = $kursus[rand(0,99)];

@@ -217,6 +217,7 @@ export default function CalendarChart({
                         viewMode={ViewMode.Day}
                         TooltipContent={(component) => ToolTipCustom(component, events.find(e => e.id == component.task.id))}
                         preStepsCount={2}
+                        ganttHeight={500}
                         listCellWidth=''
                         timeStep={8.64e+7} // One day
                         onDateChange={(task) => handleDateChange(task)}

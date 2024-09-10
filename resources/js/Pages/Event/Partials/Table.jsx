@@ -20,8 +20,8 @@ export default function TableEvent({events}){
     ];
 
     return(
-        <div className="table table-auto w-full mt-2">
-            <div className="table-header-group bg-red-600 text-sm text-center">
+        <div className="table table-auto w-full mt-2 text-sm">
+            <div className="table-header-group bg-red-600 text-center">
                 <div className="table-row">
                     {
                         columns.map((column) => (
@@ -32,7 +32,7 @@ export default function TableEvent({events}){
                     }
                 </div>
             </div>
-            <div className="table-row-group text-sm text-center">
+            <div className="table-row-group text-center">
                 {                                    
                     events?.map((event, index) => {
                         const cellClassName = "table-cell border-y p-4 align-middle ";
@@ -50,10 +50,10 @@ export default function TableEvent({events}){
                                     {event.name}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.proposal.event_category}
+                                    {event?.proposal?.event_category}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.proposal.kursus.lengkap}
+                                    {event?.proposal?.kursus.lengkap}
                                 </LinkEvent>
                                 <LinkEvent className={cellClassName} id={event.id}>
                                     {new Date(event.start_date).toLocaleDateString('id', dateoptions)}

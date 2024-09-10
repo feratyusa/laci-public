@@ -21,7 +21,7 @@ export default function TableProposal({proposals}){
     ];
 
     return(
-        <div className="table table-auto w-full mt-2 text-xs">
+        <div className="table table-auto w-full mt-2 text-sm">
             <div className="table-header-group bg-red-600 text-center">
                 <div className="table-row">
                     {

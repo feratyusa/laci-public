@@ -18,7 +18,7 @@ export default function Index({
     const dateString = start && end ? ` (${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})` : null
 
     const [filter, setFilter] = useState('')
-    const [eventsFiltered, setEventsFiltered] = useState([...events])
+    const [eventsFiltered, setEventsFiltered] = useState(events ? [...events] : '')
     function handleEventChange(value){
         setFilter(value)
         var temp = events.filter(e => String(e.name).toLowerCase().includes(String(value).toLowerCase()) ||

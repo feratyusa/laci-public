@@ -32,7 +32,7 @@ class CalendarController extends Controller
             return Inertia::render('Calendar/Index');
         }
 
-        $events = Event::with('proposal')->whereHas('proposal')->whereRaw('start_date between ? and ?', [$start, $end])->get();
+        $events = Event::with('proposal')->whereHas('proposal')->whereRaw('start_date between ? and ?', [$start, $end])->orderBy('start_date')->get();
 
         return Inertia::render('Calendar/Index', [
             'start' => $start,

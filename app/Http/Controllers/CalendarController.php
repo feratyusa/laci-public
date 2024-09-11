@@ -43,7 +43,7 @@ class CalendarController extends Controller
     
     public function reset()
     {
-        session()->forget(['calculator_start_date', 'calculator_end_date']);
+        session()->forget(['calendar_start_date', 'calendar_end_date']);
         return redirect()->route('calendar.index');
     }
 

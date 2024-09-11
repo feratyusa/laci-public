@@ -5,7 +5,7 @@ const MainMenu = [
         {name: 'Kalkulator', link: 'calculator.index', url: 'calculator'},
         {name: 'Kalender', link: 'calendar.index', url: 'calendar'},
         {name: 'Master', link: [
-            {name: 'User', link: 'dashboard', url: 'master/user'},
+            // {name: 'User', link: 'dashboard', url: 'master/user'},
             {name: 'Kategori File', link: 'category.index', url: 'master/categories'},
             {name: 'Kategori Wajib', link: 'mandatory-category.index', url: 'master/mandatory-categories'},
             {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
@@ -15,7 +15,7 @@ const MainMenu = [
 
 const ProfileMenu = [
         {name: 'Profile', link: 'profile.edit', url:'profile'},
-        {name: 'Settings', link: 'dashboard', url:'settings'},
+        // {name: 'Settings', link: 'dashboard', url:'settings'},
         {name: 'Logout', link: 'logout', url:'logout', method: 'post'}
     ]
 

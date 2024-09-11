@@ -2,6 +2,7 @@
 
 namespace App\Models\Event;
 
+use App\Enum\ParticipantNumberType;
 use App\Models\File\File;
 use App\Models\Proposal\Proposal;
 use App\Trait\MissingCategory;
@@ -70,5 +71,13 @@ class Event extends Model
     protected static function newFactory(): Factory
     {
         return EventFactory::new();
+    }
+
+    /**
+     * Utilities
+     */
+    public function getTotalParticipants(): int
+    {
+        return $this->participant_number_type == ParticipantNumberType::FIXED->value ? $this->participant_number : $this->participants()->count(); 
     }
 }

@@ -25,7 +25,7 @@ class DashboardController extends Controller
             array_push($proposalSelection, $temp);
         }
 
-        $events = Event::orderBy('start_date')->get();
+        $events = Event::whereHas('proposal')->orderBy('start_date')->get();
         $recapEvents = [];
         foreach ($events as $event) {
             $type = $event->proposal->event_category == EventCategory::PT->value ? 'public' : 'inhouse';
@@ -87,29 +87,57 @@ class DashboardController extends Controller
             }
         } 
         
-        $tempCost = [];
+        $tempsChart = [];
         foreach($events as $event){
             $year = date('Y', strtotime($event->start_date));
             $month = date('m', strtotime($event->start_date));
-            if(array_key_exists($year, $tempCost) && array_key_exists($month, $tempCost[$year])){
-                $tempCost[$year][$month] += $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+            if(array_key_exists($year, $tempsChart) && array_key_exists($month, $tempsChart[$year])){
+                $tempsChart[$year][$month]['total']['cost'] += $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                $tempsChart[$year][$month]['total']['participants'] += $event->getTotalParticipants();
+                
             }
             else{
-                $tempCost[$year][$month] = $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                $tempsChart[$year][$month]['total']['cost'] = $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                $tempsChart[$year][$month]['total']['participants'] = $event->getTotalParticipants();
+            }
+
+            if($event->proposal->event_category == EventCategory::IHT->value){
+                if(array_key_exists('inHouse', $tempsChart[$year][$month])){
+                    $tempsChart[$year][$month]['inHouse']['cost'] += $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                    $tempsChart[$year][$month]['inHouse']['participants'] += $event->getTotalParticipants();
+                }
+                else{
+                    $tempsChart[$year][$month]['inHouse']['cost'] = $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                    $tempsChart[$year][$month]['inHouse']['participants'] = $event->getTotalParticipants();
+                }
+            }
+            else if($event->proposal->event_category == EventCategory::PT->value){
+                if(array_key_exists('public', $tempsChart[$year][$month])){
+                    $tempsChart[$year][$month]['public']['cost'] += $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                    $tempsChart[$year][$month]['public']['participants'] += $event->getTotalParticipants();
+                }
+                else{
+                    $tempsChart[$year][$month]['public']['cost'] = $event->getTotalParticipants() * ($event->prices->training_price + $event->prices->accomodation_price);
+                    $tempsChart[$year][$month]['public']['participants'] = $event->getTotalParticipants();
+                }
             }
         }
-        $chartCost = [];
-        foreach ($tempCost as $key => $months) {
-            foreach($months as $month => $cost){
-                $chartCost[$key][] = (object)['x' => $this->getMonthString($month), 'y' => $cost];
+        $chartValues = [];
+        foreach ($tempsChart as $year => $months) {
+            foreach($months as $month => $categories){
+                foreach($categories as $category => $types)
+                    foreach($types as $type => $value){
+                        $chartValues[$year][$category][$type]['x'][] = $this->getMonthString($month);
+                        $chartValues[$year][$category][$type]['y'][] = $value;
+                    }
             }
-        }
+        }        
 
         return Inertia::render('Dashboard', [            
             'events' => $recapEvents,
             'budgets' => $this->selectOptions(Budget::with('details')->orderByDesc('year')->get()->toArray(), 'year', 'year', false, ['details']),
             'unfinished' => ['proposal' => $unfinishedProposal, 'public' => $unfinishedPublic, 'inHouse' => $unfinishedInHouse],
-            'chartCost' => $chartCost,
+            'chartValues' => $chartValues,
         ]);
     }
 }

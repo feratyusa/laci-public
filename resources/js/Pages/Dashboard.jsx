@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { ArrowUpIcon, BanknotesIcon, ChartBarSquareIcon, DocumentDuplicateIcon, DocumentTextIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Head } from '@inertiajs/react';
 import React, { useMemo, useState } from 'react';
+import Linegraph from '@/Components/Chart/Linegraph';
 
 
 function ReportCard({children}){
@@ -27,15 +28,15 @@ export default function Dashboard({
     budgets,
     events,
     unfinished={proposal: 0, public: 0, inHouse: 0},
-    chartCost,
+    chartValues,
 }) {
     const [year, setYear] = useState(budgets.find(b => b.value == new Date().getFullYear()).value)
     const [date, setDate] = useState({
         start: `${budgets.find(b => b.value == new Date().getFullYear()).value}-01-01`,
         end: `${budgets.find(b => b.value == new Date().getFullYear()).value}-12-31`,
     })
-    const [chartData, setChartData] = useMemo(() => chartCost[year])
-    console.log(chartCost)
+    const [chartData, setChartData] = useState(chartValues[year])
+    console.log(chartValues)
     console.log(chartData)
     
     const [month, ] = useState(String(new Date().getMonth() - 1).padStart(2, '0'))
@@ -144,15 +145,54 @@ export default function Dashboard({
                         <ChartBarSquareIcon className='w-7'/>
                         <p className='font-bold'>Pengeluaran Anggaran Tiap Bulan</p>
                     </TitleReportCard>
+                    <Linegraph data={{
+                        labels: chartData.total.cost.x,
+                        datasets:[
+                            {
+                                label: 'Total',
+                                data: chartData.total.cost.y,
+                                borderColor: "rgb(255,0,0)",
+                            },
+                            {
+                                label: 'Public Training',
+                                data: chartData.public.cost.y,
+                                borderColor: "rgb(0,255,0)",
+                            },
+                            {
+                                label: 'In House Training',
+                                data: chartData.inHouse.cost.y,
+                                borderColor: "rgb(0,0,255)",
+                            }
+                        ]
+                    }}/>
                 </ReportCard>
                 <ReportCard>
                     <TitleReportCard textSize='lg'>
                         <ChartBarSquareIcon className='w-7'/>
                         <p className='font-bold'>Jumlah Partisipan Tiap Bulan</p>
                     </TitleReportCard>
+                    <Linegraph data={{
+                        labels: chartData.total.participants.x,
+                        datasets:[
+                            {
+                                label: 'Total',
+                                data: chartData.total.participants.y,
+                                borderColor: "rgb(255,0,0)",
+                            },
+                            {
+                                label: 'Public Training',
+                                data: chartData.public.participants.y,
+                                borderColor: "rgb(0,255,0)",
+                            },
+                            {
+                                label: 'In House Training',
+                                data: chartData.inHouse.participants.y,
+                                borderColor: "rgb(0,0,255)",
+                            }
+                        ]
+                    }}/>
                 </ReportCard>
             </div>            
-            
         </AuthenticatedLayout>
     );
 }

@@ -13,6 +13,12 @@ class Employee extends Model
 
     protected $connection = 'sqlite';
     protected $table = 'employees';
+    protected $fillable = [
+        'nip',
+        'nama',
+        'cabang',
+        'jabatan',
+    ];
 
     /**
      * Create a new factory instance for the model.

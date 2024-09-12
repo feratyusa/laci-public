@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('kd_kursus');
             $table->date('entry_date');
             $table->string('name');
-            $table->enum('event_category', array_column(EventCategory::cases(), 'value'));
-            $table->enum('status', array_column(ProposalStatus::cases(), 'value'));
+            $table->enum('event_category', array_column(EventCategory::cases(), 'value'))->nullable();
+            $table->enum('status', array_column(ProposalStatus::cases(), 'value'))->nullable();
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });

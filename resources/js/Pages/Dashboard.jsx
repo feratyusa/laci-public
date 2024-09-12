@@ -36,8 +36,6 @@ export default function Dashboard({
         end: `${budgets.find(b => b.value == new Date().getFullYear()).value}-12-31`,
     })
     const [chartData, setChartData] = useState(chartValues[year])
-    console.log(chartValues)
-    console.log(chartData)
     
     const [month, ] = useState(String(new Date().getMonth() - 1).padStart(2, '0'))
     const [lastMonth, ] = useState(String(new Date().getMonth()).padStart(2, '0'))

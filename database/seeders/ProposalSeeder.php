@@ -17,7 +17,7 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        $kursus = Kursus::all();
+        $kursus = Kursus::whereRaw('kategori not like ?', ['null'])->get();
         $proposalNum = 100;
 
         for ($i=0; $i < $proposalNum; $i++) { 

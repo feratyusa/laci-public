@@ -10,7 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 class Kursus extends Model
 {
     protected $connection = 'sqlite';
-    protected $table = 'KURSUS';  
+    protected $table = 'courses';  
+    protected $fillable = [
+        'sandi',
+        'lengkap',
+        'kategori'
+    ];
 
     /**
      * Create a new factory instance for the model.

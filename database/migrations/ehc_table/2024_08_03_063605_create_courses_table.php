@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('kursus', function (Blueprint $table) {
+        Schema::connection('sqlite')->create('courses', function (Blueprint $table) {
             $table->integer('sandi');
             $table->string('lengkap');
-            $table->enum('kategori', array_column(EventCategory::cases(), 'value'));
+            $table->enum('kategori', array_column(EventCategory::cases(), 'value'))->nullable();
             $table->timestamps();
         });
     }

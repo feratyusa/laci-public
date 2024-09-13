@@ -28,9 +28,16 @@ class ProposalController extends Controller
     {
         $filter = new ProposalFilterController();
         $paginator = $filter->run($request);
+
+        $proposals = Proposal::orderByDesc('id')->get();
+        foreach($proposals as $key => $proposal){
+            $proposal->setAttribute('isComplete', $proposal->isMissingCategories());
+            $proposal->setAttribute('haveEvents', $proposal->events()->count() > 0);
+            $proposal->setAttribute('isEventsComplete', $proposal->isEventsComplete());
+        }
         
         return Inertia::render('Proposal/Index', [
-            'proposals' => $paginator->items(),
+            'proposals' => $proposals,
             'paginator' => $paginator,
             'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap'),        
             'code' => session('code'),

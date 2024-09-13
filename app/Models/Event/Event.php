@@ -2,8 +2,10 @@
 
 namespace App\Models\Event;
 
+use App\Enum\MandatoryCategoryLink;
 use App\Enum\ParticipantNumberType;
 use App\Models\File\File;
+use App\Models\File\MandatoryFileCategory;
 use App\Models\Proposal\Proposal;
 use App\Trait\MissingCategory;
 use Database\Factories\EventFactory;
@@ -59,7 +61,6 @@ class Event extends Model
     {
         return $this->belongsToMany(File::class, 'event_files', 'event_id', 'file_id');
     }
-
     public function prices(): HasOne
     {
         return $this->hasOne(EventPrices::class, 'event_id', 'id');
@@ -79,5 +80,15 @@ class Event extends Model
     public function getTotalParticipants(): int
     {
         return $this->participant_number_type == ParticipantNumberType::FIXED->value ? $this->participant_number : $this->participants()->count(); 
+    }
+
+    public function isMissingCategories(): bool
+    {
+        $mandatories = MandatoryFileCategory::where('mandatory_type', $this->proposal->event_category)->pluck('category_id')->toArray();
+        $files = $this->files()->pluck('category_id')->toArray();
+        foreach ($mandatories as $m) {
+            if(! in_array($m, $files)) return false;
+        }
+        return true;
     }
 }

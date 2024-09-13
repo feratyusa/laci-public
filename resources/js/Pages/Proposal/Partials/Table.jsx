@@ -1,136 +1,272 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
-import OptionButton from "@/Components/OptionButton";
 import { Link } from "@inertiajs/react";
-
-import Statuses from "@/Base/Statuses";
-import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { DropdownMenuOption } from "@/Components/DropdownOptions";
 import { MenuItem } from "@headlessui/react";
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import TanstackTable from "@/Components/TanstackTable/TanstackTable";
+import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
+import { IconButton, Tooltip } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ReactSelect from "react-select";
+import { ArchiveBoxXMarkIcon, DocumentCheckIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import ProposalStatus from "@/Base/ProposalStatus";
 
-const LinkProposal = ({children, className='', id}) => {
+function FiltersTable({table=useReactTable({})}){
+    const [courses, setCourses] = useState([])
+    const [eventCategories, setEventCategories] = useState([])
+
+    useEffect(() => {
+        axios.get('/api/input/courses').then((response) => {
+            setCourses(response.data.courses)
+        }).catch((e) => {
+            console.log(e)
+        })
+
+        axios.get('/api/input/event-categories').then((response) => {
+            setEventCategories(response.data.event_categories)
+        })
+    }, [])
+
     return(
-        <Link className={"cursor-pointer "+className} href={route('proposal.show', [id])}>
-            {children}
-        </Link>
+        <div className="w-full">
+            <p className="font-bold text-lg mb-1">Filter Usulan</p>
+            <div className="grid grid-cols-4 items-center gap-5 mb-3">
+                <div className="flex">                    
+                    <input
+                        className="rounded-md w-full"
+                        id="id-usulan" 
+                        placeholder="ID Usulan"
+                        onChange={(e) => table.getColumn('id').setFilterValue(e.target.value)}                     
+                    />
+                </div>
+                <div className="flex">
+                    <input
+                        className="rounded-md w-full"
+                        id="name" 
+                        placeholder="Nama Usulan"
+                        onChange={(e) => table.getColumn('name').setFilterValue(e.target.value)}                     
+                    />
+                </div>
+                <div className="col-span-2">
+                    <ReactSelect 
+                        options={eventCategories}
+                        placeholder="Kategori Event"
+                        classNamePrefix="select2-selection"
+                        className="w-full"
+                        isSearchable
+                        isClearable
+                        onChange={(e) => table.getColumn('event_category').setFilterValue(e?.label)}
+                    />
+                </div>               
+            </div>
+            <div className="flex items-center gap-3 mb-3">
+                <p className="font-bold text-nowrap">Tanggal Masuk</p>
+                <div className="flex items-center gap-2 w-full">
+                    <p>Dari</p>
+                    <input
+                        type="date"
+                        placeholder="Tanggal Masuk"
+                        className="rounded-md w-full"
+                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), start: e.target.value})}
+                    />
+                </div>
+                <div className="flex items-center gap-2 w-full">
+                    <p>Sampai</p>
+                    <input 
+                        type="date"
+                        className="rounded-md w-full"
+                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), end: e.target.value})}
+                    />
+                </div>
+            </div>            
+            <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col">
+                    <ReactSelect 
+                        options={courses}
+                        placeholder="Kursus"
+                        classNamePrefix="select2-selection"
+                        isSearchable
+                        isMulti
+                        onChange={(e) => table.getColumn('course').setFilterValue(e.map(item => item.label))}
+                    />
+                </div>
+                <div>
+                    <ReactSelect 
+                        options={ProposalStatus}
+                        placeholder="Status"
+                        classNamePrefix="select2-selection"
+                        isSearchable
+                        isMulti
+                        onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
+                    />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function OptionButtons({proposal_id, proposal_name}){
+    return(
+        <div className="flex justify-center items-center gap-3">
+            <Link href={route('proposal.show', [proposal_id])}>
+                <IconButton size="sm" color="blue" className="rounded-full">
+                    <EyeIcon className="w-full"/>
+                </IconButton>
+            </Link>
+            <DropdownMenuOption>
+                <MenuItem>
+                    <Link href={route('proposal.edit', [proposal_id])} className="block p-2 data-[focus]:bg-amber-100">
+                        <div className="flex items-center gap-2 text-amber-500">
+                            <Cog8ToothIcon className="w-5"/>
+                            Edit Usulan
+                        </div>
+                    </Link>   
+                </MenuItem>
+                <MenuItem>
+                    <DialogDelete mode="text" route={route('proposal.destroy', [proposal_id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${proposal_name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
+                </MenuItem>
+            </DropdownMenuOption>
+        </div>
+    )
+}
+
+function CompleteStatus({isComplete, haveEvents, isEventsComplete}){
+    return(
+        <div className="flex justify-center items-center gap-2">
+        {
+            isComplete ? 
+            <Tooltip content="Berkas Lengkap">
+                <IconButton color="green" size="sm" className="cursor-default">
+                    <CheckIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Berkas Belum Lengkap">
+                <IconButton color="amber" size="sm">
+                    <XMarkIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        {
+            haveEvents ? 
+            <Tooltip content="Punya Event">
+                <IconButton color="green" size="sm">
+                    <DocumentCheckIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Belum Punya Event">
+                <IconButton color="amber" size="sm">
+                    <ExclamationTriangleIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        {
+            isEventsComplete ? 
+            <Tooltip content="Berkas Event Lengkap">
+                <IconButton color="green" size="sm">
+                    <DocumentCheckIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Berkas Event Belum Lengkap">
+                <IconButton color="amber" size="sm">
+                    <ArchiveBoxXMarkIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        </div>
     )
 }
 
 export default function TableProposal({proposals}){
+    const [columnFilters, setColumnFilters] = useState([])
+    console.log(columnFilters)
+    console.log(proposals)
+
+    const columnHelper = createColumnHelper()
+
     const columns = [
-        "ID", "NAMA USULAN", "KATEGORI","KURSUS", "TANGGAL MASUK", "OPSI"
-    ];
+        columnHelper.accessor('id', {
+            header: <span>ID</span>,
+            cell: info => info.getValue(),
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor('name', {
+            header: <span>Nama Usulan</span>,
+            cell: info => info.getValue(),
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor(row => row.event_category, {
+            id: 'event_category',
+            header: <span>Kategori</span>,
+            cell: info => info.getValue(),
+            filterFn: 'equalsString',
+        }),
+        columnHelper.accessor(row => row.kursus.lengkap, {
+            id: 'course',
+            header: <span>Kursus</span>,
+            cell: info => info.getValue(),
+            filterFn: 'arrIncludesSome'
+        }),
+        columnHelper.accessor('entry_date', {            
+            header: <span>Tanggal Masuk</span>,
+            cell: info => changeToIndonesiaDateTime(info.getValue(), true),
+            filterFn: 'DateCustomFilter'
+        }),
+        columnHelper.accessor(row => row, {            
+            id: 'status',
+            header: <span>Status</span>,
+            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} haveEvents={info.getValue().haveEvents} isEventsComplete={info.getValue().isEventsComplete}/>,
+            filterFn: 'StatusFilter'
+        }),
+        columnHelper.accessor(row => row, {
+            id: 'action',
+            header: <span>Opsi</span>,
+            cell: info => <OptionButtons proposal_id={info.getValue().id} proposal_name={info.getValue().name}/>,
+        }),
+    ]
+
+    const table = useReactTable({
+        data: proposals,
+        columns: columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        state: {
+            columnFilters: columnFilters
+        },
+        filterFns: {
+            DateCustomFilter: (row, columnID, filterValue) => {
+                const start = filterValue?.start != null && filterValue?.start != "" ? filterValue.start : null
+                const end = filterValue?.end != null && filterValue?.end != "" ? filterValue.end : null
+                if(start && end) return filterValue.start <= row.original.entry_date && filterValue.end >= row.original.entry_date
+                else if(start) return filterValue.start <= row.original.entry_date
+                else return filterValue.end <= row.original.entry_date                
+            },
+            StatusFilter: (row, columnID, filterValue) => {
+                if((filterValue.includes(0) && row.original.isComplete) ||
+                    (filterValue.includes(1) && !row.original.isComplete) ||
+                    (filterValue.includes(2) && row.original.haveEvents) ||
+                    (filterValue.includes(3) && !row.original.haveEvents) ||
+                    (filterValue.includes(4) && row.original.isEventsComplete) ||
+                    (filterValue.includes(5) && !row.original.isEventsComplete) ||
+                    filterValue.length == 0) return true
+                return false
+            }
+        }
+    })
 
     return(
-        <div className="table table-auto w-full mt-2 text-sm">
-            <div className="table-header-group bg-red-600 text-center">
-                <div className="table-row">
-                    {
-                        columns.map((column, index) => (
-                            <div className="table-cell p-4 text-white text-bold align-middle"> 
-                                {column}
-                            </div>  
-                        ))
-                    }
-                </div>
+        <>
+            <div className="m-3">
+                <FiltersTable table={table}/>
             </div>
-            <div className="table-row-group text-center">
-                {                                    
-                    proposals?.map((proposal, ) => {
-                        const cellClassName = "table-cell border-y p-4 align-middle text-sm ";
-                        const dateoptions = {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        }
-                        return (
-                            <div className="table-row hover:bg-gray-100" key={proposal.id} id={proposal.id}>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {proposal.id}
-                                </LinkProposal>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {proposal.name}
-                                </LinkProposal>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {proposal.event_category}
-                                </LinkProposal>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {proposal.kursus.lengkap}
-                                </LinkProposal>
-                                <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}
-                                </LinkProposal>
-                                {/* <LinkProposal className={cellClassName + ""} id={proposal.id}>
-                                    {
-                                        <Chip color={Statuses.find(status => status.value === proposal.status).color} 
-                                            value={proposal.status}
-                                            variant="ghost"
-                                        />
-                                    }
-                                </LinkProposal> */}
-                                <div className={cellClassName + "w-40"}>
-                                    {/* <Menu>
-                                        <Tooltip content="Ganti Status">
-                                            <MenuHandler>
-                                                <IconButton variant="text" color="green">
-                                                    <ArrowPathIcon className="h-5 w-5"/>
-                                                </IconButton>
-                                            </MenuHandler>
-                                        </Tooltip>
-                                        <MenuList className="rounded-lg border-none">
-                                            <MenuItem key={'id'} disabled>
-                                                <Chip value={"ID "+ proposal.id} 
-                                                        variant="outlined"
-                                                        className="text-center"
-                                                />
-                                            </MenuItem>
-                                            {
-                                                Statuses.map((status, index) => 
-                                                    status.value !== proposal.status ?
-                                                    (
-                                                        <Link method="post" 
-                                                            href={route('proposal.status', [proposal.id])}
-                                                            data={{'status': status.value}}
-                                                        >
-                                                            <MenuItem key={proposal.id}>
-                                                                <Chip value={"SET TO " + status.value}
-                                                                    color={status.color}
-                                                                    variant="ghost"
-                                                                />
-                                                            </MenuItem>
-                                                        </Link>
-
-                                                    ) : ''
-                                                )
-                                            }
-                                        </MenuList>
-                                    </Menu> */}
-                                    <DropdownMenuOption>
-                                        <MenuItem>
-                                            <Link href={route('proposal.show', [proposal.id])} className="block p-2 data-[focus]:bg-blue-100">
-                                                <div className="flex items-center gap-2 text-blue-500">
-                                                    <EyeIcon className="w-5"/>
-                                                    Lihat Usulan
-                                                </div>
-                                            </Link>   
-                                        </MenuItem>
-                                        <MenuItem>
-                                            <Link href={route('proposal.edit', [proposal.id])} className="block p-2 data-[focus]:bg-amber-100">
-                                                <div className="flex items-center gap-2 text-amber-500">
-                                                    <Cog8ToothIcon className="w-5"/>
-                                                    Edit Usulan
-                                                </div>
-                                            </Link>   
-                                        </MenuItem>
-                                        <MenuItem>
-                                            <DialogDelete mode="text" route={route('proposal.destroy', [proposal.id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${proposal.name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
-                                        </MenuItem>
-                                    </DropdownMenuOption>
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-        </div>
+            <TanstackTable table={table} alignTable="table-auto" className="text-sm" nowraps={['entry_date']}/>
+        </>
     )
 }

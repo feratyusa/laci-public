@@ -2,6 +2,7 @@
 
 namespace App\Models\Proposal;
 
+use App\Enum\MandatoryCategoryLink;
 use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\File\File;
@@ -70,5 +71,31 @@ class Proposal extends Model
     protected static function newFactory(): Factory
     {
         return ProposalFactory::new();
+    }
+    
+    /**
+     * Utilities
+     */
+    public function isMissingCategories(): bool
+    {
+        $mandatories = MandatoryFileCategory::where('mandatory_type', MandatoryCategoryLink::USULAN->value)->pluck('category_id')->toArray();
+        $files = $this->files()->pluck('category_id')->toArray();
+        foreach ($mandatories as $m) {
+            if(! in_array($m, $files)) return false;
+        }
+        return true;
+    }
+    public function isEventsComplete(): bool
+    {
+        if($this->events()->count() == 0) return false;
+        $mandatories = MandatoryFileCategory::where('mandatory_type', $this->event_category)->pluck('category_id')->toArray();
+        $events = Event::with('files')->where('proposal_id', $this->id)->get();
+        foreach($events as $event){
+            $files = $event->files()->pluck('category_id')->toArray();
+            foreach ($mandatories as $m) {
+                if(! in_array($m, $files)) return false;
+            }
+        }
+        return true;
     }
 }

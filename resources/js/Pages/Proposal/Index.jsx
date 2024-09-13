@@ -38,20 +38,12 @@ export default function Index({ auth, status, code, proposals, kursus, paginator
                                 </Button>                            
                             </Link>
                         </div>
-                        <Filters kursus={kursus} categories={eventCategories}/>
                         {status && 
                             <Alert color={code===0 ? "red" : code===1 ? 'green' : 'amber'}>
                                 {status}
                             </Alert>}
                         <TableProposal proposals={proposals}/>
-                    </CardBody>
-                    <CardFooter className="flex justify-center">
-                        {
-                            paginator ? 
-                            <Pagination paginator={paginator}/>
-                            : ''
-                        }
-                    </CardFooter>
+                    </CardBody>                    
                 </Card>
             </div>            
         </Authenticated>

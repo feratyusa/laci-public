@@ -71,8 +71,10 @@ function ShowingCurrent({rowCount, pageIndex: n, pageSize: b}){
     )
 }
 
-function BodyCellComponent({key, children, ...props}){
-    return <td key={key} className="p-3" {...props}>{children}</td>
+function BodyCellComponent({identifier, children, className="", nowraps=[], ...props}){
+    const cellIDArray = String(identifier).split("_")
+    const cellID = cellIDArray.slice(1, cellIDArray.length).join('_')
+    return <td key={identifier} className={`p-3 ${nowraps.includes(cellID) ? 'text-nowrap' : ''}`} {...props}>{children}</td>
 }
 
 function RowComponent({key, children}){
@@ -87,7 +89,7 @@ function HeaderComponent({key, children}){
     )
 }
 
-export default function TanstackTable({table=useReactTable({}), alignTable="table-fixed", className=""}){
+export default function TanstackTable({table=useReactTable({}), alignTable="table-fixed", nowraps=[], className=""}){
     return(
         <table className={`${alignTable} w-full text-center shadow-lg rounded-lg ${className}`}>
             <thead>
@@ -122,14 +124,14 @@ export default function TanstackTable({table=useReactTable({}), alignTable="tabl
             <tbody>
                 {table.getRowModel().rows.length == 0 ? 
                     <RowComponent>
-                        <BodyCellComponent colSpan={table.getAllColumns().length}>
+                        <BodyCellComponent colSpan={table.getAllColumns().length} nowraps={nowraps}>
                             Kosong
                         </BodyCellComponent>
                     </RowComponent>
                 : table.getRowModel().rows.map(row => (
                     <RowComponent key={row.id}>
                         {row.getVisibleCells().map(cell => (
-                            <BodyCellComponent key={cell.id}>
+                            <BodyCellComponent identifier={cell.id} nowraps={nowraps}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </BodyCellComponent>
                         ))}

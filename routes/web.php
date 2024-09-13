@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InputController;
 use App\Http\Controllers\Master\BudgetController;
 use App\Http\Controllers\Master\CategoryController;
 use App\Http\Controllers\Master\MandatoryCategoryController;
@@ -124,6 +125,10 @@ Route::middleware('auth')->group(function () {
 Route::prefix('api')->group(function (){
     Route::prefix('categories')->group(function(){
         Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');
+    });
+    Route::prefix('input')->group(function(){
+        Route::get('courses', [InputController::class, 'getCoursesOptions'])->name('input.courses');
+        Route::get('event-categories', [InputController::class, 'getEventCategoryOptions'])->name('input.event-categories');
     });
 });
 

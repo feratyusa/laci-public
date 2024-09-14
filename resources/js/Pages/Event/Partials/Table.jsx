@@ -1,103 +1,269 @@
+import ProposalStatus from "@/Base/ProposalStatus";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import { DropdownMenuOption } from "@/Components/DropdownOptions";
 import OptionButton from "@/Components/OptionButton";
+import TanstackTable from "@/Components/TanstackTable/TanstackTable";
+import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon, EllipsisVerticalIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
-import { IconButton } from "@material-tailwind/react";
+import { IconButton, Tooltip } from "@material-tailwind/react";
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import ReactSelect from "react-select";
 
-const LinkEvent = ({children, className='', id}) => {
+function FiltersTable({table=useReactTable({})}){
+    const [courses, setCourses] = useState([])
+    const [eventCategories, setEventCategories] = useState([])
+
+    useEffect(() => {
+        axios.get('/api/input/courses').then((response) => {
+            setCourses(response.data.courses)
+        }).catch((e) => {
+            console.log(e)
+        })
+
+        axios.get('/api/input/event-categories').then((response) => {
+            setEventCategories(response.data.event_categories)
+        })
+    }, [])
+
     return(
-        <Link className={"cursor-pointer "+className} href={route('event.show', [id])}>
-            {children}
-        </Link>
+        <div className="m-5">
+            <p className="font-bold text-lg mb-1">Filter Usulan</p>
+            <div className="grid grid-cols-4 items-center gap-5 mb-3">
+                <div className="flex">                    
+                    <input
+                        className="rounded-md w-full"
+                        id="id-event" 
+                        placeholder="ID Event"
+                        onChange={(e) => table.getColumn('id').setFilterValue(String(e.target.value))}                     
+                    />
+                </div>
+                <div className="flex">
+                    <input
+                        className="rounded-md w-full"
+                        id="name" 
+                        placeholder="Nama Event"
+                        onChange={(e) => table.getColumn('name').setFilterValue(e.target.value)}                     
+                    />
+                </div>
+                <div className="col-span-2">
+                    <ReactSelect 
+                        options={eventCategories}
+                        placeholder="Kategori Event"
+                        classNamePrefix="select2-selection"
+                        className="w-full"
+                        isSearchable
+                        isClearable
+                        onChange={(e) => table.getColumn('event_category').setFilterValue(e?.label)}
+                    />
+                </div>               
+            </div>
+            <div className="flex items-center gap-3 mb-3">
+                <p className="font-bold text-nowrap">Tanggal Masuk</p>
+                <div className="flex items-center gap-2 w-full">
+                    <p>Dari</p>
+                    <input
+                        type="date"
+                        placeholder="Tanggal Masuk"
+                        className="rounded-md w-full"
+                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), start: e.target.value})}
+                    />
+                </div>
+                <div className="flex items-center gap-2 w-full">
+                    <p>Sampai</p>
+                    <input 
+                        type="date"
+                        className="rounded-md w-full"
+                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), end: e.target.value})}
+                    />
+                </div>
+            </div>            
+            <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col">
+                    <ReactSelect 
+                        options={courses}
+                        placeholder="Kursus"
+                        classNamePrefix="select2-selection"
+                        isSearchable
+                        isMulti
+                        onChange={(e) => table.getColumn('course').setFilterValue(e.map(item => item.label))}
+                    />
+                </div>
+                <div>
+                    <ReactSelect 
+                        options={ProposalStatus.filter(p => p.value == 0 || p.value == 1)}
+                        placeholder="Status"
+                        classNamePrefix="select2-selection"
+                        isSearchable
+                        isMulti
+                        onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
+                    />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function OptionButtons({id, name}){
+    return(
+        <div className="flex justify-center items-center gap-3">
+            <Link href={route('proposal.show', [id])}>
+                <IconButton size="sm" color="blue" className="rounded-full">
+                    <EyeIcon className="w-full"/>
+                </IconButton>
+            </Link>
+            <DropdownMenuOption>
+                <MenuItem>
+                    <Link href={route('proposal.edit', [id])} className="block p-2 data-[focus]:bg-amber-100">
+                        <div className="flex items-center gap-2 text-amber-500">
+                            <Cog8ToothIcon className="w-5"/>
+                            Edit Usulan
+                        </div>
+                    </Link>   
+                </MenuItem>
+                <MenuItem>
+                    <DialogDelete mode="text" route={route('proposal.destroy', [id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
+                </MenuItem>
+            </DropdownMenuOption>
+        </div>
+    )
+}
+
+function CompleteStatus({isComplete}){
+    return(
+        <div className="flex justify-center items-center gap-2">
+        {
+            isComplete ? 
+            <Tooltip content="Berkas Lengkap">
+                <IconButton color="green" size="sm" className="cursor-default">
+                    <CheckIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Berkas Belum Lengkap">
+                <IconButton color="amber" size="sm">
+                    <XMarkIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        </div>
     )
 }
 
 export default function TableEvent({events}){
+    console.log(events)
+    const [columnFilters, setColumnFilters] = useState([])
+
+    const columnHelper = createColumnHelper()
+
     const columns = [
-        "ID", "NAMA EVENT", "KATEGORI", "KURSUS", "TANGGAL MULAI", "TANGGAL SELESAI", "PARTISIPAN", "BIAYA PEND", "BIAYA AKOM", "OPSI"
-    ];
+        columnHelper.accessor('id', {
+            header: <span>ID</span>,
+            cell: info => info.getValue(),
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor('name', {
+            header: <span>Nama Event</span>,
+            cell: info => info.getValue(),
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor(row => row.proposal.event_category, {
+            id: 'event_category',
+            header: <span>Kategori</span>,
+            cell: info => info.getValue(),
+            filterFn: 'equalsString',
+        }),
+        columnHelper.accessor(row => row.proposal.kursus.lengkap, {
+            id: 'course',
+            header: <span>Kursus</span>,
+            cell: info => info.getValue(),
+            filterFn: 'arrIncludesSome'
+        }),
+        columnHelper.accessor(row => row.start_date, {            
+            id:'end_date',
+            header: <span>Tanggal Mulai</span>,
+            cell: info => changeToIndonesiaDateTime(info.getValue(), true),
+            filterFn: 'DateCustomFilter'
+        }),
+        columnHelper.accessor(row => row.start_date, {
+            id:'start_date',            
+            header: <span>Tanggal Selesai</span>,
+            cell: info => changeToIndonesiaDateTime(info.getValue(), true),
+            filterFn: 'DateCustomFilter'
+        }),
+        columnHelper.accessor(row => row, {
+            id: 'participants',
+            header: <span>Partisipan</span>,
+            cell: info => info.getValue().participant_number_type == 'DYNAMIC' ? info.getValue().participants.length : info.getValue().participant_number,
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor(row => row.prices.training_price, {
+            id: 'training_price',
+            header: <span>Biaya Pendidikan</span>,
+            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor(row => row.prices.accomodation_price, {
+            id: 'accomodation_price',
+            header: <span>Biaya Akomodasi</span>,
+            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
+            filterFn: 'includesString'
+        }),
+        columnHelper.accessor(row => row, {            
+            id: 'status',
+            header: <span>Status</span>,
+            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} />,
+            filterFn: 'StatusFilter'
+        }),
+        columnHelper.accessor(row => row, {
+            id: 'action',
+            header: <span>Opsi</span>,
+            cell: info => <OptionButtons id={info.getValue().id} name={info.getValue().name}/>,
+        }),
+    ]
+
+    const table = useReactTable({
+        data: events,
+        columns: columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        state: {
+            columnFilters: columnFilters
+        },
+        filterFns: {
+            DateCustomFilter: (row, columnID, filterValue) => {
+                const start = filterValue?.start != null && filterValue?.start != "" ? filterValue.start : null
+                const end = filterValue?.end != null && filterValue?.end != "" ? filterValue.end : null
+                if(start && end) return filterValue.start <= row.original.entry_date && filterValue.end >= row.original.entry_date
+                else if(start) return filterValue.start <= row.original.entry_date
+                else return filterValue.end <= row.original.entry_date                
+            },
+            StatusFilter: (row, columnID, filterValue) => {
+                if(filterValue?.length == 0 || filterValue == "") return true 
+                var status = []
+                if(row.original.isComplete) status.push(0)
+                else status.push(1)
+                var flag = true
+                filterValue.forEach(value => {
+                    if( ! status.includes(value) ){
+                        flag = false
+                    }
+                })
+                return flag
+            }
+        }
+    })
 
     return(
-        <div className="table table-auto w-full mt-2 text-sm">
-            <div className="table-header-group bg-red-600 text-center">
-                <div className="table-row">
-                    {
-                        columns.map((column) => (
-                            <div className="table-cell p-4 text-white text-bold align-middle"> 
-                                {column}
-                            </div>  
-                        ))
-                    }
-                </div>
-            </div>
-            <div className="table-row-group text-center">
-                {                                    
-                    events?.map((event, index) => {
-                        const cellClassName = "table-cell border-y p-4 align-middle ";
-                        const dateoptions = {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        }
-                        return (
-                            <div className="table-row hover:bg-gray-100" key={event.id} id={event.id}>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.id}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.name}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {event?.proposal?.event_category}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {event?.proposal?.kursus.lengkap}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {new Date(event.start_date).toLocaleDateString('id', dateoptions)}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName } id={event.id}>
-                                    {new Date(event.end_date).toLocaleDateString('id', dateoptions)}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName} id={event.id}>
-                                    {event.participant_number_type == 'DYNAMIC' ? event.participants.length : event.participant_number}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName } id={event.id}>
-                                    {"Rp "+ Number(event.prices.training_price).toLocaleString()}
-                                </LinkEvent>
-                                <LinkEvent className={cellClassName } id={event.id}>
-                                    {"Rp "+ Number(event.prices.accomodation_price).toLocaleString()}
-                                </LinkEvent>
-                                <div className={cellClassName}>
-                                    <DropdownMenuOption>
-                                        <MenuItem>
-                                            <Link href={route('event.show', [event.id])} className="block p-2 data-[focus]:bg-blue-100">
-                                                <div className="flex items-center gap-2 text-blue-500">
-                                                    <EyeIcon className="w-5"/>
-                                                    Lihat Event
-                                                </div>
-                                            </Link>   
-                                        </MenuItem>
-                                        <MenuItem>
-                                            <Link href={route('event.edit', [event.id])} className="block p-2 data-[focus]:bg-amber-100">
-                                                <div className="flex items-center gap-2 text-amber-500">
-                                                    <Cog8ToothIcon className="w-5"/>
-                                                    Edit Event
-                                                </div>
-                                            </Link>   
-                                        </MenuItem>
-                                        <MenuItem>
-                                            <DialogDelete mode="text" route={route('event.destroy', [event.id])} content={'event'} title={'Hapus Event'} message={`Yakin ingin menghapus (${event.name})? Event yang telah dihapus tidak dapat dikembalikan`}/>  
-                                        </MenuItem>
-                                    </DropdownMenuOption>
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-            </div>
+        <div>
+            <FiltersTable table={table}/>
+            <TanstackTable table={table} alignTable="table-auto" className="text-sm"/>
         </div>
     )
 }

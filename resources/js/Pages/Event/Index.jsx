@@ -37,7 +37,7 @@ export default function Index({
                                 </Link>
                             </div>
                         </div>
-                        <Filters kursus={kursus} categories={eventCategories}/>
+                        {/* <Filters kursus={kursus} categories={eventCategories}/> */}
                         <TableEvent events={events}/>
                     </CardBody>
                     <CardFooter className="flex justify-center">

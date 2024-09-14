@@ -183,8 +183,6 @@ function CompleteStatus({isComplete, haveEvents, isEventsComplete}){
 
 export default function TableProposal({proposals}){
     const [columnFilters, setColumnFilters] = useState([])
-    console.log(columnFilters)
-    console.log(proposals)
 
     const columnHelper = createColumnHelper()
 
@@ -249,14 +247,21 @@ export default function TableProposal({proposals}){
                 else return filterValue.end <= row.original.entry_date                
             },
             StatusFilter: (row, columnID, filterValue) => {
-                if((filterValue.includes(0) && row.original.isComplete) ||
-                    (filterValue.includes(1) && !row.original.isComplete) ||
-                    (filterValue.includes(2) && row.original.haveEvents) ||
-                    (filterValue.includes(3) && !row.original.haveEvents) ||
-                    (filterValue.includes(4) && row.original.isEventsComplete) ||
-                    (filterValue.includes(5) && !row.original.isEventsComplete) ||
-                    filterValue.length == 0) return true
-                return false
+                if(filterValue?.length == 0 || filterValue == "") return true 
+                var status = []
+                if(row.original.isComplete) status.push(0)
+                else status.push(1)
+                if(row.original.haveEvents) status.push(2)
+                else status.push(3)
+                if(row.original.isEventsComplete) status.push(4)
+                else status.push(5)
+                var flag = true
+                filterValue.forEach(value => {
+                    if( ! status.includes(value) ){
+                        flag = false
+                    }
+                })
+                return flag
             }
         }
     })

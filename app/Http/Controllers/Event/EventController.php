@@ -32,8 +32,13 @@ class EventController extends Controller
         $filter = new EventFilterController();
         $paginator = $filter->run($request);
 
+        $events = Event::with('proposal')->whereHas('proposal')->orderByDesc('id')->get();
+        foreach($events as $key => $event){
+            $events[$key]->setAttribute('isComplete', $event->isMissingCategories());
+        }
+
         return Inertia::render("Event/Index", [
-            "events" => $paginator->items(),
+            "events" => $events,
             'paginator' => $paginator,
             "kursus" => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', true),
         ]);

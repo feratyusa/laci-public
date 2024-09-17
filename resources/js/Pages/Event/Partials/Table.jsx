@@ -110,14 +110,14 @@ function FiltersTable({table=useReactTable({})}){
 function OptionButtons({id, name}){
     return(
         <div className="flex justify-center items-center gap-3">
-            <Link href={route('proposal.show', [id])}>
+            <Link href={route('event.show', [id])}>
                 <IconButton size="sm" color="blue" className="rounded-full">
                     <EyeIcon className="w-full"/>
                 </IconButton>
             </Link>
             <DropdownMenuOption>
                 <MenuItem>
-                    <Link href={route('proposal.edit', [id])} className="block p-2 data-[focus]:bg-amber-100">
+                    <Link href={route('event.edit', [id])} className="block p-2 data-[focus]:bg-amber-100">
                         <div className="flex items-center gap-2 text-amber-500">
                             <Cog8ToothIcon className="w-5"/>
                             Edit Usulan
@@ -125,7 +125,7 @@ function OptionButtons({id, name}){
                     </Link>   
                 </MenuItem>
                 <MenuItem>
-                    <DialogDelete mode="text" route={route('proposal.destroy', [id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
+                    <DialogDelete mode="text" route={route('event.destroy', [id])} content={'event'} title={'Hapus Usulan'} message={`Yakin ingin menghapus (${name})? Usulan yang telah dihapus tidak dapat dikembalikan`}/>  
                 </MenuItem>
             </DropdownMenuOption>
         </div>

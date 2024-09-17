@@ -26,7 +26,5 @@ class LocalEHCDBSetup extends Command
     public function handle()
     {
         $this->call('migrate', ['--path' => '/database/migrations/ehc_table']);
-        $this->call('db:seed', ['--class' => 'EmployeeSeeder']);
-        $this->call('db:seed', ['--class' => 'KursusSeeder']);
     }
 }

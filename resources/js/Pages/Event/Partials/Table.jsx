@@ -31,7 +31,7 @@ function FiltersTable({table=useReactTable({})}){
 
     return(
         <div className="m-5">
-            <p className="font-bold text-lg mb-1">Filter Usulan</p>
+            <p className="font-bold text-lg mb-1">Filter Event</p>
             <div className="grid grid-cols-4 items-center gap-5 mb-3">
                 <div className="flex">                    
                     <input

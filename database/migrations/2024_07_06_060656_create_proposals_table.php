@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('name');
             $table->enum('event_category', array_column(EventCategory::cases(), 'value'))->nullable();
             $table->enum('status', array_column(ProposalStatus::cases(), 'value'))->nullable();
+            $table->string('created_by')->nullable();
+            $table->string('assign_to')->nullable();
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });

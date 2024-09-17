@@ -8,6 +8,7 @@ use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
 use App\Models\Event\EventPrices;
 use App\Models\Proposal\Proposal;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -34,7 +35,9 @@ class EventSeeder extends Seeder
                     'end_date' => $end_date->format('Y-m-d'),
                     'participant_number_type' => $rand == 1 ? ParticipantNumberType::FIXED->value : ParticipantNumberType::DYNAMIC->value,
                     'participant_number' => fake()->numberBetween(50, 1000),
-                    'proposal_id' => $proposal->id
+                    'proposal_id' => $proposal->id,
+                    'created_by' => fake()->randomElement(User::pluck('username')->toArray()),
+                    'assign_to' => fake()->randomElement(User::pluck('username')->toArray())
                 ]);
 
                 EventPrices::factory()->create([

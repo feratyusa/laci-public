@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('end_date');
             $table->enum('participant_number_type', array_column(ParticipantNumberType::cases(), 'value'));
             $table->integer('participant_number')->nullable()->default(0);
+            $table->string('created_by')->nullable();
+            $table->string('assign_to')->nullable();
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });

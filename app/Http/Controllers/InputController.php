@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\EventCategory;
 use App\Models\EHC\Kursus;
+use App\Models\User;
 use App\Trait\InputHelpers;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,13 @@ class InputController extends Controller
     {
         return response()->json([
             'event_categories' => EventCategory::selection()
+        ]);
+    }
+
+    public function getUserOptions()
+    {
+        return response()->json([
+            'users' => $this->selectOptions(User::all()->toArray(), 'username', 'username', false)
         ]);
     }
 }

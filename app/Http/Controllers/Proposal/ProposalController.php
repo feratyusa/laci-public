@@ -15,6 +15,7 @@ use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProposalController extends Controller
@@ -24,25 +25,9 @@ class ProposalController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $filter = new ProposalFilterController();
-        $paginator = $filter->run($request);
-
-        $proposals = Proposal::orderByDesc('id')->get();
-        foreach($proposals as $key => $proposal){
-            $proposal->setAttribute('isComplete', $proposal->isMissingCategories());
-            $proposal->setAttribute('haveEvents', $proposal->events()->count() > 0);
-            $proposal->setAttribute('isEventsComplete', $proposal->isEventsComplete());
-        }
-        
-        return Inertia::render('Proposal/Index', [
-            'proposals' => $proposals,
-            'paginator' => $paginator,
-            'kursus' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap'),        
-            'code' => session('code'),
-            'status' => session('status'),
-        ]);        
+    public function index()
+    {       
+        return Inertia::render('Proposal/Index');        
     }
 
     /**
@@ -61,6 +46,8 @@ class ProposalController extends Controller
     public function store(ProposalFormRequest $request)
     {
         $validated = $request->validated();
+        
+        $validated['created_by'] = Auth::user()->username;
 
         $proposal = Proposal::create($validated);
 
@@ -143,5 +130,19 @@ class ProposalController extends Controller
         $proposal->deleteOrFail();
 
         return redirect()->route('proposal.index')->with(['code' => 0, 'status' => 'Proposal deleted!']);
+    }
+
+    public function get()
+    {
+        $proposals = Proposal::orderByDesc('id')->get();
+        foreach($proposals as $key => $proposal){
+            $proposal->setAttribute('isComplete', $proposal->isMissingCategories());
+            $proposal->setAttribute('haveEvents', $proposal->events()->count() > 0);
+            $proposal->setAttribute('isEventsComplete', $proposal->isEventsComplete());
+        }
+
+        return response()->json([
+            'proposals' => $proposals,
+        ]);
     }
 }

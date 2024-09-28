@@ -36,12 +36,14 @@ class Proposal extends Model
         'entry_date',
         'kd_kursus',
         'status',
+        'created_by',
+        'assign_to'
     ];
 
     /**
      * Eager Load
      */
-    protected $with = ['kursus', 'files'];
+    protected $with = ['kursus', 'files', 'prices'];
 
     /**
      * Relationships
@@ -63,6 +65,11 @@ class Proposal extends Model
     public function kursus(): BelongsTo
     {
         return $this->belongsTo(Kursus::class, 'kd_kursus', 'sandi');
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(ProposalPrice::class, 'proposal_id', 'id');
     }
 
     /**

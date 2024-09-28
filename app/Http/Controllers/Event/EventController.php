@@ -27,21 +27,9 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filter = new EventFilterController();
-        $paginator = $filter->run($request);
-
-        $events = Event::with('proposal')->whereHas('proposal')->orderByDesc('id')->get();
-        foreach($events as $key => $event){
-            $events[$key]->setAttribute('isComplete', $event->isMissingCategories());
-        }
-
-        return Inertia::render("Event/Index", [
-            "events" => $events,
-            'paginator' => $paginator,
-            "kursus" => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', true),
-        ]);
+        return Inertia::render("Event/Index");
     }
 
     /**
@@ -182,5 +170,12 @@ class EventController extends Controller
 
         return back()
             ->with(['message' => 'Event berhasil dihapus!']);
+    }
+
+    public function get()
+    {
+        return response()->json([
+            'events' => Event::orderByDesc('id')->get()
+        ]);
     }
 }

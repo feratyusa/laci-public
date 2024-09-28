@@ -5,24 +5,41 @@ import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import BudgetTable from "./BudgetTable";
-import eventCategories from "@/Base/EventCategory";
+import { useEffect } from "react";
+import ReactSelect from "react-select";
+
+function BudgetTypeSelection({data, detail, index, handleChangeInput}){
+    const [budgetTypes, setBudgetTypes] = useState([])
+
+    useEffect(() => {
+        axios.get('/api/input/budgetTypes').then((response) => {
+            setBudgetTypes(response.data.budgetTypes)
+        })
+    }, [])
+
+    return(
+        <ReactSelect
+            id="budgetType"
+            name="budgetType"
+            classNamePrefix="select2-selection"
+            className="max-w-2xl focus:border-red-500"
+            value={budgetTypes.find(b => b.value == detail.budget_type_id)}
+            options={budgetTypes.filter(type => !data.details.find(d => type.value == d.budget_type_id))}
+            onChange={(e) => handleChangeInput(Number(e.value), index, 'budget_type_id')}
+            required
+        />
+    )
+}
 
 export default function DetailsFormDialog({variant="icon", budget=[], details=[]}){
-    const {data, setData, processing, post, put, delete: destroy} = useForm({
+    const {data, setData, processing, post, put, delete: destroy, errors} = useForm({
         details: [...details]
-    })
+    })    
 
     const [open, setOpen] = useState(localStorage.getItem('dialog') ? true : false )
 
-    function handleAddDetailForm(){
-        let defaultName = ''
-        if(!details.find(d => d.name == 'In House Training') && !data.details.find(d => d.name == 'In House Training')){
-            defaultName = 'In House Training'
-        }
-        else if(! details.find(d => d.name == 'Public Training') && !data.details.find(d => d.name == 'Public Training')){
-            defaultName = 'Public Training'
-        }
-        const newDetail = [...data.details, {id: null, name: defaultName, value: 0}]
+    function handleAddDetailForm(){        
+        const newDetail = [...data.details, {id: null, budget_type_id: null, value: 0}]
         setData('details', newDetail)
     }
 
@@ -53,12 +70,12 @@ export default function DetailsFormDialog({variant="icon", budget=[], details=[]
                 localStorage.clear()
             },
             onError: (e) => {
-                const message = "name must be alphabet / whitespace and budget maximum digits is 15"
+                const message = "budget type is required and budget maximum digits are 15"
                 localStorage.setItem('error', message)
                 localStorage.setItem('dialog', 1)                
             }
         })        
-    }
+    }        
 
     return(
         <>
@@ -104,7 +121,7 @@ export default function DetailsFormDialog({variant="icon", budget=[], details=[]
                                     <p>ID</p>
                                 </div>
                                 <div className="col-span-5">
-                                    <p>Nama</p>
+                                    <p>Tipe</p>
                                 </div>
                                 <div className="col-span-5">
                                     <p>Anggaran</p>
@@ -121,19 +138,14 @@ export default function DetailsFormDialog({variant="icon", budget=[], details=[]
                                         <div className="col-span-1">
                                             <p className="font-bold">{detail.id ?? <span className="text-green-500">N</span>}</p>
                                         </div>
-                                        <div className="col-span-5">
-                                            <input 
-                                                placeholder="Nama Detail"
-                                                value={detail.name}
-                                                onChange={(e) => handleChangeInput(e.target.value, index, 'name')}
-                                                className="w-full rounded-md"
-                                            />
+                                        <div className="col-span-5">                                            
+                                            <BudgetTypeSelection data={data} detail={detail} index={index} handleChangeInput={handleChangeInput}/>
                                         </div>
                                         <div className="col-span-5">
                                             <CurrencyInput 
                                                 prefix="Rp "
-                                                value={detail.value}
-                                                onValueChange={(value) => handleChangeInput(value, index, 'value')}
+                                                value={Number(detail.value)}
+                                                onValueChange={(value) => handleChangeInput(Number(value), index, 'value')}
                                                 className="w-full rounded-md"
                                             />
                                         </div>

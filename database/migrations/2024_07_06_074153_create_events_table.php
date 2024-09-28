@@ -27,14 +27,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('event_prices', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
-            $table->decimal('training_price', 16)->default(0);
-            $table->decimal('accomodation_price', 16)->default(0);
-            $table->timestamps();
-        });
-
         Schema::create('event_participants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
@@ -60,7 +52,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_prices');
         Schema::dropIfExists('event_participants');
         Schema::dropIfExists('event_files');
         Schema::dropIfExists('events');

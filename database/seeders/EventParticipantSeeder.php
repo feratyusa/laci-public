@@ -22,7 +22,7 @@ class EventParticipantSeeder extends Seeder
         foreach ($events as $event) {
             if($event->participant_number_type == ParticipantNumberType::FIXED->value) continue;
             
-            $number = rand(1, 150);
+            $number = rand(1, 20);
             $participants = fake()->randomElements($employees, $number, false);
 
             foreach ($participants as $participant) {

@@ -29,7 +29,6 @@ function TabButton({name}){
 function EventTabs({event, categories, participants, mandatoryFiles}){
     const tabClass = "flex items-center justify-center p-4 text-red-500 hover:bg-red-500 hover:text-white ring-0 border-0"
     const [selectedIndex, setSelectedIndex] = useState(0)
-    console.log(selectedIndex)
 
     return(
         <TabGroup 

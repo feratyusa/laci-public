@@ -33,7 +33,7 @@ export default function Create({auth, kursus}){
                                 Form Usulan Baru
                             </Typography>
                         </div>
-                        <ProposalForm method={'create'} kursus={kursus}/>
+                        <ProposalForm auth={auth} method={'create'} kursus={kursus}/>
                     </CardBody>
                 </Card>
             </div>

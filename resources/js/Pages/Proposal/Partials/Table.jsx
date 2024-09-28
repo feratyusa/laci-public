@@ -12,20 +12,24 @@ import axios from "axios";
 import ReactSelect from "react-select";
 import { ArchiveBoxXMarkIcon, DocumentCheckIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ProposalStatus from "@/Base/ProposalStatus";
+import LoadingCircle from "@/Components/Loading/LoadingCircle";
 
 function FiltersTable({table=useReactTable({})}){
     const [courses, setCourses] = useState([])
     const [eventCategories, setEventCategories] = useState([])
+    const [users, setUsers] = useState([])
 
     useEffect(() => {
         axios.get('/api/input/courses').then((response) => {
             setCourses(response.data.courses)
-        }).catch((e) => {
-            console.log(e)
         })
 
         axios.get('/api/input/event-categories').then((response) => {
             setEventCategories(response.data.event_categories)
+        })
+
+        axios.get('/api/input/users').then((response) => {
+            setUsers(response.data.users)
         })
     }, [])
 
@@ -81,12 +85,12 @@ function FiltersTable({table=useReactTable({})}){
                     />
                 </div>
             </div>            
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col">
                     <ReactSelect 
                         options={courses}
                         placeholder="Kursus"
-                        classNamePrefix="select2-selection"
+                        classNamePrefix="select2-selection"                        
                         isSearchable
                         isMulti
                         onChange={(e) => table.getColumn('course').setFilterValue(e.map(item => item.label))}
@@ -97,9 +101,21 @@ function FiltersTable({table=useReactTable({})}){
                         options={ProposalStatus}
                         placeholder="Status"
                         classNamePrefix="select2-selection"
+                        className="z-10"
                         isSearchable
                         isMulti
                         onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
+                    />
+                </div>
+                <div>
+                    <ReactSelect 
+                        options={users}
+                        placeholder="Assign To"
+                        classNamePrefix="select2-selection"
+                        isSearchable      
+                        isClearable                  
+                        isMulti
+                        onChange={(e) => table.getColumn('action').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
             </div>
@@ -181,7 +197,9 @@ function CompleteStatus({isComplete, haveEvents, isEventsComplete}){
     )
 }
 
-export default function TableProposal({proposals}){
+export default function TableProposal(){
+    const [proposals, setProposals] = useState(false)
+
     const [columnFilters, setColumnFilters] = useState([])
 
     const columnHelper = createColumnHelper()
@@ -224,6 +242,7 @@ export default function TableProposal({proposals}){
             id: 'action',
             header: <span>Opsi</span>,
             cell: info => <OptionButtons proposal_id={info.getValue().id} proposal_name={info.getValue().name}/>,
+            filterFn: 'UserFilter'
         }),
     ]
 
@@ -262,16 +281,35 @@ export default function TableProposal({proposals}){
                     }
                 })
                 return flag
+            },
+            UserFilter: (row, columnID, filterValue) => {
+                if(filterValue.length == 0) return true
+                return filterValue.includes(row.original.assign_to)
             }
         }
     })
 
+    useEffect(() => {
+        axios.get('/api/get/proposals').then(function(response) {
+            setProposals(response.data.proposals)
+        })
+    }, [proposals])
+
     return(
         <>
-            <div className="m-3">
-                <FiltersTable table={table}/>
-            </div>
-            <TanstackTable table={table} alignTable="table-auto" className="text-sm" nowraps={['entry_date']}/>
+            {
+                proposals ?
+                <>
+                    <div className="m-3">
+                        <FiltersTable table={table}/>
+                    </div>
+                    <TanstackTable table={table} alignTable="table-auto" className="text-sm" nowraps={['entry_date']}/>
+                </>
+                :
+                <div className="flex justify-center">
+                    <LoadingCircle />
+                </div>
+            }
         </>
     )
 }

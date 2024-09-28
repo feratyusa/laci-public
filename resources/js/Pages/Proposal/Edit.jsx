@@ -33,7 +33,7 @@ export default function Edit({auth, proposal, kursus}){
                                 Form Edit Usulan
                             </Typography>
                         </div>
-                        <ProposalForm method={'edit'} proposal={proposal} kursus={kursus}/>
+                        <ProposalForm auth={auth} method={'edit'} proposal={proposal} kursus={kursus}/>
                     </CardBody>
                 </Card>
             </div>

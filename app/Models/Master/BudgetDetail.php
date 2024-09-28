@@ -13,13 +13,20 @@ class BudgetDetail extends Model
     protected $table = 'budget_details';
 
     protected $fillable = [
-        'name',
-        'value',
         'budget_id',
+        'budget_type_id',
+        'value',
     ];
+
+    protected $with = ['budgetType'];
 
     public function budget(): BelongsTo
     {
         return $this->belongsTo('budgets', 'budget_id', 'id');
+    }
+
+    public function budgetType(): BelongsTo
+    {
+        return $this->belongsTo(BudgetType::class, 'budget_type_id', 'id');
     }
 }

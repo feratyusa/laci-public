@@ -8,6 +8,7 @@ use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InputController;
 use App\Http\Controllers\Master\BudgetController;
+use App\Http\Controllers\Master\BudgetTypeController;
 use App\Http\Controllers\Master\CategoryController;
 use App\Http\Controllers\Master\MandatoryCategoryController;
 use App\Http\Controllers\ProfileController;
@@ -119,16 +120,28 @@ Route::middleware('auth')->group(function () {
             });
         });
 
+        Route::prefix('budgetTypes')->group(function(){
+            Route::post('', [BudgetTypeController::class, 'store'])->name('budgetType.store');
+            Route::put('/{id}', [BudgetTypeController::class, 'update'])->name('budgetType.update');
+            Route::delete('/{id}', [BudgetTypeController::class, 'destroy'])->name('budgetType.destroy');
+        });
+
     });
 });
 
 Route::prefix('api')->group(function (){
+    Route::prefix('get')->group(function(){
+        Route::get('proposals', [ProposalController::class, 'get'])->name('get.proposals');
+        Route::get('events', [EventController::class, 'get'])->name('get.events');
+    });
     Route::prefix('categories')->group(function(){
         Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');
     });
     Route::prefix('input')->group(function(){
         Route::get('courses', [InputController::class, 'getCoursesOptions'])->name('input.courses');
         Route::get('event-categories', [InputController::class, 'getEventCategoryOptions'])->name('input.event-categories');
+        Route::get('users', [InputController::class, 'getUserOptions'])->name('input.users');
+        Route::get('budgetTypes', [InputController::class, 'getBudgetTypeOptions'])->name('input.budgetTypes');
     });
 });
 

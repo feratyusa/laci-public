@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\BudgetDetailsFormRequest;
 use App\Http\Requests\Master\BudgetFormRequest;
 use App\Models\Master\Budget;
+use App\Models\Master\BudgetType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -18,7 +19,8 @@ class BudgetController extends Controller
     public function index()
     {
         return Inertia::render('Master/Budget/Index', [
-            'budgets' => Budget::with('details')->orderByDesc('year')->get()
+            'budgets' => Budget::with('details')->orderByDesc('year')->get(),
+            'budgetTypes' => BudgetType::orderByDesc('id')->get(),
         ]);
     }
 
@@ -124,7 +126,7 @@ class BudgetController extends Controller
         foreach($validated['details'] as $detail){
             $budget->details()->updateOrCreate(
                 ['id' => $detail['id']],
-                ['name' => $detail['name'], 'value' => $detail['value']]
+                ['budget_type_id' => $detail['budget_type_id'], 'value' => $detail['value']]
             );
         }
 

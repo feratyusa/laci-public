@@ -2,6 +2,7 @@
 
 namespace App\Models\Event;
 
+use App\Models\Master\BudgetType;
 use Database\Factories\EventPricesFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,13 +15,19 @@ class EventPrices extends Model
     protected $table = 'event_prices';
     protected $fillable = [
         'event_id',
-        'training_price',
-        'accomodation_price'
+        'budget_type_id',
+        'price',
+        'participantNum',
     ];
     
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'event_id', 'id');
+    }
+
+    public function budgetType(): BelongsTo
+    {
+        return $this->belongsTo(BudgetType::class, 'budget_type_id', 'id');
     }
 
     /**

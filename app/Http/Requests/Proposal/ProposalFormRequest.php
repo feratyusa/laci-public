@@ -47,6 +47,10 @@ class ProposalFormRequest extends FormRequest
                 'required',
                 Rule::in(array_column(ProposalStatus::cases(), 'value'))
             ],
+            'assign_to' => [
+                'required',
+                'string'
+            ],
         ];
     }
 }

@@ -121,7 +121,7 @@ export default function TanstackTable({table=useReactTable({}), alignTable="tabl
                     </HeaderComponent>
                 ))}
             </thead>
-            <tbody>
+            <tbody>                
                 {table.getRowModel().rows.length == 0 ? 
                     <RowComponent>
                         <BodyCellComponent colSpan={table.getAllColumns().length} nowraps={nowraps}>

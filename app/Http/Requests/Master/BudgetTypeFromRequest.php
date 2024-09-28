@@ -4,7 +4,7 @@ namespace App\Http\Requests\Master;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BudgetDetailsFormRequest extends FormRequest
+class BudgetTypeFromRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,17 +22,7 @@ class BudgetDetailsFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'details' => ['required', 'array'],
-            'details.*.id' => ['nullable', 'integer'],
-            'details.*.budget_type_id' => ['required', 'integer'],
-            'details.*.value' => ['required', 'numeric', 'max_digits:15']
-        ];
-    }
-
-    public function messages(): array
-    {
-        return[
-            'details.*.name.regex' => 'The :attribute must only contains alphabet and whitespace'
+            'name' => ['required', 'string']
         ];
     }
 }

@@ -1,12 +1,12 @@
 import ProposalStatus from "@/Base/ProposalStatus";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import { DropdownMenuOption } from "@/Components/DropdownOptions";
-import OptionButton from "@/Components/OptionButton";
+import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { MenuItem } from "@headlessui/react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Cog8ToothIcon, EllipsisVerticalIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
 import { IconButton, Tooltip } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
@@ -153,8 +153,8 @@ function CompleteStatus({isComplete}){
     )
 }
 
-export default function TableEvent({events}){
-    console.log(events)
+export default function TableEvent(){
+    const [events, setEvents] = useState(false)
     const [columnFilters, setColumnFilters] = useState([])
 
     const columnHelper = createColumnHelper()
@@ -259,11 +259,26 @@ export default function TableEvent({events}){
             }
         }
     })
+    
+    useEffect(() => {
+        axios.get('/api/get/events').then(function(response) {
+            setEvents(response.data.events)
+        })
+    }, [events])
 
     return(
         <div>
-            <FiltersTable table={table}/>
-            <TanstackTable table={table} alignTable="table-auto" className="text-sm"/>
+            {
+                events ? 
+                <>
+                    <FiltersTable table={table}/>
+                    <TanstackTable table={table} alignTable="table-auto" className="text-sm"/>
+                </>
+                :
+                <div className="flex justify-center">
+                    <LoadingCircle />
+                </div>
+            }
         </div>
     )
 }

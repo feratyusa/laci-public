@@ -44,7 +44,7 @@ export default function DeleteDialog({variant="icon",
                     >
                         <DialogTitle className="text-center">
                             <p className="uppercase font-bold">{title ?? "Hapus File Kategori"}</p>
-                            <p className="italic text-xs text-gray-500">Kategori: {category.name}</p>
+                            {body ? "" : <p className="italic text-xs text-gray-500">Kategori: {category.name}</p>}
                         </DialogTitle>
                         <div className="py-8">
                             <p className="text-center">

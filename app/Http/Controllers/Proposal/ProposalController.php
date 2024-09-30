@@ -7,6 +7,7 @@ use App\Enum\ProposalStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Proposal\ProposalChangeStatusRequest;
 use App\Http\Requests\Proposal\ProposalFormRequest;
+use App\Http\Requests\Proposal\ProposalPricesFormRequest;
 use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\File\Category;
@@ -144,5 +145,34 @@ class ProposalController extends Controller
         return response()->json([
             'proposals' => $proposals,
         ]);
+    }
+
+    public function setPrices(ProposalPricesFormRequest $request, string $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+
+        $validated = $request->validated();
+
+        foreach ($proposal->prices as $price) {
+            $deleteFlag = true;
+            foreach($validated['details'] as $check){
+                if($check['budget_type_id'] == $price->budget_type_id){
+                    $deleteFlag = false;
+                    break;
+                }
+            }
+            if($deleteFlag){
+                $price->deleteOrFail();
+            }
+        }
+
+        foreach ($validated['details'] as $detail) {
+            $proposal->prices()->updateOrCreate(
+                ['budget_type_id' => $detail['budget_type_id']],
+                $detail
+            );
+        }
+
+        return redirect()->route('proposal.show', [$proposal->id]);
     }
 }

@@ -22,7 +22,7 @@ export default function DialogAddFile({
         name: content_name,
         relation: content,
         relation_id: content_id,
-        category_id: categories[0].value,
+        category_id: '',
         files: '',
     })
 

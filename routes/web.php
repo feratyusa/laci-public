@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
+
     Route::prefix('proposals')->group(function () {
         Route::get('', [ProposalController::class, 'index'])->name('proposal.index');
         Route::get('/create', [ProposalController::class, 'create'])->name('proposal.create');
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [ProposalController::class, 'edit'])->name('proposal.edit');
         Route::put('/{id}', [ProposalController::class, 'update'])->name('proposal.update');
         Route::delete('/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
+        Route::put('/{id}/setPrices', [ProposalController::class, 'setPrices'])->name('proposal.setPrices');
     });
 
     Route::prefix('files')->group(function () {

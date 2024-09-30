@@ -15,6 +15,9 @@ function TableRow({name, value=null, color="red", option=null, proposal=null, ev
             </div>
             <div className={"col-span-4 p-4 bg-gray-50"}>
                 {
+                    option == 'prices' ?
+                    ''
+                    :
                     option == "chip" ?
                     <Chip 
                         className="w-fit"
@@ -57,7 +60,7 @@ export default function ProposalDetails({proposal, color, events, categories}){
             <TableRow name={"Kategori"} value={proposal.event_category}  />
             <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
             <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
-            {/* <TableRow name={"Status"} value={proposal.status} color={color} option={'chip'} /> */}
+            <TableRow name={"Anggaran Awal"} option={'prices'} value={proposal} />
             <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
             <TableRow name={"Assign Kepada"} value={proposal.assign_to} />
             <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />

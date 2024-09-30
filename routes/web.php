@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [ProposalController::class, 'update'])->name('proposal.update');
         Route::delete('/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
         Route::put('/{id}/setPrices', [ProposalController::class, 'setPrices'])->name('proposal.setPrices');
+        Route::delete('/{id}/resetPrices', [ProposalController::class, 'resetPrices'])->name('proposal.resetPrices');
     });
 
     Route::prefix('files')->group(function () {

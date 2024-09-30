@@ -175,4 +175,12 @@ class ProposalController extends Controller
 
         return redirect()->route('proposal.show', [$proposal->id]);
     }
+
+    public function resetPrices(string $id){
+        $proposal = Proposal::findOrFail($id);
+
+        $proposal->prices()->delete();
+
+        return redirect()->route('proposal.show', [$proposal->id]);
+    }
 }

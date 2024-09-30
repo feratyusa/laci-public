@@ -293,7 +293,7 @@ export default function TableProposal(){
         axios.get('/api/get/proposals').then(function(response) {
             setProposals(response.data.proposals)
         })
-    }, [proposals])
+    }, [])
 
     return(
         <>

@@ -4,6 +4,7 @@ import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
 import DialogEventList from "./DialogEventList";
 import { Link } from "@inertiajs/react";
+import ProposalPriceDetail from "./ProposalPriceDetail";
 
 function TableRow({name, value=null, color="red", option=null, proposal=null, events=null, ...props}){    
     return(
@@ -16,7 +17,7 @@ function TableRow({name, value=null, color="red", option=null, proposal=null, ev
             <div className={"col-span-4 p-4 bg-gray-50"}>
                 {
                     option == 'prices' ?
-                    ''
+                    <ProposalPriceDetail proposal={proposal} details={proposal.prices}/>
                     :
                     option == "chip" ?
                     <Chip 
@@ -60,7 +61,7 @@ export default function ProposalDetails({proposal, color, events, categories}){
             <TableRow name={"Kategori"} value={proposal.event_category}  />
             <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
             <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
-            <TableRow name={"Anggaran Awal"} option={'prices'} value={proposal} />
+            <TableRow name={"Anggaran Awal"} option={'prices'} proposal={proposal} />
             <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
             <TableRow name={"Assign Kepada"} value={proposal.assign_to} />
             <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />

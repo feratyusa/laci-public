@@ -23,6 +23,7 @@ class ProposalPricesFormRequest extends FormRequest
     {
         return [
             'details' => ['required', 'array'],
+            'details.*.id' => ['nullable', 'integer'],
             'details.*.budget_type_id' => ['required', 'integer'],
             'details.*.price' => ['required', 'numeric', 'max_digits:15']
         ];

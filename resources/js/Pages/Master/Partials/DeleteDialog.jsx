@@ -4,7 +4,9 @@ import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { useState } from "react";
 
-export default function DeleteDialog({variant="icon", 
+export default function DeleteDialog({
+    variant="icon", 
+    text="Delete",
     route, 
     category,
     title=null,
@@ -16,6 +18,7 @@ export default function DeleteDialog({variant="icon",
     function handleDelete(){
         destroy(route, {
             preserveScroll: true,
+            preserveState: false,
             onSuccess: setOpen(false)
         })
     }
@@ -24,8 +27,8 @@ export default function DeleteDialog({variant="icon",
         <>
             {
                 variant == 'text' ?
-                <Button>
-
+                <Button onClick={() => setOpen(true)} color="red">
+                    {text}
                 </Button>
                 :
                 <IconButton size="sm" color="red" onClick={() => setOpen(true)}>

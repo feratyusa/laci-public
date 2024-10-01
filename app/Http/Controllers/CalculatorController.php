@@ -88,7 +88,7 @@ class CalculatorController extends Controller
                 
                 $totalPrice += intval($price->price) * $participants;
 
-                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price));
+                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price) * $participants);
             }
             
             $event->setAttribute('total_price', $totalPrice);
@@ -107,7 +107,7 @@ class CalculatorController extends Controller
                 else $participants = intval($price->participantNum);
                 
                 $totalPrice += intval($price->price) * $participants;      
-                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price));          
+                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price) * $participants);          
             }
             
             $event->setAttribute('total_price', $totalPrice);

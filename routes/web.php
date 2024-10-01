@@ -131,6 +131,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [BudgetTypeController::class, 'destroy'])->name('budgetType.destroy');
         });
 
+        Route::prefix('users')->group(function(){
+            
+        });
+
     });
 });
 

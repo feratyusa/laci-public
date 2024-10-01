@@ -52,13 +52,9 @@ class EventFormRequest extends FormRequest
                 'numeric',
                 'integer',
             ],
-            'training_price' => [
-                'nullable',
-                'numeric',
-            ],
-            'accomodation_price' => [
-                'nullable',
-                'numeric',
+            'assign_to' => [
+                'required',
+                'string'
             ]
         ];
     }

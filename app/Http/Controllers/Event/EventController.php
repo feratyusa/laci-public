@@ -7,6 +7,7 @@ use App\Enum\FileCategory;
 use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
+use App\Http\Requests\Event\EventPriceFormRequest;
 use App\Http\Requests\NumberTypeRequest;
 use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
@@ -16,9 +17,12 @@ use App\Models\File\Category;
 use App\Models\File\MandatoryFileCategory;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -55,13 +59,30 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(EventFormRequest $request): RedirectResponse
+    public function store(EventFormRequest $request)
     {
         $validated = $request->validated();
+        $validated['created_by'] = Auth::user()->username;
 
-        $event = Event::create($validated);
-        
-        $event->prices()->create($validated);
+        DB::beginTransaction();
+
+        try{
+            $event = Event::create($validated);        
+            
+            $proposal = $event->proposal;
+
+            foreach($proposal->prices as $price){                
+                $event->prices()->create([                    
+                    'price' => $price->price,
+                    'budget_type_id' => $price->budget_type_id,
+                ]);
+            }
+
+            DB::commit();
+        }catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }        
 
         return redirect()->route('event.show', ['id' => $event->id])
             ->with([]);
@@ -117,24 +138,6 @@ class EventController extends Controller
             ->with([]);
     }
 
-    // public function changeNumberType(NumberTypeRequest $request, string $id): RedirectResponse
-    // {
-    //     $event = Event::findOrFail($id);
-
-    //     $validated = $request->validated();
-
-    //     if($validated === ParticipantNumberType::DYNAMIC->value){
-    //         $numbers = $event->participants()->count();
-    //         $event->update([
-    //             'participant_number_type' => $validated['participant_number_type'],
-    //             'participant_number' => $numbers,
-    //         ]);
-    //     }
-        
-    //     return redirect()->route('event.show', ['id' => $event->id]);
-    // }
-
-
     public function changeNumberType(string $id)
     {
         $event = Event::findOrFail($id);
@@ -175,7 +178,62 @@ class EventController extends Controller
     public function get()
     {
         return response()->json([
-            'events' => Event::orderByDesc('id')->get()
+            'events' => Event::with('proposal')->orderByDesc('id')->get()
         ]);
+    }
+
+    public function setPrices(EventPriceFormRequest $request, string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $validated = $request->validated();
+
+        DB::beginTransaction();
+
+        try{
+            foreach ($event->prices as $price) {
+                $deleteFlag = true;
+                foreach($validated['details'] as $check){
+                    if($check['budget_type_id'] == $price->budget_type_id){
+                        $deleteFlag = false;
+                        break;
+                    }
+                }
+                if($deleteFlag){
+                    $price->deleteOrFail();
+                }
+            }
+    
+            foreach ($validated['details'] as $detail) {
+                $event->prices()->updateOrCreate(
+                    ['budget_type_id' => $detail['budget_type_id']],
+                    $detail
+                );
+            }
+
+            $event->update([
+                'defaultPrices' => 0
+            ]);
+            
+            DB::commit();
+        }catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        return redirect()->route('event.show', ['id' => $event->id]);
+    }
+
+    public function resetPrices(string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $event->prices()->delete();
+
+        $event->update([
+            'defaultPrices' => 0
+        ]);
+
+        return redirect()->route('event.show', ['id' => $event->id]);
     }
 }

@@ -180,6 +180,8 @@ class ProposalController extends Controller
         $proposal = Proposal::findOrFail($id);
 
         $proposal->prices()->delete();
+        
+        $proposal->touch();
 
         return redirect()->route('proposal.show', [$proposal->id]);
     }

@@ -18,7 +18,10 @@ class EventPrices extends Model
         'budget_type_id',
         'price',
         'participantNum',
+        'defaultParticipants',
     ];
+
+    protected $touches = ['event'];
     
     public function event(): BelongsTo
     {

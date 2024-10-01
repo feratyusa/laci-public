@@ -65,7 +65,7 @@ export default function ProposalDetails({proposal, color, events, categories}){
             <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
             <TableRow name={"Assign Kepada"} value={proposal.assign_to} />
             <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
-            <TableRow name={"Tanggal Diupdate"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
+            <TableRow name={"Tanggal Diupdate"} value={new Date(proposal.updated_at).toLocaleTimeString('id', dateoptions)} color={color} />
             <TableRow name={"Event(s)"} option={'event'} proposal={proposal} events={events} />
             <div className="grid grid-cols-6 items-center border-b-2">
                 <div className={"col-span-2 w-60"}>

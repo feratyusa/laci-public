@@ -33,16 +33,6 @@ function EventListTable({events}){
             header: <span>Partisipan</span>,
             cell: info => info.getValue(),
         }),
-        columnHelper.accessor(row => row.prices.training_price, {
-            id: 'training_price',
-            header: <span>Harga Pelatihan</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
-        }),
-        columnHelper.accessor(row => row.prices.accomodation_price, {
-            id: 'accomodation_price',
-            header: <span>Harga Akomodasi</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
-        }),
         columnHelper.accessor(row => row.id, {
             id: 'link',
             header: <span>Link</span>,

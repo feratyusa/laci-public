@@ -200,18 +200,6 @@ export default function TableEvent(){
             cell: info => info.getValue().participant_number_type == 'DYNAMIC' ? info.getValue().participants.length : info.getValue().participant_number,
             filterFn: 'includesString'
         }),
-        columnHelper.accessor(row => row.prices.training_price, {
-            id: 'training_price',
-            header: <span>Biaya Pendidikan</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
-            filterFn: 'includesString'
-        }),
-        columnHelper.accessor(row => row.prices.accomodation_price, {
-            id: 'accomodation_price',
-            header: <span>Biaya Akomodasi</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`,
-            filterFn: 'includesString'
-        }),
         columnHelper.accessor(row => row, {            
             id: 'status',
             header: <span>Status</span>,
@@ -264,7 +252,7 @@ export default function TableEvent(){
         axios.get('/api/get/events').then(function(response) {
             setEvents(response.data.events)
         })
-    }, [events])
+    }, [])
 
     return(
         <div>

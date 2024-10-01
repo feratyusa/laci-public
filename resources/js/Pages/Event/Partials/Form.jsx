@@ -8,12 +8,50 @@ import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import number_types from "@/Base/NumberType";
 import { useEffect } from "react";
+import LoadingInput from "@/Components/Loading/LoadingInput";
+
+function AssignToInput({data, setData, errors}){
+    const [userOptions, setUserOptions] = useState(false)
+    useEffect(()=>{
+        axios.get('/api/input/users').then(function(response){
+            setUserOptions(response.data.users)
+        })
+    }, [])
+
+    return(
+        <>
+            <div className="table-cell pb-8 w-44">
+                <InputLabel value="Assign To" htmlFor="assign-to" 
+                    className="font-bold text-lg" />
+            </div>
+            <div className="table-cell flex justify-center pb-8">
+                {
+                    userOptions ?
+                    <ReactSelect
+                        id="assign-to"
+                        classNamePrefix="select2-selection"
+                        className="max-w-2xl focus:border-red-500"
+                        value={userOptions.find(k => k.value == data.assign_to) ?? ''}
+                        options={userOptions}                    
+                        onChange={(e) => setData('assign_to', e.value)}
+                        isSearchable
+                    />
+                    :
+                    <LoadingInput size="h-4 w-1/2"/>
+                }
+
+                <InputError message={errors.assign_to} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+            </div>
+        </>
+    )
+}
 
 export default function EventForm({
         method, 
         event=null, 
         proposal_id, 
         proposals,
+        user,
     }){
 
     const s_date = event ? new Date(event.start_date) : new Date()
@@ -27,9 +65,8 @@ export default function EventForm({
         start_date: s_date_string,
         end_date: e_date_string,
         participant_number_type: event ? event.participant_number_type : number_types[0].value,
-        participant_number: event ? event.participant_number : 0,
-        training_price: event?.prices ? event.prices.training_price : 0,
-        accomodation_price: event?.prices ? event.prices.accomodation_price : 0,
+        participant_number: event ? event.participant_number : 0,        
+        assign_to: event ? event.assign_to : user.username,
     });
 
     const [proposalDetail, setProposalDetail] = useState(
@@ -185,30 +222,6 @@ export default function EventForm({
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Tipe Jumlah Partisipan" htmlFor="number-type" 
-                                className="font-bold text-lg" />
-                        </div>
-                        <div className="table-cell pb-8">
-                            <ReactSelect
-                                id="number-type"
-                                name="number-type"
-                                placeholder="Tipe Jumlah Partisipan"
-                                classNamePrefix="select2-selection"
-                                className="max-w-full focus:border-red-500"
-                                value={number_types.find(n => n.value === data.participant_number_type)}
-                                options={number_types}
-                                onChange={(e) => {
-                                    setData('participant_number_type', e.value)
-                                    if(e.value === 'FIXED') setNumberDisabled(false)
-                                    else setNumberDisabled(true)
-                                }}
-                            />
-
-                            <InputError message={errors.participant_number_type} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                        </div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell pb-8 w-44">
                             <InputLabel value="Jumlah Partisipan" htmlFor="participant_number" 
                                 className="font-bold text-lg" />
                         </div>
@@ -230,46 +243,7 @@ export default function EventForm({
                         </div>
                     </div>
                     <div className="table-row">
-                        <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Biaya Pendidikan" htmlFor="training-price" 
-                                className="font-bold text-lg" />
-                        </div>
-                        <div className="table-cell pb-8">
-                            <CurrencyInput 
-                                id="training-price"
-                                name="training-price"
-                                value={data.training_price}
-                                placeholder="Biaya Pendidikan"
-                                autoComplete="training_price"
-                                prefix="Rp "
-                                className="w-full rounded-md focus:drop-shadow-lg border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900 focus:border-gray-900 disabled:opacity-30"
-                                onValueChange={(value) => setData('training_price', value)}
-                            />
-                            <p className="text-sm italic text-gray-400">Number only</p>
-
-                            <InputError message={errors.training_price} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                        </div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell pb-8 w-44">
-                            <InputLabel value="Biaya Akomodasi" htmlFor="accomodation-price" 
-                                className="font-bold text-lg" />
-                        </div>
-                        <div className="table-cell pb-8">
-                            <CurrencyInput 
-                                id="accomodation-price"
-                                name="accomodation-price"
-                                value={data.accomodation_price}
-                                placeholder="Biaya Akomodasi"
-                                autoComplete="accomodation_price"
-                                prefix="Rp "
-                                className="w-full rounded-md focus:drop-shadow-lg border-x-0 border-t-0 rounded-none border-b-gray-500 focus:ring-gray-900 focus:border-gray-900 disabled:opacity-30"
-                                onValueChange={(value) => setData('accomodation_price', value)}
-                            />
-                            <p className="text-sm italic text-gray-400">Number only</p>
-
-                            <InputError message={errors.accomodation_price} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
-                        </div>
+                        <AssignToInput data={data} setData={setData} errors={errors}/>
                     </div>
                 </div>
             </div>

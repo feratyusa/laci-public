@@ -52,6 +52,7 @@ export default function Create({
                             method={'create'} 
                             proposals={proposals} 
                             proposal_id={proposal_id}
+                            user={auth.user}
                         />
                     </CardBody>
                 </Card>

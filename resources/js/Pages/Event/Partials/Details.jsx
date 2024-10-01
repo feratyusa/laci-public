@@ -5,6 +5,7 @@ import OptionButton from "@/Components/OptionButton";
 import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
+import EventPriceDetail from "./EventPriceDetail";
 
 function TableRow({name, value=null, color="red", option=null, link=null}){    
     return(
@@ -14,6 +15,9 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
             </td>
             <td className={"border-b-2 pl-5 bg-gray-50"}>
                 {
+                    option == 'price' ?
+                    <EventPriceDetail event={value} details={value.prices}/>
+                    :
                     option == "chip" ?
                     <Chip 
                         className="w-fit"
@@ -64,16 +68,17 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"ID Event"} value={event.id} />
                 <TableRow name={"Nama Event"} value={event.name} />
                 <TableRow name={"Proposal"} option={'link'} link={proposalRoute} value={event.proposal} />
-                <TableRow name={"Kategori"} value={event.proposal.event_category}  />
+                <TableRow name={"Kategori"} value={event.proposal.event_category} />
                 <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.lengkap}`}  />
                 <TableRow name={"Tanggal Mulai"} value={new Date(event.start_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
+                <TableRow name={"Anggaran"} option={'price'} value={event}/>
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'number_type'} color={color} link={route('event.number-type', [event.id])}/>
                 <TableRow name={"Jumlah Partisipan"} value={event.participant_number_type == 'FIXED' ? event.participant_number : event.participants.length} />
-                <TableRow name={"Biaya Pendidikan"} value={`Rp ${Number(event.prices.training_price).toLocaleString()}`} />
-                <TableRow name={"Biaya Akomodasi"} value={`Rp ${Number(event.prices.accomodation_price).toLocaleString()}`} />
+                <TableRow name={"Dibuat Oleh"} value={event.created_by} />
+                <TableRow name={"Assign Kepada"} value={event.assign_to} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
-                <TableRow name={"Tanggal Diupdate"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)}/>
+                <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
                 <div className="table-row">
                     <div className={"table-cell border-b-2 py-4"}>
                         <Typography variant="h6">

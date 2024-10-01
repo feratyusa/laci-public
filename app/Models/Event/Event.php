@@ -37,6 +37,9 @@ class Event extends Model
         'end_date',
         'participant_number_type',
         'participant_number',
+        'created_by',
+        'assign_to',
+        'defaultPrices',
     ];
 
     /**
@@ -61,9 +64,9 @@ class Event extends Model
     {
         return $this->belongsToMany(File::class, 'event_files', 'event_id', 'file_id');
     }
-    public function prices(): HasOne
+    public function prices(): HasMany
     {
-        return $this->hasOne(EventPrices::class, 'event_id', 'id');
+        return $this->hasMany(EventPrices::class, 'event_id', 'id');
     }
 
     /**

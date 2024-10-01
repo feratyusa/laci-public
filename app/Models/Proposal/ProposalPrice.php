@@ -18,6 +18,13 @@ class ProposalPrice extends Model
         'price',
     ];
 
+    protected $touches = ['proposal'];
+
+    public function proposal(): BelongsTo
+    {
+        return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
+    }
+
     public function budgetType(): BelongsTo
     {
         return $this->belongsTo('budget_types', 'budget_type_id', 'id');

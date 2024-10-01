@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kursus extends Model
 {
-    protected $connection = 'sqlite';
-    protected $table = 'courses';  
-    protected $fillable = [
-        'sandi',
-        'lengkap',
-        'kategori'
-    ];
+    protected $connection = 'ehc';
+    protected $table = 'V_LACI_KURSUS';  
+    
+    // protected $fillable = [
+    //     'sandi',
+    //     'lengkap',
+    //     'kategori'
+    // ];
 
     /**
      * Create a new factory instance for the model.

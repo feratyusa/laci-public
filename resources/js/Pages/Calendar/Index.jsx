@@ -8,6 +8,7 @@ import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
 import { useEffect } from "react";
+import InDevelopment from "@/Components/InDevelopment";
 
 export default function Index({
     auth,
@@ -31,12 +32,26 @@ export default function Index({
         setEventsFiltered([...temp])
     }
 
+    const inDev = true
+    if(inDev) return(
+        <Authenticated
+            user={auth.user}
+            header={<HeaderTitle title={"Kalender"}/>}
+        >
+            <Head title="Kalendar"/> 
+
+            <div className="m-5">
+                <InDevelopment />
+            </div>     
+        </Authenticated>
+    )
+
     return(
         <Authenticated
             user={auth.user}
             header={<HeaderTitle title={"Kalender"}/>}
         >
-            <Head title="Kalendar"/>
+            <Head title="Kalendar"/>            
 
             <div className="bg-white rounded-lg shadow-lg m-5 p-10">
                 <div className="flex items-center gap-5 mb-5 text-red-500">

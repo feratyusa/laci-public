@@ -11,8 +11,10 @@ use App\Http\Controllers\Master\BudgetController;
 use App\Http\Controllers\Master\BudgetTypeController;
 use App\Http\Controllers\Master\CategoryController;
 use App\Http\Controllers\Master\MandatoryCategoryController;
+use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
+use App\Http\Controllers\TutorialController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -96,6 +98,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/update', [CalendarController::class, 'update'])->name('calendar.update');
     });
 
+    Route::prefix('tutorials')->group(function (){
+        Route::get('', [TutorialController::class, 'index'])->name('tutorial.index');        
+    });
+
     Route::prefix('master')->group(function(){
    
         Route::prefix('categories')->group(function(){
@@ -132,7 +138,9 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('users')->group(function(){
-            
+            Route::get('', [UserController::class, 'index'])->name('users.index');
+            Route::post('', [UserController::class, 'store'])->name('users.store');
+            Route::delete('/{username}', [UserController::class, 'destroy'])->name('users.destroy');
         });
 
     });

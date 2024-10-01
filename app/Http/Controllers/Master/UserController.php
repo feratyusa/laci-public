@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\UserFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -33,7 +34,15 @@ class UserController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        
+        $validated = $request->validated();
+
+        User::create([
+            'username' => $validated['username'],
+            'name' => $validated['name'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -55,7 +64,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserFormRequest $request, string $id)
     {
         //
     }
@@ -63,8 +72,12 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $username)
     {
-        //
+        $user = User::where('username', $username)->firstOrFail();
+
+        $user->deleteOrFail();
+
+        return redirect()->route('users.index');
     }
 }

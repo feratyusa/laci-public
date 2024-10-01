@@ -11,14 +11,15 @@ class Employee extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlite';
-    protected $table = 'employees';
-    protected $fillable = [
-        'nip',
-        'nama',
-        'cabang',
-        'jabatan',
-    ];
+    protected $connection = 'ehc';
+    protected $table = 'V_LACI_PEGAWAI';
+
+    // protected $fillable = [
+    //     'nip',
+    //     'nama',
+    //     'cabang',
+    //     'jabatan',
+    // ];
 
     /**
      * Create a new factory instance for the model.

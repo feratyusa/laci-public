@@ -2,6 +2,7 @@
 
 namespace App\Models\Proposal;
 
+use App\Models\Master\BudgetType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,8 @@ class ProposalPrice extends Model
         'price',
     ];
 
+    protected $with = ['budgetType'];
+
     protected $touches = ['proposal'];
 
     public function proposal(): BelongsTo
@@ -27,6 +30,6 @@ class ProposalPrice extends Model
 
     public function budgetType(): BelongsTo
     {
-        return $this->belongsTo('budget_types', 'budget_type_id', 'id');
+        return $this->belongsTo(BudgetType::class, 'budget_type_id', 'id');
     }
 }

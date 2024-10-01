@@ -1,4 +1,5 @@
 import EmptyRow from "@/Components/Table/EmptyRow";
+import { ToRupiah } from "@/helpers/ToRupiah";
 import { ChatBubbleLeftEllipsisIcon, ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
@@ -17,23 +18,22 @@ function PercentageNumber({number}){
     )
 }
 
-function BudgetTable({budget, sumPrices, sumParticipants}){
-    const totalBudget = Number(budget.details.find(d => d.name == 'In House Training').value) + Number(budget.details.find(d => d.name == 'Public Training').value)
-    const totalPrices = Number(sumPrices.public) + Number(sumPrices.inHouse)
-    const remainder = totalBudget - totalPrices
-    const totalPercentage = (totalPrices/totalBudget) * 100
-    const remainderPercentage = (remainder/totalBudget) * 100
+function BudgetTable({budget, budgetTypePrices}){
+    const totalBudget = Number(budget.total_value)
+    const totalRecap = Number(budgetTypePrices.total_value)
+    const totalRemainder = totalBudget - totalRecap
+    const totalRecapPercentage = (totalRecap/totalBudget) * 100
+    const totalRemainderPercentage = (totalRemainder/totalBudget) * 100
 
-    const headerClass = 'border-l-2 last:border-r-2 border-white p-2'
+    const headerClass = 'border-r-2 last:border-r-0 border-white p-2'
     const bodyClass = 'px-2 py-5'
-
-    const colorAware = totalPercentage > 80 ? "text-red-500" : totalPercentage > 50 ? "text-amber-500" : "text-green-500"
+    const colorAware = totalRecapPercentage > 80 ? "text-red-500" : totalRecapPercentage > 50 ? "text-amber-500" : "text-green-500"
 
     return(
-        <table className="table-auto w-full text-center">
+        <table className="table-auto w-full text-center border-2 border-red-500">
             <thead className="bg-red-500 text-white font-bold">
                 <tr className="border-b-2 border-white">
-                    <th rowSpan={2} className={headerClass}>Nama</th>
+                    <th rowSpan={2} className={headerClass}>Tipe Anggaran</th>
                     <th rowSpan={2} className={headerClass}>Rancangan</th>
                     <th colSpan={2} className={headerClass}>Nominal</th>
                     <th colSpan={2} className={headerClass}>Persentase</th>
@@ -48,38 +48,30 @@ function BudgetTable({budget, sumPrices, sumParticipants}){
             <tbody>
                 {
                     budget.details.map(detail => {
-                        if(detail.name == 'In House Training' || detail.name == 'Public Training') {
-                            const price = detail.name == 'In House Training' ? sumPrices.inHouse : sumPrices.public
-                            const remainder = Number(detail.value) - Number(price)
-                            const pricePercentage = (Number(price)/Number(detail.value)) * 100
-                            const remainderPercentage = (Number(remainder)/Number(detail.value)) * 100
-                            const colorAwareDetail = pricePercentage > 80 ? "text-red-500" : pricePercentage > 50 ? "text-yellow-900" : "text-green-500"
-                            return(
-                                <tr className="border-b-2 border-red-500 text-black">
-                                    <td className={`${bodyClass}`}>{detail.name}</td>
-                                    <td className={`${bodyClass}`}>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
-                                    <td className={`${bodyClass} ${colorAwareDetail}`}>{`Rp ${Number(price).toLocaleString()}`}</td>
-                                    <td className={`${bodyClass} ${colorAwareDetail}`}>{`Rp ${Number(remainder).toLocaleString()}`}</td>
-                                    <td className={`${bodyClass} ${colorAwareDetail}`}>
-                                        <PercentageNumber number={pricePercentage}/>
-                                    </td>
-                                    <td className={`${bodyClass} ${colorAwareDetail}`}>
-                                        <PercentageNumber number={remainderPercentage}/>
-                                    </td>
-                                </tr>
-                            )
-                        }
+                        const budgetValue = Number(detail.value)
+                        const recapNominal = Number(budgetTypePrices[detail?.budget_type.id])
+                        const remainderNominal = budgetValue-recapNominal
+                        const recapPercentage = (recapNominal / budgetValue) * 100
+                        const remainderPercentage = (remainderNominal / budgetValue) * 100
+                        return (
+                            <tr className="border-b-2 border-red-500">
+                                <td className={bodyClass}>{detail?.budget_type.name}</td>
+                                <td className={bodyClass}>{ToRupiah(budgetValue)}</td>
+                                <td className={bodyClass}>{ToRupiah(recapNominal)}</td>
+                                <td className={bodyClass}>{ToRupiah(remainderNominal)}</td>
+                                <td className={bodyClass}><PercentageNumber number={recapPercentage}/></td>
+                                <td className={bodyClass}><PercentageNumber number={remainderPercentage}/></td>
+                            </tr>
+                        )
                     })
                 }
                 <tr className="border-b-2 border-red-500 font-bold text-xl text-black">
                     <td className={bodyClass}>Total</td>
                     <td className={bodyClass}>{`Rp ${totalBudget.toLocaleString()}`}</td>
-                    <td className={`${bodyClass} ${colorAware}`}>{`Rp ${totalPrices.toLocaleString()}`}</td>
-                    <td className={`${bodyClass} ${colorAware}`}>{`Rp ${remainder.toLocaleString()}`}</td>
-                    <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalPercentage}/></td>
-                    <td className={`${bodyClass} ${colorAware}`}>
-                        <PercentageNumber number={remainderPercentage}/>
-                    </td>
+                    <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRecap)}</td>
+                    <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRemainder)}</td>
+                    <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalRecapPercentage}/></td>
+                    <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalRemainderPercentage}/></td>                    
                 </tr>
             </tbody>
         </table>
@@ -92,6 +84,7 @@ export default function BudgetReport({
     sumParticipants,
     budget=null,
     budgets=[],
+    budgetTypePrices=[],
 }){
     const {data, setData, get, reset} = useForm({
         budget_id: budget ? budget.id : ''
@@ -102,6 +95,8 @@ export default function BudgetReport({
             preserveScroll: true
         })
     }
+    
+    console.log(budgetTypePrices)
 
     return(
         <>
@@ -137,7 +132,7 @@ export default function BudgetReport({
                 </div>
                 :
                 <div className="shadow-lg">
-                    <BudgetTable budget={budget} sumPrices={sumPrices} sumParticipants={sumParticipants}/>
+                    <BudgetTable budget={budget} budgetTypePrices={budgetTypePrices}/>
                 </div>
             }
         </>

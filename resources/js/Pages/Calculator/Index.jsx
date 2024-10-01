@@ -8,19 +8,23 @@ import BetweenDates from "@/Components/BetweenDates";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { useState } from "react";
 import BudgetReport from "./Partials/BudgetReport";
+import ReportTable from "./Partials/ReportTable";
 
 export default function Index({
     auth, 
     calc_start_date='',
     calc_end_date='',
-    publics=null,
     totalPricePublic=0,
     totalPartcPublic=0,
-    inHouses=null,
     totalPriceInHouse=0,
     totalPartcInHouse=0,
+    inHouses=[],
+    publics=[],
+    totalPrice=[],
+    totalParticipants=[],
     budget=null,
-    budgets=[]
+    budgets=[],
+    budgetTypePrices=[],
 }){
     const {data, setData, put, processing} = useForm({        
         public: publics ? [...publics] : null,
@@ -72,21 +76,11 @@ export default function Index({
                     </div>
                     :
                     publics?.length != 0 || inHouses?.length != 0 ? 
-                    <CalculatorTable 
+                    <ReportTable 
                         publics={publics}
                         inHouses={inHouses}
-                        totalPricePublic={totalPricePublic}
-                        totalPriceInHouse={totalPriceInHouse}
-                        totalPartcPublic={totalPartcPublic}
-                        totalPartcInHouse={totalPartcInHouse}
-                        data={data}
-                        setData={setData}
-                        put={put}
-                        processing={processing}
-                        sumPrices={sumPrices}
-                        setSumPrice={setSumPrice}
-                        sumParticipants={sumParticipants}
-                        setSumParticipants={setSumParticipants}
+                        totalPrice={totalPrice}
+                        totalParticipants={totalParticipants}
                     />
                     :
                     publics?.length == 0 && inHouses?.length == 0 ?
@@ -124,10 +118,9 @@ export default function Index({
                     </div>
                     :
                     <BudgetReport 
-                        sumPrices={sumPrices}
-                        sumParticipants={sumParticipants}
                         budget={budget}
-                        budgets={budgets}
+                        budgets={budgets}    
+                        budgetTypePrices={budgetTypePrices}                    
                     />
                 }
             </Card>

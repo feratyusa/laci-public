@@ -97,7 +97,14 @@ class EventController extends Controller
 
         $event_participants = EventParticipant::where('event_id', $event->id)->pluck('nip')->toArray();
 
-        $files = $event->files()->get();        
+        $files = $event->files()->get();
+
+        $event['total_prices'] = 0;
+        foreach($event->prices as $price){
+            if($price->defaultParticipants) $participants = $event->participants()->count();
+            else $participants = $price->participantNum;
+            $event['total_prices'] += intval($price->price) * $participants;
+        }        
 
         return Inertia::render('Event/Show', [
             'event' => $event,
@@ -177,8 +184,13 @@ class EventController extends Controller
 
     public function get()
     {
+        $events = Event::with('proposal')->orderByDesc('id')->get();
+        foreach ($events as $event) {
+            $event->setAttribute('isComplete', $event->isMissingCategories());
+        }
+        
         return response()->json([
-            'events' => Event::with('proposal')->orderByDesc('id')->get()
+            'events' => $events
         ]);
     }
 

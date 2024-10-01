@@ -19,6 +19,13 @@ class CalculatorController extends Controller
 {    
     use InputHelpers;
 
+    private function calculateBudgetTypePrices(array $budgetTypePrices, int $budgetTypeID, int $price){
+        if(array_key_exists($budgetTypeID, $budgetTypePrices)) $budgetTypePrices[$budgetTypeID] += $price;
+        else $budgetTypePrices[$budgetTypeID] = $price;
+        $budgetTypePrices['total_value'] += $price;
+        return $budgetTypePrices;
+    }
+
     public function index(Request $request)
     {
         // Check and get the value for input field or session key of 'start' and 'end' for the events
@@ -48,60 +55,65 @@ class CalculatorController extends Controller
         $data = [$start_date, $end_date];
 
         if(count($data)){
-            $inHouses = Event::whereHas('proposal', function (Builder $q) {
+            $inHouses = Event::with('prices')->whereHas('proposal', function (Builder $q) {
                 $q->where('event_category', EventCategory::IHT->value);
             })->whereRaw($query, $data)->get(); 
     
-            $publics = Event::whereHas('proposal', function (Builder $q) {
+            $publics = Event::with('prices')->whereHas('proposal', function (Builder $q) {
                 $q->where('event_category', EventCategory::PT->value);
             })->whereRaw($query, $data)->get();
         }
         else{
-            $inHouses = Event::whereHas('proposal', function (Builder $q) {
+            $inHouses = Event::with('prices')->whereHas('proposal', function (Builder $q) {
                 $q->where('event_category', EventCategory::IHT->value);
-            })->whereRaw($query, $data)->get(); 
+            })->get(); 
     
-            $publics = Event::whereHas('proposal', function (Builder $q) {
+            $publics = Event::with('prices')->whereHas('proposal', function (Builder $q) {
                 $q->where('event_category', EventCategory::PT->value);
             })->get();
         }
 
-    
-        $totPriceInHouse = 0;
-        $totPartcInHouse = 0;
-        $inHousePrices = [];
-        foreach ($inHouses as $event) {
-            $partc_number = $event->participant_number_type == ParticipantNumberType::FIXED->value ? $event->participant_number : $event->participants()->count();
-            $inHousePrices[] = (object)[
-                'id' => $event->id, 
-                'name' => $event->name,
-                'participant_number' => $partc_number, 
-                'training_price' => $event->prices->training_price, 
-                'accomodation_price' => $event->prices->accomodation_price, 
-                'total' => intval($partc_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
-                'dirty' => false,
-            ];
-            $totPartcInHouse += $partc_number;
-            $totPriceInHouse += $partc_number * ($event->prices->training_price + $event->prices->accomodation_price);
-        }
-        
+        $budgetTypePrices['total_value'] = 0;
+        $totPrice['inHouse'] = 0; $totPrice['public'] = 0;
+        $totParticipants['inHouse'] = 0; $totParticipants['public'] = 0;
 
-        $totPricePublic = 0;
-        $totPartcPublic = 0;
-        $publicPrices = [];
-        foreach ($publics as $event) {
-            $partc_number = $event->participant_number_type == ParticipantNumberType::FIXED->value ? $event->participant_number : $event->participants()->count();
-            $publicPrices[] = (object)[
-                'id' => $event->id, 
-                'name' => $event->name,
-                'participant_number' => $partc_number,
-                'training_price' => $event->prices->training_price, 
-                'accomodation_price' => $event->prices->accomodation_price, 
-                'total' => intval($partc_number) * (intval($event->prices->training_price) + intval($event->prices->accomodation_price)),
-                'dirty' => false,
-            ];
-            $totPartcPublic += $partc_number;
-            $totPricePublic += $partc_number * ($event->prices->training_price + $event->prices->accomodation_price);
+        foreach($inHouses as $event){
+
+            $totalPrice = 0;
+            $totalParticipants = $event->participant_number_type == ParticipantNumberType::DYNAMIC->value ? $event->participants()->count() : $event->participant_number;
+            foreach($event->prices as $price){
+
+                if($price->defaultParticipants) $participants = $event->participants()->count();
+                else $participants = intval($price->participantNum);
+                
+                $totalPrice += intval($price->price) * $participants;
+
+                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price));
+            }
+            
+            $event->setAttribute('total_price', $totalPrice);
+            $event->setAttribute('total_participants', $totalParticipants);
+            $totPrice['inHouse'] += $totalPrice;
+            $totParticipants['inHouse'] += $totalParticipants;
+        }
+
+        foreach($publics as $event){
+
+            $totalPrice = 0;
+            $totalParticipants = $event->participant_number_type == ParticipantNumberType::DYNAMIC->value ? $event->participants()->count() : $event->participant_number;
+            foreach($event->prices as $price){
+
+                if($price->defaultParticipants) $participants = $event->participants()->count();
+                else $participants = intval($price->participantNum);
+                
+                $totalPrice += intval($price->price) * $participants;      
+                $budgetTypePrices = $this->calculateBudgetTypePrices($budgetTypePrices, $price->budget_type_id, intval($price->price));          
+            }
+            
+            $event->setAttribute('total_price', $totalPrice);
+            $event->setAttribute('total_participants', $totalParticipants);
+            $totPrice['public'] += $totalPrice;
+            $totParticipants['public'] += $totalParticipants;
         }
 
         // Check and get input field of 'budget_id' for the budget
@@ -110,7 +122,11 @@ class CalculatorController extends Controller
                 'budget_id' => ['numeric']
             ]);
 
-            $budget = Budget::with('details')->findOrFail($validated['budget_id']);
+            $budget = Budget::with('details')->findOrFail($validated['budget_id']);            
+            $budget['total_value'] = 0;
+            foreach ($budget->details as $detail) {
+                $budget['total_value'] += $detail->value;
+            }
         }
 
         $request->flash();
@@ -118,12 +134,12 @@ class CalculatorController extends Controller
         return Inertia::render('Calculator/Index',[
             'calc_start_date' => session('calc_start_date'),
             'calc_end_date' => session('calc_end_date'),
-            'publics' => $publicPrices,
-            'totalPricePublic' => $totPricePublic,
-            'totalPartcPublic' => $totPartcPublic,
-            'inHouses' => $inHousePrices,
-            'totalPriceInHouse' => $totPriceInHouse,
-            'totalPartcInHouse' => $totPartcInHouse,
+            'events' => [$publics, $inHouses],
+            'publics' => $publics,
+            'inHouses' => $inHouses,
+            'totalPrice' => $totPrice,
+            'totalParticipants' => $totParticipants,
+            'budgetTypePrices' => $budgetTypePrices,
             'budget' => $budget ?? null,
             'budgets' => $this->selectOptions(Budget::all()->toArray(), 'id', 'year', false),
         ]);

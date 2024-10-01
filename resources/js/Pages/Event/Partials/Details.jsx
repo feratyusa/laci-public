@@ -6,6 +6,7 @@ import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import EventPriceDetail from "./EventPriceDetail";
+import { useEffect } from "react";
 
 function TableRow({name, value=null, color="red", option=null, link=null}){    
     return(
@@ -75,8 +76,9 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Anggaran"} option={'price'} value={event}/>
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'number_type'} color={color} link={route('event.number-type', [event.id])}/>
                 <TableRow name={"Jumlah Partisipan"} value={event.participant_number_type == 'FIXED' ? event.participant_number : event.participants.length} />
-                <TableRow name={"Dibuat Oleh"} value={event.created_by} />
-                <TableRow name={"Assign Kepada"} value={event.assign_to} />
+                <TableRow name={"Total Anggaran"} value={`Rp ${Number(event?.total_prices).toLocaleString()}` ?? 0} />
+                <TableRow name={"Dibuat Oleh"} value={event.created_by ?? 'NULL'} />
+                <TableRow name={"Assign Kepada"} value={event.assign_to ?? 'NULL'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
                 <div className="table-row">

@@ -70,7 +70,7 @@ export default function DialogAddFile({
                     <div className="flex min-h-full items-center justify-center p-4">
                         <DialogPanel
                             transition
-                            className="w-full max-w-2xl max-h-screen rounded-xl bg-white p-10 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 overflow-auto"
+                            className="w-full max-w-2xl max-h-screen rounded-xl bg-white p-10 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
                             >
                             <DialogTitle className="font-bold text-2xl">Tambah File</DialogTitle>
                             <form onSubmit={handleSubmit} className="my-4 flex flex-col gap-5">

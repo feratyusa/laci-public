@@ -78,7 +78,7 @@ export default function AddDialog({type, route, mandatories=[]}){
                   <div className="grid grid-cols-4 items-center gap-2">
                     {
                         mandatories.map(mandatory => (
-                            <div className='p-2 rounded-md uppercase font-bold bg-red-500 text-white text-xs text-center max-h-12 overflow-auto'>
+                            <div className='p-2 rounded-md uppercase font-bold bg-red-500 text-white text-xs text-center max-h-12'>
                                 {mandatory.category.name}
                             </div>
                         ))

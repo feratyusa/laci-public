@@ -103,7 +103,7 @@ export default function EventPriceDetail({event, details}){
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
                 <DialogPanel
                     transition
-                    className="w-full max-w-4xl max-h-[80vh] overflow-auto space-y-4 rounded-2xl bg-white p-12 ease-in duration-200 data-[closed]:opacity-0"
+                    className="w-full max-w-4xl max-h-[80vh] space-y-4 rounded-2xl bg-white p-12 ease-in duration-200 data-[closed]:opacity-0"
                 >
                     <DialogTitle className="text-center">
                         <p className='uppercase font-bold'>Pengaturan Detail Anggaran</p>

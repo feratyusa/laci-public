@@ -62,6 +62,18 @@ function EventTableSelected({event, color, ...props}){
                     <td className={valueClassName}>{event.event_category}</td>
                 </tr>
                 <tr>
+                    <th className={attrClassName}>Lokasi</th>
+                    <td className={valueClassName}>{event.location}</td>
+                </tr>
+                <tr>
+                    <th className={attrClassName}>Dibuat Oleh</th>
+                    <td className={valueClassName}>{event.created_by}</td>
+                </tr>
+                <tr>
+                    <th className={attrClassName}>Assign To</th>
+                    <td className={valueClassName}>{event.assign_to}</td>
+                </tr>
+                <tr>
                     <th className={attrClassName}>Tanggal Mulai</th>
                     <td className={valueClassName}>
                         <InputDate 
@@ -132,15 +144,18 @@ export default function CalendarChart({
         var temps = []
         console.log(events)
         events.forEach((element, index) => {
-            var color = element.proposal.event_category == 'In House Training' ? "rgba(0,0,255)" : "rgb(0,155,0)"
+            var color = element?.location?.name == 'Prigen' ? "rgb(34 197 94)" : "rgb(59 130 246)"
             temps.push({
                 start: new Date(element.start_date),
                 end: new Date(element.end_date),
                 name: element.name,
                 id: element.id,
+                location: element?.location?.name,
+                created_by: element.created_by,
+                assign_to: element.assign_to,
                 type: 'task',
                 progress: 0,
-                styles: { backgroundColor: color, backgroundSelectedColor: "rgb(255,0,0)" },
+                styles: { backgroundColor: color, backgroundSelectedColor: color },
                 kursus: `(${element.proposal.kursus.sandi}) ${element.proposal.kursus.lengkap}`,
                 event_category: element.proposal.event_category
             })
@@ -167,6 +182,16 @@ export default function CalendarChart({
             {
                 data.tasks.length != 0 ?
                 <>
+                <div className='flex justify-center gap-10'>
+                    <div className='flex items-center gap-2'>
+                        <div className='w-5 h-5 bg-green-500'></div>
+                        <p className='text-green-500 font-bold'>: Lokasi di Prigen</p>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='w-5 h-5 bg-blue-500'></div>
+                        <p className='text-blue-500 font-bold'>: Lokasi Bukan di Prigen</p>
+                    </div>
+                </div>
                 <div className='relative'>
                     <Gantt 
                         tasks={data.tasks}
@@ -192,15 +217,7 @@ export default function CalendarChart({
                                 ''
                             }
                         </div>
-                </div>
-                <div className='flex justify-center gap-5'>
-                    <Button hidden={!isDirty} onClick={() => handleSave()} color='green' loading={processing}>
-                        Simpan
-                    </Button>
-                    <Button hidden={!isDirty} onClick={() => handleResetAll()} color='red'>
-                        Reset
-                    </Button>
-                </div>
+                </div>                
                 </>
                 :
                 ""

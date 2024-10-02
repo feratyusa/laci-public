@@ -23,9 +23,8 @@ export default function Index({
     function handleEventChange(value){
         setFilter(value)
         var temp = events.filter(e => String(e.name).toLowerCase().includes(String(value).toLowerCase()) ||
-                                        String(e.id).toLowerCase().includes(String(value).toLowerCase()) ||
-                                        String(e.prices.training_price).toLowerCase().includes(String(value).toLowerCase()) ||
-                                        String(e.prices.accomodation_price).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        String(e.id).toLowerCase().includes(String(value).toLowerCase()) ||                                        
+                                        String(e?.location?.name).toLowerCase().includes(String(value).toLowerCase()) ||
                                         changeToIndonesiaDateTime(e.start_date, true).toLowerCase().includes(String(value).toLowerCase()) ||
                                         changeToIndonesiaDateTime(e.end_date, true).toLowerCase().includes(String(value).toLowerCase())
                                 )

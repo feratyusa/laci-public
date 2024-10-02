@@ -36,7 +36,12 @@ export default function EventList({events=[], start='', end='', className='', ..
             id: 'end_date',
             header: <span>Tanggal Selesai</span>,
             cell: info => `${changeToIndonesiaDateTime(info.getValue(), true)}`
-        }),        
+        }),
+        columnHelper.accessor(row => row?.location?.name ?? '', {
+            id: 'location',
+            header: <span>Lokasi</span>,
+            cell: info => info.getValue()
+        }),
     ]
 
     const table = useReactTable({

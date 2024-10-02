@@ -9,6 +9,7 @@ const MainMenu = [
             {name: 'Kategori File', link: 'category.index', url: 'master/categories'},
             {name: 'Kategori Wajib', link: 'mandatory-category.index', url: 'master/mandatory-categories'},
             {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
+            {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
         ], url: 'master'},
         {name: 'Tutorial', link: 'tutorial.index', url: 'tutorial'},
     ]

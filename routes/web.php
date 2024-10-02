@@ -10,6 +10,7 @@ use App\Http\Controllers\InputController;
 use App\Http\Controllers\Master\BudgetController;
 use App\Http\Controllers\Master\BudgetTypeController;
 use App\Http\Controllers\Master\CategoryController;
+use App\Http\Controllers\Master\LocationController;
 use App\Http\Controllers\Master\MandatoryCategoryController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\ProfileController;
@@ -141,6 +142,13 @@ Route::middleware('auth')->group(function () {
             Route::get('', [UserController::class, 'index'])->name('users.index');
             Route::post('', [UserController::class, 'store'])->name('users.store');
             Route::delete('/{username}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
+
+        Route::prefix('locations')->group(function() {
+            Route::get('', [LocationController::class, 'index'])->name('location.index');
+            Route::post('', [LocationController::class, 'store'])->name('location.store');
+            Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
+            Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
 
     });

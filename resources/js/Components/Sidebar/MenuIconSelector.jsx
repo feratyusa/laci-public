@@ -1,3 +1,4 @@
+import { MapPinIcon } from "@heroicons/react/24/outline";
 import { 
     AcademicCapIcon, 
     ArrowLeftStartOnRectangleIcon, 
@@ -59,6 +60,9 @@ export default function MenuIconSelector({name=''}){
         :
         name === 'master/budgets' ?
         <BanknotesIcon className="w-5"/>
+        :
+        name === 'master/locations' ? 
+        <MapPinIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

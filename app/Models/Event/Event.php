@@ -6,6 +6,7 @@ use App\Enum\MandatoryCategoryLink;
 use App\Enum\ParticipantNumberType;
 use App\Models\File\File;
 use App\Models\File\MandatoryFileCategory;
+use App\Models\Master\Location;
 use App\Models\Proposal\Proposal;
 use App\Trait\MissingCategory;
 use Database\Factories\EventFactory;
@@ -32,6 +33,7 @@ class Event extends Model
      */
     protected $fillable = [
         'name',
+        'location_id',
         'proposal_id',
         'start_date',
         'end_date',
@@ -47,7 +49,7 @@ class Event extends Model
      *
      * @var array
      */
-    protected $with = ['files', 'prices', 'participants'];
+    protected $with = ['files', 'prices', 'participants', 'location'];
 
     /**
      * Relationships
@@ -56,17 +58,25 @@ class Event extends Model
     {
         return $this->hasMany(EventParticipant::class, 'event_id', 'id');
     }
+
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
     }
+
     public function files(): BelongsToMany
     {
         return $this->belongsToMany(File::class, 'event_files', 'event_id', 'file_id');
     }
+
     public function prices(): HasMany
     {
         return $this->hasMany(EventPrices::class, 'event_id', 'id');
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'location_id', 'id');
     }
 
     /**

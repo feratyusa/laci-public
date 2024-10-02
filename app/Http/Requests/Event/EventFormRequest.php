@@ -55,6 +55,10 @@ class EventFormRequest extends FormRequest
             'assign_to' => [
                 'required',
                 'string'
+            ],
+            'location_id' => [
+                'nullable',
+                'integer',
             ]
         ];
     }

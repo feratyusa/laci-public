@@ -73,8 +73,9 @@ class EventController extends Controller
 
             foreach($proposal->prices as $price){                
                 $event->prices()->create([                    
-                    'price' => $price->price,
                     'budget_type_id' => $price->budget_type_id,
+                    'price' => $price->price,
+                    'participantNum' => $validated['participant_number'],
                 ]);
             }
 
@@ -178,8 +179,7 @@ class EventController extends Controller
 
         $event->deleteOrFail();
 
-        return back()
-            ->with(['message' => 'Event berhasil dihapus!']);
+        return redirect()->route('event.index');            
     }
 
     public function get()

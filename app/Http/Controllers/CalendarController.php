@@ -45,25 +45,5 @@ class CalendarController extends Controller
     {
         session()->forget(['calendar_start_date', 'calendar_end_date']);
         return redirect()->route('calendar.index');
-    }
-
-    public function update(CalendarUpdateEventRequest $request)
-    {
-        $validated = $request->validated();
-
-        // Check if event exists // duh it should be
-        foreach($validated['tasks'] as $task){
-            Event::findOrFail($task['id']);
-        }
-
-        // Iterate again to update
-        foreach($validated['tasks'] as $task){
-            Event::findOrFail($task['id'])->updateOrFail([
-                'start_date' => date('Y-m-d', strtotime($task['start'])),
-                'end_date' => date('Y-m-d', strtotime($task['end']))
-            ]);
-        }
-
-        return redirect()->route('calendar.index');
-    }
+    }    
 }

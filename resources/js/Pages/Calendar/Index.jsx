@@ -32,7 +32,7 @@ export default function Index({
         setEventsFiltered([...temp])
     }
 
-    const inDev = true
+    const inDev = false
     if(inDev) return(
         <Authenticated
             user={auth.user}

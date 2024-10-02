@@ -18,8 +18,7 @@ function ToolTipCustom({task}, event){
             <p><span className='font-bold'>Kategori: </span>{event?.proposal.event_category}</p>
             <p><span className='font-bold'>Mulai: </span>{changeToIndonesiaDateTime(task.start, true)}</p>
             <p><span className='font-bold'>Selesai: </span>{changeToIndonesiaDateTime(task.end, true)}</p>
-            <p className='italic text-xs mt-2 text-blue-500'>Click to see more</p>
-            <p className='italic text-xs text-blue-500'>Double click to reset</p>
+            <p className='italic text-xs mt-2 text-blue-500'>Click to see more</p>     
         </div>
     )
 }
@@ -40,7 +39,7 @@ function EventHeaderSelected({onClose}){
     )
 }
 
-function EventTableSelected({event, color, onStartChange, onEndChange, ...props}){
+function EventTableSelected({event, color, ...props}){
     const attrClassName = "p-2 border-x-2 border-b-2 first:border-t-2 border-black text-white"
     const valueClassName = "p-2 bg-gray-100 text-black border-b-2 border-r-2 last:border-t-2 border-black"
     return(
@@ -68,10 +67,8 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
                         <InputDate 
                             id={event.id}
                             name="start_date"
-                            value={changeToInputDate(event.start)}
-                            max={changeToInputDate(event.end)}
-                            onChange={onStartChange}
-                            onKeyDown={(e) => e.preventDefault()}
+                            value={changeToInputDate(event.start)}                            
+                            disabled
                         />
                     </td>
                 </tr>
@@ -81,10 +78,8 @@ function EventTableSelected({event, color, onStartChange, onEndChange, ...props}
                         <InputDate 
                             id={event.id}
                             name="end_date"
-                            value={changeToInputDate(event.end)}
-                            min={changeToInputDate(event.start)}
-                            onChange={onEndChange}
-                            onKeyDown={(e) => e.preventDefault()}
+                            value={changeToInputDate(event.end)}                                                                                    
+                            disabled
                         />
                     </td>
                 </tr>
@@ -114,17 +109,6 @@ export default function CalendarChart({
         if(eventSelected.id != task.id) setEventSelected(temp.id)
     }
 
-    function handleResetTask(task){
-        const newTasks = [...data.tasks]
-        const indexTask = newTasks.findIndex(t => t.id == task.id)
-
-        newTasks[indexTask] = {...defaultTasks[indexTask]}
-
-        setData('tasks', newTasks)
-
-        checkDirtyTasks(newTasks)
-    }
-
     function handleOnInputDateChange(e, position){
         const newTasks = [...data.tasks]
         const indexTasks = newTasks.findIndex(t => t.id == e.target.id)
@@ -142,37 +126,6 @@ export default function CalendarChart({
         checkDirtyTasks(newTasks)
 
         console.log('Task date change on input: ' + e.target.id)
-    }
-
-    function handleDateChange(task){
-        const newTasks = [...data.tasks]
-        const indexTask = newTasks.findIndex(t => t.id == task.id)
-
-        const isTaskDirty = (+task.start != +defaultTasks[indexTask].start || +task.end != +defaultTasks[indexTask].end)
-        newTasks[indexTask] = {...task, dirty: isTaskDirty}
-
-        setData('tasks', newTasks)
-
-        const temp = events.find(e => e.id == task.id)
-
-        setEventSelected(temp.id)
-
-        checkDirtyTasks(newTasks)
-
-        console.log("Expander Click: " + task.id + " start: " + task.start + " end: " + task.end)
-    }
-
-    function handleResetAll(){
-        setData('tasks', [...defaultTasks])
-        setEventSelected(false)
-        checkDirtyTasks([...defaultTasks])
-    }
-
-    function handleSave(){
-        console.log(data)
-        put(route('calendar.update'), {
-            preserveState: false
-        })
     }
     
     function generateTasks(){
@@ -203,14 +156,7 @@ export default function CalendarChart({
             if(element?.dirty == true) flag = true
         })
         setIsDirty(flag)
-    }
-
-    function checkEventsChange(){
-        defaultTasks.forEach(element => {            
-            if(events.find(e => e.id == element.id)) return true
-        });
-        return false
-    }
+    }    
     
     useEffect(() => {        
         generateTasks()
@@ -229,10 +175,7 @@ export default function CalendarChart({
                         preStepsCount={2}
                         ganttHeight={events.length > 10 ? 500 : ''}
                         listCellWidth=''
-                        timeStep={8.64e+7} // One day
-                        onDateChange={(task) => handleDateChange(task)}
-                        onClick={(task) => handleShowTaskDetails(task)}
-                        onDoubleClick={(task) => handleResetTask(task)}                        
+                        onClick={(task) => handleShowTaskDetails(task)}                      
                         locale='id'
                     />
                         <div className={`absolute top-5 left-5 border-gray-500 border-2 bg-white max-w-md shadow-xl rounded-lg p-5 pb-10 duration-300 ease-in-out ${eventSelected == false ? "opacity-0" : ''}`}>
@@ -243,8 +186,6 @@ export default function CalendarChart({
                                     <EventTableSelected 
                                         event={data.tasks.find(t => t.id == eventSelected)}
                                         color={data.tasks.find(t => t.id == eventSelected).styles.backgroundColor}
-                                        onStartChange={(e) => handleOnInputDateChange(e, 'start')}
-                                        onEndChange={(e) => handleOnInputDateChange(e, 'end')}
                                     />
                                 </>
                                 :

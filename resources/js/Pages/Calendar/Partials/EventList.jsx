@@ -36,17 +36,7 @@ export default function EventList({events=[], start='', end='', className='', ..
             id: 'end_date',
             header: <span>Tanggal Selesai</span>,
             cell: info => `${changeToIndonesiaDateTime(info.getValue(), true)}`
-        }),
-        columnHelper.accessor(row => row.prices.training_price, {
-            id: 'training_price',
-            header: <span>Biaya Pendidikan</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`
-        }),
-        columnHelper.accessor(row => row.prices.accomodation_price, {
-            id: 'accomodation_price',
-            header: <span>Biaya Akomodasi</span>,
-            cell: info => `Rp ${Number(info.getValue()).toLocaleString()}`
-        })
+        }),        
     ]
 
     const table = useReactTable({

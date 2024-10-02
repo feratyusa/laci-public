@@ -106,7 +106,7 @@ export default function EventPriceDetail({event, details}){
                     className="w-full max-w-4xl max-h-[80vh] space-y-4 rounded-2xl bg-white p-12 ease-in duration-200 data-[closed]:opacity-0"
                 >
                     <DialogTitle className="text-center">
-                        <p className='uppercase font-bold'>Pengaturan Detail Anggaran</p>
+                        <p className='uppercase font-bold'>Pengaturan Detail Anggaran (Biaya/individu)</p>
                         <p className='text-xs italic text-gray-500'>Event: {event?.name}</p>
                     </DialogTitle>
                         <div className='py-5'>                            

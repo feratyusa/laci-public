@@ -79,6 +79,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Total Anggaran"} value={`Rp ${Number(event?.total_prices).toLocaleString()}` ?? 0} />
                 <TableRow name={"Dibuat Oleh"} value={event.created_by ?? 'NULL'} />
                 <TableRow name={"Assign Kepada"} value={event.assign_to ?? 'NULL'} />
+                <TableRow name={"Lokasi"} value={event?.location?.name ?? 'NULL'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
                 <div className="table-row">

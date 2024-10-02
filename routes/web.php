@@ -167,6 +167,7 @@ Route::prefix('api')->group(function (){
         Route::get('event-categories', [InputController::class, 'getEventCategoryOptions'])->name('input.event-categories');
         Route::get('users', [InputController::class, 'getUserOptions'])->name('input.users');
         Route::get('budgetTypes', [InputController::class, 'getBudgetTypeOptions'])->name('input.budgetTypes');
+        Route::get('locations', [InputController::class, 'getLocationOptions'])->name('input.locations');
     });
 });
 

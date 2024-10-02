@@ -1,14 +1,49 @@
 import InputLabel from "@/Components/Form/InputLabel";
 import TextInput from "@/Components/Form/TextInput";
-import { Button, Tooltip } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import { useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
 import InputError from "@/Components/Form/InputError";
 import { useState } from "react";
-import CurrencyInput from "react-currency-input-field";
 import number_types from "@/Base/NumberType";
 import { useEffect } from "react";
 import LoadingInput from "@/Components/Loading/LoadingInput";
+
+function LocationInput({data, setData, errors}){
+    const [locationOptions, setLocationOptions] = useState(false)
+    useEffect(()=>{
+        axios.get('/api/input/locations').then(function(response){
+            setLocationOptions(response.data.locations)
+        })
+    }, [])
+
+    return(
+        <>
+            <div className="table-cell pb-8 w-44">
+                <InputLabel value="Lokasi" htmlFor="location_id" 
+                    className="font-bold text-lg" />
+            </div>
+            <div className="table-cell flex justify-center pb-8">
+                {
+                    locationOptions ?
+                    <ReactSelect
+                        id="location_id"
+                        classNamePrefix="select2-selection"
+                        className="max-w-2xl focus:border-red-500"
+                        value={locationOptions.find(k => k.value == data.location_id) ?? ''}
+                        options={locationOptions}                    
+                        onChange={(e) => setData('location_id', e.value)}
+                        isSearchable
+                    />
+                    :
+                    <LoadingInput size="h-4 w-1/2"/>
+                }
+
+                <InputError message={errors.location_id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+            </div>
+        </>
+    )
+}
 
 function AssignToInput({data, setData, errors}){
     const [userOptions, setUserOptions] = useState(false)
@@ -66,6 +101,7 @@ export default function EventForm({
         end_date: e_date_string,
         participant_number_type: event ? event.participant_number_type : number_types[0].value,
         participant_number: event ? event.participant_number : 0,        
+        location_id: event?.location?.id ?? '',
         assign_to: event ? event.assign_to : user.username,
     });
 
@@ -244,6 +280,9 @@ export default function EventForm({
                     </div>
                     <div className="table-row">
                         <AssignToInput data={data} setData={setData} errors={errors}/>
+                    </div>
+                    <div className="table-row">
+                        <LocationInput data={data} setData={setData} errors={errors}/>
                     </div>
                 </div>
             </div>

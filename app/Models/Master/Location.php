@@ -10,8 +10,10 @@ class Location extends Model
     use HasFactory;
 
     protected $table = 'locations';
-
+    public $incrementing = false;
+    
     protected $fillable = [
-        'name'
+        'id',
+        'name',
     ];    
 }

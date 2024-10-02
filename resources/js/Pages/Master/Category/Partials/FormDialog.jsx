@@ -23,8 +23,8 @@ export default function FormDialog({variant="icon", mode='create', route, catego
 
   function handleSubmit(){
     if(mode === 'edit') {
-      put(route, {
-        onSuccess: () => setIsOpen(false)
+      put(route, {        
+        onSuccess: () => setIsOpen(false),        
       })
     }
     else{
@@ -33,6 +33,8 @@ export default function FormDialog({variant="icon", mode='create', route, catego
       })
     }   
   }
+
+  console.log(errors)
 
   return (
     <>

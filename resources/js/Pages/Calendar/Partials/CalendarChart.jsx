@@ -120,31 +120,12 @@ export default function CalendarChart({
         const temp = events.find(e => e.id == task.id)
         if(eventSelected.id != task.id) setEventSelected(temp.id)
     }
-
-    function handleOnInputDateChange(e, position){
-        const newTasks = [...data.tasks]
-        const indexTasks = newTasks.findIndex(t => t.id == e.target.id)
-
-        const newDate = new Date(e.target.value)
-        if(position == 'start'){
-            newTasks[indexTasks] = {...newTasks[indexTasks], start: newDate, dirty: +newDate != +defaultTasks[indexTasks].start}
-        }
-        else if(position == 'end'){
-            newTasks[indexTasks] = {...newTasks[indexTasks], end: newDate, dirty: +newDate != +defaultTasks[indexTasks].end}
-        }
-        
-        setData('tasks', newTasks)
-
-        checkDirtyTasks(newTasks)
-
-        console.log('Task date change on input: ' + e.target.id)
-    }
     
     function generateTasks(){
         var temps = []
         console.log(events)
         events.forEach((element, index) => {
-            var color = element?.location?.name == 'Prigen' ? "rgb(34 197 94)" : "rgb(59 130 246)"
+            var color = String(element?.location?.name).toLowerCase().includes('prigen') ? "rgb(34 197 94)" : "rgb(59 130 246)"
             temps.push({
                 start: new Date(element.start_date),
                 end: new Date(element.end_date),

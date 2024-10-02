@@ -22,13 +22,15 @@ class LocationFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'regex:/^[A-Za-z ,.\-_]+$/', 'max:120']
+            'id' => ['required', 'regex:/^[A-Z]+$/', 'max:120'],
+            'name' => ['required', 'regex:/^[A-Za-z ,.\-_]+$/', 'max:120'],
         ];
     }
 
     public function messages()
     {
         return [
+            'id.regex' => ":attribute must contains only A-Z",
             'name.regex' => ":attribute must contains only A-Z or a-z or symbols in (  ,  .  -  _  )"
         ];  
     }

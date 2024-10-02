@@ -39,7 +39,8 @@ class BudgetController extends Controller
     {
         $validated = $request->validated();
 
-        if(Budget::where('year', $validated['year'])->get()->count() > 0) throw ValidationException::withMessages(['year' => "The year {$validated['year']} already exists"]);
+        if(Budget::where('year', $validated['year'])->get()->count() > 0) 
+            throw ValidationException::withMessages(['year' => "The year {$validated['year']} already exists"]);
         
         $budget = Budget::create($validated);
 
@@ -71,7 +72,7 @@ class BudgetController extends Controller
 
         $validated = $request->validated();
 
-        if(Budget::where('year', $validated['year'])->get()->count() > 0 && $validated['year'] != $budget->year) 
+        if(Budget::where('year', $validated['year'])->get()->count() > 0 && strcmp(strval($budget->year), strval($validated['year'])) != 0) 
             throw ValidationException::withMessages(['year' => "The year {$validated['year']} is already exists"]);
 
         $budget->update($validated);

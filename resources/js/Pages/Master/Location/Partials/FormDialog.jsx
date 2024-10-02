@@ -10,7 +10,8 @@ import { useState } from 'react'
 export default function FormDialog({variant="icon", mode='create', route, location=[]}){
   const [isOpen, setIsOpen] = useState(false)
   const {data, setData, errors, clearErrors, post, put, processing, reset} = useForm({    
-    name: location?.name ?? "",    
+    id: location?.id ?? "",
+    name: location?.name ?? "",
   })
   const title = mode == 'create' ? 'Buat Lokasi Baru' : 'Edit Lokasi'
 
@@ -68,7 +69,21 @@ export default function FormDialog({variant="icon", mode='create', route, locati
             <DialogTitle className="text-center">
               <p className='uppercase font-bold'>{title}</p>
             </DialogTitle>
-            <div className='grid grid-rows-1 gap-1 py-5'>
+            <div className='grid grid-rows-2 gap-1 py-5'>
+              <div>
+                  <label htmlFor='id'>
+                    ID Lokasi
+                  </label>
+                  <TextInput 
+                    id="id"
+                    className='col-span-9'
+                    placeholder="ID Lokasi"
+                    value={data.id}
+                    onChange={(e) => setData('id', e.target.value)}
+                  />
+                  {errors.id == null ? <InputInstruction text={`Alpabet A - Z tanpa whitespace`}/> 
+                    : <InputError message={errors.id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
+              </div>
               <div>
                   <label htmlFor='name'>
                     Nama
@@ -80,7 +95,7 @@ export default function FormDialog({variant="icon", mode='create', route, locati
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                   />
-                  {errors.name == null ? <InputInstruction text={`Nama A-Z a-z dan simbol ', . - _'`}/> 
+                  {errors.name == null ? <InputInstruction text={`Alphabet A-Z, a-z, dan simbol ', . - _'`}/> 
                     : <InputError message={errors.name} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
               </div>
             </div>

@@ -16,6 +16,7 @@ function ActionButtons({category}){
 
 export default function LocationsTable({locations=[]}){
     const [globalFilter, setGlobalFilter] = useState()
+    console.log(locations)
     
     const columnHelper = createColumnHelper()
 

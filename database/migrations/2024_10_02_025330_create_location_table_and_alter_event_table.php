@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('locations', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('name');
             $table->timestamps();
         });
 
         Schema::table('events', function(Blueprint $table) {
-            $table->foreignId('location_id')->nullable()->default(null)->constrained()->cascadeOnUpdate()->nullOnDelete();
+            $table->string('location_id')->nullable();
+            $table->foreign('location_id')->on('locations')->references('id')->cascadeOnUpdate()->nullOnDelete();            
         });
     }
 

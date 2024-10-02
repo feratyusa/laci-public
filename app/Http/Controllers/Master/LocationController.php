@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\LocationFormRequest;
 use App\Models\Master\Location;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class LocationController extends Controller
@@ -14,9 +15,9 @@ class LocationController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {        
         return Inertia::render('Master/Location/Index', [
-            'locations' => Location::orderByDesc('id')->get()
+            'locations' => Location::orderByDesc('created_at')->get()
         ]);
     }
 
@@ -35,7 +36,10 @@ class LocationController extends Controller
     {
         $validated = $request->validated();
 
-        $location = Location::create($validated);
+        if(Location::where('id', $validated['id'])->get()->count() > 0) 
+            throw ValidationException::withMessages(['id' => 'id already exists']);
+
+        Location::create($validated);
 
         return redirect()->route('location.index');
     }
@@ -61,9 +65,12 @@ class LocationController extends Controller
      */
     public function update(LocationFormRequest $request, string $id)
     {
-        $location = Location::findOrFail($id);
+        $location = Location::where('id', $id)->firstOrFail();
 
         $validated = $request->validated();
+
+        if(Location::where('id', $validated['id'])->get()->count() > 0 && strcmp($id, $validated['id'])) 
+            throw ValidationException::withMessages(['id' => 'id already exists']);
 
         $location->update($validated);
 

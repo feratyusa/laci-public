@@ -8,6 +8,7 @@ use App\Models\File\Category;
 use App\Trait\InputHelpers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -50,7 +51,7 @@ class CategoryController extends Controller
 
         $check = Category::where('id', $validated['id'])->get();
 
-        if($check->count() > 0) return redirect()->back()->withErrors(['id already exists']);
+        if($check->count() > 0) throw ValidationException::withMessages(['id' => 'id already exists']);
 
         $category = Category::create($validated);
 
@@ -78,12 +79,13 @@ class CategoryController extends Controller
      */
     public function update(CategoryFormRequest $request, string $id)
     {
-        $validated = $request->validated();
-        
-        $category = Category::where('id', $validated['id'])->first();
-        if($category && $category->id != $validated['id']) return redirect()->back()->with(['errors' => 'id already exists']);
+        $category = Category::where('id', $id)->firstOrFail();
 
-        $category = Category::where('id', $id)->first();
+        $validated = $request->validated();
+                
+        if(Category::where('id', $validated['id']) && strcmp($category->id, $validated['id']) != 0)
+            throw ValidationException::withMessages(['id' => 'id already exists']);
+
         $category->update($validated);
 
         return redirect()->route('category.index');

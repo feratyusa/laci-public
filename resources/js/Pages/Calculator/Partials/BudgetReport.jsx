@@ -49,7 +49,7 @@ function BudgetTable({budget, budgetTypePrices}){
                 {
                     budget.details.map(detail => {
                         const budgetValue = Number(detail.value)
-                        const recapNominal = Number(budgetTypePrices[detail?.budget_type.id])
+                        const recapNominal = Number(budgetTypePrices[detail?.budget_type.id] ?? 0)
                         const remainderNominal = budgetValue-recapNominal
                         const recapPercentage = (recapNominal / budgetValue) * 100
                         const remainderPercentage = (remainderNominal / budgetValue) * 100
@@ -78,10 +78,7 @@ function BudgetTable({budget, budgetTypePrices}){
     )
 }
 
-export default function BudgetReport({
-    calculator_data,
-    sumPrices,
-    sumParticipants,
+export default function BudgetReport({    
     budget=null,
     budgets=[],
     budgetTypePrices=[],
@@ -95,8 +92,6 @@ export default function BudgetReport({
             preserveScroll: true
         })
     }
-    
-    console.log(budgetTypePrices)
 
     return(
         <>

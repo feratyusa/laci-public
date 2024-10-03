@@ -16,6 +16,7 @@ import ReactSelect from "react-select";
 function FiltersTable({table=useReactTable({})}){
     const [courses, setCourses] = useState([])
     const [eventCategories, setEventCategories] = useState([])
+    const [users, setUsers] = useState([])
 
     useEffect(() => {
         axios.get('/api/input/courses').then((response) => {
@@ -26,6 +27,10 @@ function FiltersTable({table=useReactTable({})}){
 
         axios.get('/api/input/event-categories').then((response) => {
             setEventCategories(response.data.event_categories)
+        })
+
+        axios.get('/api/input/users').then((response) => {
+            setUsers(response.data.users)
         })
     }, [])
 
@@ -81,7 +86,7 @@ function FiltersTable({table=useReactTable({})}){
                     />
                 </div>
             </div>            
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col">
                     <ReactSelect 
                         options={courses}
@@ -100,6 +105,17 @@ function FiltersTable({table=useReactTable({})}){
                         isSearchable
                         isMulti
                         onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
+                    />
+                </div>
+                <div>
+                    <ReactSelect 
+                        options={users}
+                        placeholder="Assign To"
+                        classNamePrefix="select2-selection"
+                        isSearchable      
+                        isClearable                  
+                        isMulti
+                        onChange={(e) => table.getColumn('action').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
             </div>
@@ -210,6 +226,7 @@ export default function TableEvent(){
             id: 'action',
             header: <span>Opsi</span>,
             cell: info => <OptionButtons id={info.getValue().id} name={info.getValue().name}/>,
+            filterFn: 'UserFilter'
         }),
     ]
 
@@ -244,6 +261,10 @@ export default function TableEvent(){
                     }
                 })
                 return flag
+            },
+            UserFilter: (row, columnID, filterValue) => {
+                if(filterValue.length == 0) return true
+                return filterValue.includes(row.original.assign_to)
             }
         }
     })

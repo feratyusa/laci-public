@@ -58,7 +58,7 @@ class EventFormRequest extends FormRequest
             ],
             'location_id' => [
                 'nullable',
-                'integer',
+                'regex:/^[A-Z]+$/',
             ]
         ];
     }

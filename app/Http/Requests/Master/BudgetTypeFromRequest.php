@@ -22,7 +22,10 @@ class BudgetTypeFromRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string']
+            'coa' => ['required', 'string'],
+            'account_number' => ['required', 'string'],
+            'account_name' => ['required', 'string'],
+            'name' => ['required', 'string'],
         ];
     }
 }

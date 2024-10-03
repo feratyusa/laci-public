@@ -7,10 +7,13 @@ import { useForm } from "@inertiajs/react"
 import { Button, IconButton, Tooltip } from "@material-tailwind/react"
 import { useState } from "react"
 
-export default function BudgetTypeFormDialog({budgetType={name: ''}, variant='icon', mode='create', route}){
+export default function BudgetTypeFormDialog({budgetType={coa: '', account_number: '', account_name: '', name: ''}, variant='icon', mode='create', route}){
     const [isOpen, setIsOpen] = useState(false)
     const {data, setData, errors, clearErrors, post, put, processing, reset} = useForm({
-        name: budgetType.name
+        coa: budgetType.coa,
+        account_number: budgetType.account_number,
+        account_name: budgetType.account_name,
+        name: budgetType.name,
     })
     const title = mode == 'create' ? 'Buat Tipe Anggaran Baru' : 'Edit Tipe Anggaran'
 
@@ -40,7 +43,7 @@ export default function BudgetTypeFormDialog({budgetType={name: ''}, variant='ic
             variant === 'text' ? 
             <Button onClick={() => setIsOpen(true)} color={mode === 'edit' ? 'amber' : 'blue'}  className='flex items-center gap-2 p-3'>
                 <div>
-                {mode == 'edit' ? <Cog6ToothIcon className='w-full'/> : <PlusIcon className='w-5'/>}
+                    {mode == 'edit' ? <Cog6ToothIcon className='w-full'/> : <PlusIcon className='w-5'/>}
                 </div>
                 <div>
                 <p className='uppercase'>Tipe Anggaran</p>
@@ -76,12 +79,51 @@ export default function BudgetTypeFormDialog({budgetType={name: ''}, variant='ic
                     </DialogTitle>
                     <div className='py-5'>
                         <div className='mb-5'>
+                            <label htmlFor='coa'>
+                                COA
+                            </label>
+                            <TextInput 
+                                id="coa"
+                                placeholder="Kode COA"
+                                value={data.coa}
+                                onChange={(e) => setData('coa', e.target.value)}
+                            />
+                            {errors.coa == null ? <InputInstruction text='Input berupa string'/> 
+                                : <InputError message={errors.coa} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
+                        </div>
+                        <div className='mb-5'>
+                            <label htmlFor='account_number'>
+                                Nomor Rekening
+                            </label>
+                            <TextInput 
+                                id="account_number"
+                                placeholder="Nomor Rekening"
+                                value={data.account_number}
+                                onChange={(e) => setData('account_number', e.target.value)}
+                            />
+                            {errors.account_number == null ? <InputInstruction text='Input berupa string'/> 
+                                : <InputError message={errors.account_number} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
+                        </div>
+                        <div className='mb-5'>
+                            <label htmlFor='account_name'>
+                                Nama Rekening
+                            </label>
+                            <TextInput 
+                                id="account_name"
+                                placeholder="Nama Rekening"
+                                value={data.account_name}
+                                onChange={(e) => setData('account_name', e.target.value)}
+                            />
+                            {errors.account_name == null ? <InputInstruction text='Input berupa string'/> 
+                                : <InputError message={errors.account_name} className="mt-2" color='red-500' iconSize='5' textSize='sm'/> }
+                        </div>                
+                        <div className='mb-5'>
                             <label htmlFor='name'>
-                                Nama
+                                Tipe Anggaran
                             </label>
                             <TextInput 
                                 id="name"
-                                placeholder="Nama Anggaran"
+                                placeholder="Nama Tipe Anggaran"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                             />

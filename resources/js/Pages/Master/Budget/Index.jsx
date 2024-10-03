@@ -113,8 +113,20 @@ function TanstackBudgetTypeTable({budgetTypes}){
             header: () => <span>ID</span>,
             cell: info => info.getValue(),            
         }),
+        columnHelper.accessor('coa', {
+            header: () => <span>COA</span>,
+            cell: info => info.getValue(),            
+        }),
+        columnHelper.accessor('account_number', {
+            header: () => <span>Nomor Rekening</span>,
+            cell: info => info.getValue(),            
+        }),
+        columnHelper.accessor('account_name', {
+            header: () => <span>Nama Rekening</span>,
+            cell: info => info.getValue(),            
+        }),
         columnHelper.accessor('name', {
-            header: () => <span>Nama</span>,
+            header: () => <span>Nama Tipe Anggaran</span>,
             cell: info => info.getValue(),              
         }),
         columnHelper.accessor(row => row.id, {

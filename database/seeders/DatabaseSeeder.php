@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\File\Category;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,26 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'username' => 'nugie',
-        ]);
-        User::factory()->create([
-            'username' => 'kanda',
-        ]);
-        User::factory()->create([
-            'username' => 'admin',
-        ]);
-        User::factory()->create([
-            'username' => 'prabuega',
-        ]);
-
         $this->call([
+            UserSeeder::class,
+            BudgetSeeder::class,
+            LocationSeeder::class,            
+            CategorySeeder::class,
+            MandatoryFileCategorySeeder::class,
             ProposalSeeder::class,
             EventSeeder::class,
             EventParticipantSeeder::class,
-            CategorySeeder::class,
-            MandatoryFileCategorySeeder::class,
-            BudgetSeeder::class,
         ]);
     }
 }

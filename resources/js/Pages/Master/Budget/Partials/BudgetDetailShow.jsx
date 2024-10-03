@@ -26,7 +26,7 @@ function BudgetDetailTable({details=[]}){
                     details.map(detail => (
                         <tr className="border-b-2 border-red-200">
                             <td className="p-3">{detail.id}</td>
-                            <td>{detail.name}</td>
+                            <td>{detail.budget_type.name}</td>
                             <td>{`Rp ${Number(detail.value).toLocaleString()}`}</td>
                         </tr>
                     ))
@@ -58,7 +58,7 @@ export default function BudgetDetailShow({budget}){
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
                 <DialogPanel 
                     transition
-                    className="w-full max-w-2xl space-y-4 rounded-2xl bg-white p-12 ease-in duration-200 data-[closed]:opacity-0"
+                    className="w-full max-w-2xl space-y-4 rounded-2xl bg-white p-12 ease-in duration-200 data-[closed]:opacity-0 overflow-auto"
                 >
                     <DialogTitle className="text-center">
                         <p className='uppercase font-bold'>{`Detail Anggaran Tahun ${budget.year}`}</p>

@@ -7,6 +7,12 @@ use App\Models\Proposal\Proposal;
 
 trait MissingCategory
 {
+    /**
+     * Summary of getMissingCategory
+     * @param \App\Models\Proposal\Proposal $proposal
+     * @param mixed $files
+     * @return object[]
+     */
     public function getMissingCategory(Proposal $proposal, $files)
     {
         $categories = [];

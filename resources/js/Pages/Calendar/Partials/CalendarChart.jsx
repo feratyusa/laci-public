@@ -124,7 +124,7 @@ export default function CalendarChart({
     function generateTasks(){
         var temps = []
         console.log(events)
-        events.forEach((element, index) => {
+        events?.forEach((element, index) => {
             var color = String(element?.location?.name).toLowerCase().includes('prigen') ? "rgb(34 197 94)" : "rgb(59 130 246)"
             temps.push({
                 start: new Date(element.start_date),

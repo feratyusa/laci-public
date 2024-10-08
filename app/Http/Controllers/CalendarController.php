@@ -46,4 +46,21 @@ class CalendarController extends Controller
         session()->forget(['calendar_start_date', 'calendar_end_date']);
         return redirect()->route('calendar.index');
     }    
+
+    public function changeEvents(Request $request)
+    {
+        $validated = $request->validate([
+            'start' => ['required', 'date'],
+            'end' => ['required', 'date'],
+        ]);
+
+        $events = Event::with('proposal')->whereHas('proposal')
+                        ->whereRaw('start_date between ? and ?', [$validated['start'], $validated['end']])
+                        ->orderBy('start_date')
+                        ->get();
+        
+        return response()->json([
+            'events' => $events
+        ]);
+    }
 }

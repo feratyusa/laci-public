@@ -6,20 +6,22 @@ import EventList from "./Partials/EventList";
 import { CalendarDateRangeIcon, NumberedListIcon } from "@heroicons/react/24/outline";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
-import { useEffect } from "react";
-import InDevelopment from "@/Components/InDevelopment";
+import { useEffect, useState } from "react";
 
 export default function Index({
     auth,
-    events=null,
     start='',
     end='',
 }){
     const dateString = start && end ? ` (${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})` : null
 
+    const [startDate, setStartDate] = useState('2024-10-01')
+    const [endDate, setEndDate] = useState('2024-10-1')
+    const [events, setEvents] = useState(null)
+
     const [filter, setFilter] = useState('')
-    const [eventsFiltered, setEventsFiltered] = useState(events ? [...events] : '')
+    const [eventsFiltered, setEventsFiltered] = useState(events ? [...events] : [])
+
     function handleEventChange(value){
         setFilter(value)
         var temp = events.filter(e => String(e.name).toLowerCase().includes(String(value).toLowerCase()) ||
@@ -31,19 +33,11 @@ export default function Index({
         setEventsFiltered([...temp])
     }
 
-    const inDev = false
-    if(inDev) return(
-        <Authenticated
-            user={auth.user}
-            header={<HeaderTitle title={"Kalender"}/>}
-        >
-            <Head title="Kalendar"/> 
+    useEffect(() => {
+        setEventsFiltered(events ? [...events] : [])
+    }, [events])
 
-            <div className="m-5">
-                <InDevelopment />
-            </div>     
-        </Authenticated>
-    )
+    console.log(events)
 
     return(
         <Authenticated
@@ -63,10 +57,12 @@ export default function Index({
                 <div className="p-5 bg-white rounded-md shadow-lag mb-10">
                     <BetweenDates 
                         title={null}
-                        start={start}
-                        end={end}
-                        routeSubmit={route('calendar.index')}
-                        routeReset={route('calendar.reset')}
+                        start={startDate}
+                        end={endDate}
+                        setStart={setStartDate}
+                        setEnd={setEndDate}
+                        setEvents={setEvents}
+                        apiURL={'/api/calendar/changeEvents'}
                     />
                 </div>            
                 {
@@ -84,7 +80,7 @@ export default function Index({
                         </div>
                     </div>
                     :
-                    <CalendarChart events={eventsFiltered} start={start} end={end}/>
+                    <CalendarChart events={eventsFiltered} start={startDate} end={endDate}/>
                 }
             </div>
 
@@ -110,7 +106,7 @@ export default function Index({
                             onChange={(e) => handleEventChange(e.target.value)}
                             className="rounded-md mb-5"
                         />
-                        <EventList start={start} end={end} events={eventsFiltered} className="mx-5 mb-5 pb-5"/>
+                        <EventList start={startDate} end={endDate} events={eventsFiltered} className="mx-5 mb-5 pb-5"/>
                     </>
                 }
             </div>

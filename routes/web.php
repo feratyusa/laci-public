@@ -179,5 +179,8 @@ Route::prefix('api')->group(function (){
         Route::get('changeEvents', [CalculatorController::class, 'changeEvents'])->name('calculator.changeEvents');
         Route::get('budgetReport', [CalculatorController::class, 'budgetReport'])->name('calculator.budgetReport');
     });
+    Route::prefix('calendar')->group(function() {
+        Route::get('changeEvents', [CalendarController::class, 'changeEvents'])->name('calendar.changeEvents');
+    });
 });
 

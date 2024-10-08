@@ -204,16 +204,41 @@ function ReportDetails({dateStrings={start: '', end: ''}, eventsCount=0}){
     )    
 }
 
+function ModeSelection({mode, setMode}){
+    const [selected, setSelected] = useState(0)    
+
+    function handleModeChange(value){
+        setMode(value)
+        setSelected(value)
+    }
+
+    function ModeButton({text, value}){
+        return(
+            <Button size='sm' color={`${selected == value ? 'green' : 'red'}`} onClick={() => handleModeChange(value)}>
+                <p className='capitalize'>{text}</p>
+            </Button>
+        )
+    }
+
+    return(
+        <div className='grid grid-cols-2 gap-2 mb-1'>            
+            <ModeButton text="Anggaran Realisasi" value={0}/>
+            <ModeButton text="Anggaran Realisasi dan Awal" value={1}/>            
+        </div>
+    )
+}
+
 function BudgetReportCard({year}){    
+    const [mode, setMode] = useState(0)
     const [range, setRange] = useState(0)    
     const [data, setData] = useState(false)
 
     useEffect(() => {
-        axios.get('/api/dashboard/budgetReport', {params: {year: "2024", range: range}})
+        axios.get('/api/dashboard/budgetReport', {params: {year: "2024", range: range, mode: mode}})
             .then((response) => {
                 setData(response.data.data)
             })
-    }, [range])
+    }, [range, mode])
     
     return(
         <div className='m-5 bg-white rounded-lg p-5 shadow-lg'>
@@ -226,6 +251,7 @@ function BudgetReportCard({year}){
                     </div>
                 </TitleReportCard>             
             </div>
+            <ModeSelection mode={mode} setMode={setMode}/>
             <RangeSelection range={range} setRange={setRange} setBudgets={setData}/>
             {
                 year == false ? 

@@ -60,6 +60,7 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'year' => ['required', 'numeric'],
             'range' => ['required', 'integer'],
+            'mode' => ['required', 'integer'],
         ]);
 
         // Year Budget
@@ -90,6 +91,7 @@ class DashboardController extends Controller
         $events = Event::whereRaw('start_date between ? and ?', [$dateStrings->start, $dateStrings->end])->get();        
 
         foreach($events as $event){
+            if($validated['mode'] == 0 && $event->defaultPrices == 1) continue;
             foreach($event->prices as $price){
                 $participants = $price->defaultParticipants ? $event->participants()->count() : intval($price->participantNum);
                 $total = intval($price->price) * $participants;

@@ -1,17 +1,16 @@
 import HeaderTitle from '@/Components/HeaderTitle';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { ArrowUpIcon, BanknotesIcon, ChartBarSquareIcon, ChatBubbleLeftEllipsisIcon, DocumentDuplicateIcon, DocumentTextIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, ChatBubbleLeftEllipsisIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Head } from '@inertiajs/react';
-import React, { useMemo, useState } from 'react';
-import Linegraph from '@/Components/Chart/Linegraph';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import LoadingText from '@/Components/Loading/LoadingText';
-import { data } from 'autoprefixer';
-import ReactSelect from 'react-select';
 import { Button, Tooltip } from '@material-tailwind/react';
 import { ToRupiah } from '@/helpers/ToRupiah';
 import LoadingCircle from '@/Components/Loading/LoadingCircle';
+import ReactSelect from "react-select";
+import { changeToIndonesiaDateTime } from '@/helpers/IndoesiaDate';
 
 
 function ReportCard({children}){
@@ -107,7 +106,7 @@ function RangeSelection({range, setRange, setBudgets}){
         )
     }
     return(
-        <div className='grid grid-cols-5 gap-2 mb-5'>            
+        <div className='grid grid-cols-5 gap-2 mb-3'>            
             <RangeButton range={0}/>
             <RangeButton range={2}/>
             <RangeButton range={5}/>
@@ -189,36 +188,77 @@ function BudgetReportTable({budget, budgetTypePrices}){
     )
 }
 
-function BudgetReportCard(){    
-    const [range, setRange] = useState(0)
+function ReportDetails({dateStrings={start: '', end: ''}, eventsCount=0}){
+    return(
+        <div className='grid grid-cols-2 text-red-500 mb-5'>
+            <div className='text-right px-5 border-r-2 border-red-500'>
+                <p 
+                    className='font-bold text-lg'
+                >
+                    {changeToIndonesiaDateTime(new Date(dateStrings.start), true)} - {changeToIndonesiaDateTime(new Date(dateStrings.end), true)}</p>
+            </div>
+            <div className='text-left px-5 border-l-2 border-red-500'>
+                <p className='font-bold text-lg'>Jumlah Event: {eventsCount}</p>
+            </div>
+        </div>
+    )    
+}
+
+function BudgetReportCard({year}){    
+    const [range, setRange] = useState(0)    
     const [data, setData] = useState(false)
 
     useEffect(() => {
-        axios.get('/api/dashboard/budgetReport', {params: {year: new Date().getFullYear(), range: range}})
+        axios.get('/api/dashboard/budgetReport', {params: {year: "2024", range: range}})
             .then((response) => {
                 setData(response.data.data)
             })
-    }, [range])    
+    }, [range])
     
     return(
-        <div className='m-5 bg-white rounded-lg p-5'>                        
+        <div className='m-5 bg-white rounded-lg p-5 shadow-lg'>
+            <div className='mb-5'>
+                <TitleReportCard textSize='xl'>
+                    <BanknotesIcon className='w-8'/>
+                    <div>
+                        <p className='font-bold'>Rekap Anggaran Tahun {new Date().getFullYear()}</p>                
+                        <p className='text-sm'>untuk rekap lainnya dapat menggunakan menu <a href={route('calculator.index')} className='underline text-blue-500'>Kalkulator</a></p>
+                    </div>
+                </TitleReportCard>             
+            </div>
             <RangeSelection range={range} setRange={setRange} setBudgets={setData}/>
             {
-                data ?
-                <BudgetReportTable budget={data.budget} budgetTypePrices={data.budgetTypePrices}/>
+                year == false ? 
+                <div className='text-center text-red-500'>
+                    <p className='font-bold text-2xl'>Anggaran Tahun {new Date().getFullYear()} belum ada. </p>
+                    <p className='font-bold text-lg'>Silahkan membuat terlebih dahulu di menu <a href={route('budget.index')} className='text-blue-500 underline'>Master Anggaran</a></p>
+                </div>
+                :
+                year && data ?
+                <>
+                    <ReportDetails dateStrings={data.dateStrings} eventsCount={data.eventsCount}/>
+                    <BudgetReportTable budget={data.budget} budgetTypePrices={data.budgetTypePrices}/>
+                </>
                 :
                 <div className='m-auto w-fit'>
                     <LoadingCircle />
                 </div>
-            }                        
+            }
         </div>
     )
 }
 
-
 export default function Dashboard({ 
-    auth,    
-}) {
+    auth,      
+}) {    
+    const [budgets, setBudgets] = useState(false)
+
+    useEffect(() => {
+        axios.get('/api/input/budgets')
+            .then((response) => {
+                setBudgets(response.data.budgets);
+            })
+    }, [])
 
     return (
         <AuthenticatedLayout
@@ -228,7 +268,7 @@ export default function Dashboard({
             <Head title="Dashboard" />
 
             <DocumentStatuses />  
-            <BudgetReportCard />                
+            {budgets && <BudgetReportCard year={budgets.find(b => b.label == new Date().getFullYear())?.label ?? false}/>}
         </AuthenticatedLayout>
     );
 }

@@ -65,6 +65,7 @@ class DashboardController extends Controller
         // Year Budget
         $budget = Budget::with('details')->where('year', $validated['year'])->first();
 
+        
         $budget['total_value'] = 0;
         foreach($budget->details as $detail){
             $budgetTypePrices[$detail->budget_type_id] = 0;            
@@ -80,23 +81,27 @@ class DashboardController extends Controller
         if(intval(date('m', strtotime($dateString))) > intval(date('m', strtotime("now")))){
             $dateString = "first day of January";
         }
+        
+        $dateStrings = (object)[
+            'start' => $budget->year."-".date('m-d', strtotime($dateString)),
+            'end' => $budget->year."-".date('m-d', strtotime('last day of now')),
+        ];        
 
-        $startDate = date('Y-m-d', strtotime($dateString));
-        $endDate = date('Y-m-d', strtotime('last day of now'));
-
-        $events = Event::whereRaw('start_date between ? and ?', [$startDate, $endDate])->get();
+        $events = Event::whereRaw('start_date between ? and ?', [$dateStrings->start, $dateStrings->end])->get();        
 
         foreach($events as $event){
             foreach($event->prices as $price){
                 $participants = $price->defaultParticipants ? $event->participants()->count() : intval($price->participantNum);
                 $total = intval($price->price) * $participants;
-                $budgetTypePrices[$price->budget_type_id] += $total;
-                $budgetTypePrices['total_value'] += $total;
+                if(array_key_exists($price->budget_type_id, $budgetTypePrices)){
+                    $budgetTypePrices[$price->budget_type_id] += $total;
+                    $budgetTypePrices['total_value'] += $total;
+                }
             }
         }
 
         return response()->json([
-            'data' => ['budget' => $budget, 'budgetTypePrices' => $budgetTypePrices],
+            'data' => ['dateStrings' => $dateStrings, 'eventsCount' => count($events), 'budget' => $budget, 'budgetTypePrices' => $budgetTypePrices],
         ]);
     }
 }

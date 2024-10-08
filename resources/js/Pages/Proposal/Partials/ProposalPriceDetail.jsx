@@ -83,7 +83,7 @@ export default function ProposalPriceDetail({proposal, details}){
         <>
             {
                 <Tooltip content="Atur Detail Anggaran">
-                    <Button onClick={() => setOpen(!open)} size="sm" className="flex items-center gap-2 p-2" color={`${proposal?.prices?.length ? 'amber' : 'green'}`}>
+                    <Button onClick={() => setOpen(!open)} size="sm" className="flex items-center gap-2 p-2" color={`${proposal?.prices?.length ? 'green' : 'amber'}`}>
                         <BanknotesIcon className="w-5" />
                         Detail
                     </Button>

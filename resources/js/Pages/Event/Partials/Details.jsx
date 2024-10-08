@@ -1,10 +1,75 @@
-import { Chip, IconButton, Tooltip, Typography } from "@material-tailwind/react";
+import { Button, Chip, IconButton, Tooltip, Typography } from "@material-tailwind/react";
 import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import EventPriceDetail from "./EventPriceDetail";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+
+function ChangeDefaultPriceDialog({route}){
+    const {put, processing} = useForm()
+    const [open, setOpen] = useState(false)
+
+    function handleOpen(){
+        setOpen(true)
+    }
+    function handleClose() {
+        setOpen(false)
+    }
+    function handleDelete(){
+        put(route, {
+            preserveScroll: true,
+            onSuccess: handleClose()
+        })
+    }
+
+    return(
+        <>            
+            <Tooltip content="Ganti Status Anggaran">
+                <IconButton size="sm" color="green" variant="text" onClick={() => handleOpen()}>
+                    <ArrowPathIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>                
+            <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>
+                {/* Backdrop */}
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+
+                {/* Dialog Content */}
+                <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        <DialogPanel
+                            transition
+                            className="w-full max-w-md rounded-xl bg-white p-6 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                            >
+                            <Typography variant="h5" className="mb-8">
+                                Reset Anggaran menjadi Anggaran Awal
+                            </Typography>
+                            <Typography variant="paragraph">
+                                Anggaran yang telah dimasukkan akan dihapus dan tidak dapat dikembalikan
+                            </Typography>
+                            <div className="flex flex-row justify-center gap-5 mt-8">
+                                <Button
+                                    color="yellow"
+                                    onClick={handleClose}
+                                    >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    loading={processing}
+                                    onClick={handleDelete}
+                                    >
+                                    Reset
+                                </Button>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </div>
+            </Dialog>
+        </> 
+    )
+}
 
 function BudgetStatus({defaultPrices}){
     const color = defaultPrices ? "red" : "green"
@@ -18,8 +83,7 @@ function BudgetStatus({defaultPrices}){
     )
 }
 
-function TableRow({name, value=null, color="red", option=null, link=null}){    
-    console.log(value)
+function TableRow({name, value=null, color="red", option=null, link=null}){        
     return(
         <tr className="">
             <td className={"border-b-2 py-3 max-w-60"}>
@@ -29,14 +93,8 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
                 {
                     option == 'budgetStatus' ? 
                     <div className="flex gap-5">
-                        <BudgetStatus defaultPrices={value?.defaultPrices}/>
-                        <Link href={route('event.changeDefaultPrices', [value.id])} method="put">
-                            <Tooltip content="Ganti Status Anggaran">
-                                <IconButton size="sm" color="green" variant="text">
-                                    <ArrowPathIcon className="w-full"/>
-                                </IconButton>
-                            </Tooltip>
-                        </Link>
+                        <BudgetStatus defaultPrices={value?.defaultPrices}/>                        
+                        <ChangeDefaultPriceDialog route={route('event.changeDefaultPrices', [value.id])} />
                     </div>
                     :
                     option == 'price' ?

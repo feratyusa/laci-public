@@ -5,7 +5,7 @@ import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { MenuItem } from "@headlessui/react";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { BanknotesIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
 import { IconButton, Tooltip } from "@material-tailwind/react";
@@ -99,7 +99,7 @@ function FiltersTable({table=useReactTable({})}){
                 </div>
                 <div>
                     <ReactSelect 
-                        options={ProposalStatus.filter(p => p.value == 0 || p.value == 1)}
+                        options={ProposalStatus.filter(p => p.value == 0 || p.value == 1 || p.value == 6 || p.value == 7)}
                         placeholder="Status"
                         classNamePrefix="select2-selection"
                         isSearchable
@@ -148,7 +148,7 @@ function OptionButtons({id, name}){
     )
 }
 
-function CompleteStatus({isComplete}){
+function CompleteStatus({isComplete, defaultPrices}){
     return(
         <div className="flex justify-center items-center gap-2">
         {
@@ -162,6 +162,20 @@ function CompleteStatus({isComplete}){
             <Tooltip content="Berkas Belum Lengkap">
                 <IconButton color="amber" size="sm">
                     <XMarkIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        {
+            defaultPrices ?
+            <Tooltip content="Anggaran Awal">
+                <IconButton color="red" size="sm" className="cursor-default">
+                    <BanknotesIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Anggaran Realisasi">
+                <IconButton color="green" size="sm" className="cursor-default">
+                    <BanknotesIcon className="w-full"/>
                 </IconButton>
             </Tooltip>
         }
@@ -219,7 +233,7 @@ export default function TableEvent(){
         columnHelper.accessor(row => row, {            
             id: 'status',
             header: <span>Status</span>,
-            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} />,
+            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} defaultPrices={info.getValue().defaultPrices}/>,
             filterFn: 'StatusFilter'
         }),
         columnHelper.accessor(row => row, {
@@ -254,12 +268,16 @@ export default function TableEvent(){
                 var status = []
                 if(row.original.isComplete) status.push(0)
                 else status.push(1)
+                if(row.original.defaultPrices) status.push(6)
+                else status.push(7)
+
                 var flag = true
                 filterValue.forEach(value => {
                     if( ! status.includes(value) ){
                         flag = false
                     }
                 })
+
                 return flag
             },
             UserFilter: (row, columnID, filterValue) => {

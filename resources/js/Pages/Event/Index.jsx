@@ -34,7 +34,6 @@ export default function Index({
                         <TableEvent />
                     </CardBody>                    
                 </Card>
-
             </div>
         </Authenticated>
     )

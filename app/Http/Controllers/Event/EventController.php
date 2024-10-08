@@ -248,4 +248,42 @@ class EventController extends Controller
 
         return redirect()->route('event.show', ['id' => $event->id]);
     }
+
+    public function changeDefaultPrices(string $id)
+    {        
+        $event = Event::findOrFail($id);
+        $proposal = $event->proposal;
+
+        if($event->defaultPrices == 0){
+            foreach ($event->prices as $eventPrice) {
+                $deleteFlag = true;
+                foreach($proposal->prices as $proposalPrice){
+                    if($proposalPrice->budget_type_id == $eventPrice->budget_type_id){
+                        $deleteFlag = false;
+                        break;
+                    }
+                }
+                if($deleteFlag){
+                    $eventPrice->deleteOrFail();
+                }
+            }
+
+            foreach($proposal->prices as $price){
+                $event->prices()->updateOrCreate(
+                    ['budget_type_id' => $price->budget_type_id],
+                    [
+                                'budget_type_id' => $price->budget_type_id,
+                                'price' => $price->price,
+                                'participantNum' => $event->participant_number
+                            ]
+                );
+            }
+        }
+
+        $event->update([
+            'defaultPrices' => ! $event->defaultPrices
+        ]);
+
+        return redirect()->route('event.show', ['id' => $event->id]);
+    }
 }

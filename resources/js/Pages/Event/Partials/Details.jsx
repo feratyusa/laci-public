@@ -2,13 +2,24 @@ import { Chip, IconButton, Tooltip, Typography } from "@material-tailwind/react"
 import { ArrowPathIcon, Cog8ToothIcon } from "@heroicons/react/24/solid";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import OptionButton from "@/Components/OptionButton";
-import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import EventPriceDetail from "./EventPriceDetail";
-import { useEffect } from "react";
+
+function BudgetStatus({defaultPrices}){
+    const color = defaultPrices ? "red" : "green"
+
+    return(
+        <Chip 
+            className="w-fit"
+            color={color}
+            value={defaultPrices ? "Anggaran Awal" : "Anggaran Realisasi"}
+        /> 
+    )
+}
 
 function TableRow({name, value=null, color="red", option=null, link=null}){    
+    console.log(value)
     return(
         <tr className="">
             <td className={"border-b-2 py-3 max-w-60"}>
@@ -16,6 +27,18 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
             </td>
             <td className={"border-b-2 pl-5 bg-gray-50"}>
                 {
+                    option == 'budgetStatus' ? 
+                    <div className="flex gap-5">
+                        <BudgetStatus defaultPrices={value?.defaultPrices}/>
+                        <Link href={route('event.changeDefaultPrices', [value.id])} method="put">
+                            <Tooltip content="Ganti Status Anggaran">
+                                <IconButton size="sm" color="green" variant="text">
+                                    <ArrowPathIcon className="w-full"/>
+                                </IconButton>
+                            </Tooltip>
+                        </Link>
+                    </div>
+                    :
                     option == 'price' ?
                     <EventPriceDetail event={value} details={value.prices}/>
                     :
@@ -73,10 +96,11 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.lengkap}`}  />
                 <TableRow name={"Tanggal Mulai"} value={new Date(event.start_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
-                <TableRow name={"Anggaran"} option={'price'} value={event}/>
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'number_type'} color={color} link={route('event.number-type', [event.id])}/>
                 <TableRow name={"Jumlah Partisipan"} value={event.participant_number_type == 'FIXED' ? event.participant_number : event.participants.length} />
+                <TableRow name={"Anggaran"} option={'price'} value={event}/>
                 <TableRow name={"Total Anggaran"} value={`Rp ${Number(event?.total_prices).toLocaleString()}` ?? 0} />
+                <TableRow name={"Status Anggaran"} value={event} option={"budgetStatus"} />
                 <TableRow name={"Dibuat Oleh"} value={event.created_by ?? 'NULL'} />
                 <TableRow name={"Assign Kepada"} value={event.assign_to ?? 'NULL'} />
                 <TableRow name={"Lokasi"} value={event?.location?.name ?? 'NULL'} />

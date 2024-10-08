@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
                 Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
+            Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
             Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');
         }); 

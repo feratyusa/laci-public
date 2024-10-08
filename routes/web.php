@@ -175,5 +175,9 @@ Route::prefix('api')->group(function (){
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');
         Route::get('budgetReport', [DashboardController::class, 'budgetReport'])->name('dashboard.budgetReport');
     });
+    Route::prefix('calculator')->group(function() {
+        Route::get('changeEvents', [CalculatorController::class, 'changeEvents'])->name('calculator.changeEvents');
+        Route::get('budgetReport', [CalculatorController::class, 'budgetReport'])->name('calculator.budgetReport');
+    });
 });
 

@@ -3,28 +3,31 @@ import { Button } from "@material-tailwind/react"
 import InputDate from "./Form/InputDate"
 import InputLabel from "./Form/InputLabel"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { useEffect } from "react"
+import axios from "axios"
 
 export default function BetweenDates({
     title=null,
     start, 
     end,
-    routeSubmit,
-    routeReset,
+    setStart,
+    setEnd,
+    setEvents,
+    apiURL,    
+    routeSubmit,   
 })
 {
-    const {data, setData, get, reset, processing} = useForm({
-        start: start,
-        end: end
-    })
-
-    function handleSubmit(){
-        get(routeSubmit)
-    }
-
     function handleReset(){
-        reset()
-        get(routeReset)
+        setStart('')
+        setEnd('')
     }
+
+    useEffect(() => {
+        axios.get(apiURL, {params: {start: start, end: end}})
+            .then((response) => {
+                setEvents(response.data.events)
+            })
+    }, [start, end])
 
     return(
         <>
@@ -42,8 +45,8 @@ export default function BetweenDates({
                     <InputDate 
                         id="start"
                         name="start"
-                        value={data.start}
-                        onChange={(e) => setData('start', e.target.value)}
+                        value={start}
+                        onChange={(e) => setStart(e.target.value)}
                     />
                 </div>
                 <div className="flex w-full items-center">
@@ -53,14 +56,11 @@ export default function BetweenDates({
                     <InputDate
                         id="end"
                         name="end"
-                        value={data.end}
-                        onChange={(e) => setData('end', e.target.value)}
+                        value={end}
+                        onChange={(e) => setEnd(e.target.value)}
                     />
                 </div>
                 <div className="flex w-fit h-fit gap-2">
-                    <Button loading={processing} color="blue" onClick={() => handleSubmit()}>
-                        Cari
-                    </Button>
                     <Button color="amber" onClick={() => handleReset()}>
                         Reset
                     </Button>

@@ -11,36 +11,20 @@ import BudgetReport from "./Partials/BudgetReport";
 import ReportTable from "./Partials/ReportTable";
 
 export default function Index({
-    auth, 
-    calc_start_date='',
-    calc_end_date='',
-    totalPricePublic=0,
-    totalPartcPublic=0,
-    totalPriceInHouse=0,
-    totalPartcInHouse=0,
+    auth,     
     inHouses=[],
-    publics=[],
-    totalPrice=[],
-    totalParticipants=[],
+    publics=[],    
     budget=null,
     budgets=[],
     budgetTypePrices=[],
 }){
-    const {data, setData, put, processing} = useForm({        
-        public: publics ? [...publics] : null,
-        inHouse: inHouses ? [...inHouses] : null,
-    })
+    const [startDate, setStartDate] = useState('2024-10-01')
+    const [endDate, setEndDate] = useState('2024-10-31')
+    const [events, setEvents] = useState(null)    
+    const [budgetID, setBudgetID] = useState(null)
+    const [mode, setMode] = useState(1)
 
-    const [sumPrices, setSumPrice] = useState({
-        public: totalPricePublic,
-        inHouse: totalPriceInHouse
-    })
-    const [sumParticipants, setSumParticipants] = useState({
-        public: totalPartcPublic,
-        inHouse: totalPartcInHouse
-    })
-
-    const dateString = calc_start_date && calc_end_date ? ` (${changeToIndonesiaDateTime(calc_start_date, true)} - ${changeToIndonesiaDateTime(calc_end_date, true)})` : null    
+    const dateString = startDate && endDate ? ` (${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)})` : null    
     
     return(
         <Authenticated
@@ -61,36 +45,23 @@ export default function Index({
                 <div className="mb-10">
                     <BetweenDates 
                         title={null}
-                        start={calc_start_date}
-                        end={calc_end_date}
-                        routeSubmit={route('calculator.index')}
-                        routeReset={route('calculator.reset')}
+                        start={startDate}
+                        end={endDate}
+                        setStart={setStartDate}
+                        setEnd={setEndDate}
+                        setEvents={setEvents}
+                        apiURL={"/api/calculator/changeEvents"}
                     />
                 </div>
                 {
-                    publics == null && inHouses == null ?
+                    startDate == '' || startDate == null || endDate == '' || endDate == null ?
                     <div className="flex justify-center">
                         <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
                             <p className="uppercase font-bold text-white">Pilih rentang tanggal mulai event terlebih dahulu!</p>
                         </div>
                     </div>
                     :
-                    publics?.length != 0 || inHouses?.length != 0 ? 
-                    <ReportTable 
-                        publics={publics}
-                        inHouses={inHouses}
-                        totalPrice={totalPrice}
-                        totalParticipants={totalParticipants}
-                    />
-                    :
-                    publics?.length == 0 && inHouses?.length == 0 ?
-                    <div className="flex justify-center">
-                        <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
-                            <p className="uppercase font-bold text-white">Event Kosong</p>
-                        </div>
-                    </div>
-                    :
-                    ''
+                    <ReportTable data={events} mode={mode}/>
                 }
             </Card>
 
@@ -103,24 +74,27 @@ export default function Index({
                     </div>
                 </div>
                 {
-                    publics == null && inHouses == null ?
+                    events == null ?
                     <div className="flex justify-center">
                         <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
                             <p className="uppercase font-bold text-white">Pilih rentang tanggal mulai event terlebih dahulu!</p>
                         </div>
                     </div>
                     : 
-                    publics.length == 0  && inHouses.length == 0 ?
+                    events.publics.length == 0 && events.inHouses.length == 0 ?
                     <div className="flex justify-center">
                         <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
                             <p className="uppercase font-bold text-white">Event Kosong</p>
                         </div>
                     </div>
                     :
-                    <BudgetReport 
-                        budget={budget}
-                        budgets={budgets}    
-                        budgetTypePrices={budgetTypePrices}                    
+                    <BudgetReport
+                        start={startDate}
+                        end={endDate}
+                        budgetID={budgetID}                 
+                        setBudgetID={setBudgetID}
+                        mode={mode}
+                        setMode={setMode}
                     />
                 }
             </Card>

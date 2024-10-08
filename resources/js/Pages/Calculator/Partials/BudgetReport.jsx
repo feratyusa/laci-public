@@ -4,7 +4,8 @@ import { ChatBubbleLeftEllipsisIcon, ChatBubbleLeftIcon } from "@heroicons/react
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, Tooltip } from "@material-tailwind/react";
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 function PercentageNumber({number}){
@@ -26,13 +27,16 @@ function BudgetTable({budget, budgetTypePrices}){
     const totalRemainderPercentage = (totalRemainder/totalBudget) * 100
 
     const headerClass = 'border-r-2 last:border-r-0 border-white p-2'
-    const bodyClass = 'px-2 py-5'
+    const bodyClass = 'border-r-2 border-red-500 px-2 py-5'
     const colorAware = totalRecapPercentage > 80 ? "text-red-500" : totalRecapPercentage > 50 ? "text-amber-500" : "text-green-500"
 
     return(
         <table className="table-auto w-full text-center border-2 border-red-500">
             <thead className="bg-red-500 text-white font-bold">
                 <tr className="border-b-2 border-white">
+                    <th rowSpan={2} className={headerClass}>COA</th>
+                    <th rowSpan={2} className={headerClass}>Account Number</th>
+                    <th rowSpan={2} className={headerClass}>Account Name</th>
                     <th rowSpan={2} className={headerClass}>Tipe Anggaran</th>
                     <th rowSpan={2} className={headerClass}>Rancangan</th>
                     <th colSpan={2} className={headerClass}>Nominal</th>
@@ -55,6 +59,9 @@ function BudgetTable({budget, budgetTypePrices}){
                         const remainderPercentage = (remainderNominal / budgetValue) * 100
                         return (
                             <tr className="border-b-2 border-red-500">
+                                <td className={bodyClass}>{detail?.budget_type.coa}</td>
+                                <td className={bodyClass}>{detail?.budget_type.account_number}</td>
+                                <td className={bodyClass}>{detail?.budget_type.account_name}</td>
                                 <td className={bodyClass}>{detail?.budget_type.name}</td>
                                 <td className={bodyClass}>{ToRupiah(budgetValue)}</td>
                                 <td className={bodyClass}>{ToRupiah(recapNominal)}</td>
@@ -65,8 +72,8 @@ function BudgetTable({budget, budgetTypePrices}){
                         )
                     })
                 }
-                <tr className="border-b-2 border-red-500 font-bold text-xl text-black">
-                    <td className={bodyClass}>Total</td>
+                <tr className="border-b-2 border-red-500 font-bold text-black">
+                    <td colSpan={4} className={bodyClass}>Total</td>
                     <td className={bodyClass}>{`Rp ${totalBudget.toLocaleString()}`}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRecap)}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRemainder)}</td>
@@ -78,48 +85,86 @@ function BudgetTable({budget, budgetTypePrices}){
     )
 }
 
-export default function BudgetReport({    
-    budget=null,
-    budgets=[],
-    budgetTypePrices=[],
-}){
-    const {data, setData, get, reset} = useForm({
-        budget_id: budget ? budget.id : ''
-    })
+function BudgetSelection({budgetID, setBudgetID}){
+    const [budgetSelections, setBudgetSelections] = useState([])
 
-    function handleSubmit(){
-        get(route('calculator.index'), {
-            preserveScroll: true
-        })
-    }
+    useEffect(() => {
+        axios.get('/api/input/budgets')
+            .then((response) => {
+                setBudgetSelections(response.data.budgets)
+            })
+    }, [])
+
+    return(
+        <ReactSelect
+            id="budget"
+            classNamePrefix="select2-selection"
+            options={budgetSelections}                
+            value={budgetSelections.find(b => b.value == budgetID)}
+            onChange={(option) => setBudgetID(option.value)}
+        />
+    )
+}
+
+function ModeSelection({mode, setMode}){
+    const modes = [
+        {value: 0, label: 'Anggaran Realisasi'},
+        {value: 1, label: 'Anggaran Realisasi dan Awal'},
+    ]
+    return(
+        <ReactSelect
+            id="budget"
+            classNamePrefix="select2-selection"
+            options={modes}                
+            value={modes.find(b => b.value == mode)}
+            onChange={(option) => setMode(option.value)}
+        />
+    )
+}
+
+export default function BudgetReport({
+    start,
+    end,
+    budgetID,
+    setBudgetID,
+    mode,
+    setMode,
+}){
+    const [data, setData] = useState(null)
+
+    useEffect(() => {
+        axios.get('/api/calculator/budgetReport', {params: {budgetID: budgetID, start: start, end: end, mode: mode}})
+            .then((response) => {
+                setData(response.data.data)
+            })
+    }, [budgetID, mode])
 
     return(
         <>
             <div className="grid grid-cols-12 items-center gap-5 mb-10">
-                <div className="col-span-11 grid grid-cols-12 items-center">
+                <div className="col-span-6 grid grid-cols-12 items-center">
                     <div className="col-span-1">
                         <label htmlFor="budget">
                             Tahun
                         </label>
                     </div>
                     <div className="col-span-11">
-                        <ReactSelect
-                            id="budget"
-                            classNamePrefix="select2-selection"
-                            options={[...budgets]}                
-                            value={budgets.find(b => b.value == data.budget_id)}
-                            onChange={(option) => setData('budget_id', option.value)}
-                        />
+                        <BudgetSelection budgetID={budgetID} setBudgetID={setBudgetID}/>
                     </div>
                 </div>
-                <div className="col-span-1 flex items-center justify-center">
-                    <Button color="blue" onClick={() => handleSubmit()}>
-                        Cari
-                    </Button>
+                <div className="col-span-6 grid grid-cols-12 items-center">
+                    <div className="col-span-1">
+                        <label htmlFor="budget">
+                            Tahun
+                        </label>
+                    </div>
+                    <div className="col-span-11">
+                        <ModeSelection mode={mode} setMode={setMode}/>
+                    </div>
                 </div>
             </div>
             {
-                budget == null ? 
+                data == null ? 
                 <div className="flex justify-center">
                     <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
                         <p className="uppercase font-bold text-white">Pilih tahun anggaran</p>
@@ -127,7 +172,7 @@ export default function BudgetReport({
                 </div>
                 :
                 <div className="shadow-lg">
-                    <BudgetTable budget={budget} budgetTypePrices={budgetTypePrices}/>
+                    <BudgetTable budget={data.budget} budgetTypePrices={data.budgetTypePrices}/>
                 </div>
             }
         </>

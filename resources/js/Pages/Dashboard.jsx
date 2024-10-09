@@ -9,7 +9,6 @@ import LoadingText from '@/Components/Loading/LoadingText';
 import { Button, Tooltip } from '@material-tailwind/react';
 import { ToRupiah } from '@/helpers/ToRupiah';
 import LoadingCircle from '@/Components/Loading/LoadingCircle';
-import ReactSelect from "react-select";
 import { changeToIndonesiaDateTime } from '@/helpers/IndoesiaDate';
 
 
@@ -29,7 +28,7 @@ function TitleReportCard({textSize='md', children}){
     )
 }
 
-function DocumentStatuses(){
+function DocumentStatuses({user}){
     const [unfinishedDocuments, setUnfinishedDocuments] = useState({
         proposal: null,
         public: null,
@@ -60,7 +59,10 @@ function DocumentStatuses(){
             <ReportCard>
                 <TitleReportCard textSize='xl'>
                     <DocumentTextIcon className='w-8'/>
-                    <p className='font-bold'>Usulan Tidak Lengkap</p>
+                    <div>
+                        <p className='font-bold'>Usulan Tidak Lengkap</p>
+                        <p className='text-xs italic'>Assign To <span className='font-bold'>{user.username}</span></p>
+                    </div>
                 </TitleReportCard>
                 <div className='flex flex-col items-center gap-2 font-bold mt-2'>
                     <DoucumentsCount count={unfinishedDocuments.proposal}/>
@@ -69,7 +71,10 @@ function DocumentStatuses(){
             <ReportCard>
                 <TitleReportCard textSize='xl'>
                     <DocumentTextIcon className='w-8'/>
-                    <p className='font-bold'>Public Training Tidak Lengkap</p>
+                    <div>
+                        <p className='font-bold'>Public Training Tidak Lengkap</p>
+                        <p className='text-xs italic'>Assign To <span className='font-bold'>{user.username}</span></p>
+                    </div>
                 </TitleReportCard>
                 <div className='flex flex-col items-center gap-2 font-bold mt-2'>
                     <DoucumentsCount count={unfinishedDocuments.public}/>
@@ -78,7 +83,10 @@ function DocumentStatuses(){
             <ReportCard>
                 <TitleReportCard textSize='xl'>
                     <DocumentTextIcon className='w-8'/>
-                    <p className='font-bold'>In House Training Tidak Lengkap</p>
+                    <div>
+                        <p className='font-bold'>In House Training Tidak Lengkap</p>
+                        <p className='text-xs italic'>Assign To <span className='font-bold'>{user.username}</span></p>
+                    </div>
                 </TitleReportCard>
                 <div className='flex flex-col items-center gap-2 font-bold mt-2'>
                     <DoucumentsCount count={unfinishedDocuments.inHouse}/>
@@ -89,7 +97,7 @@ function DocumentStatuses(){
 }
 
 
-function RangeSelection({range, setRange, setBudgets}){
+function RangeSelection({setRange, setBudgets}){
     const [selected, setSelected] = useState(0)
 
     function handleRangeChange(range){
@@ -206,7 +214,7 @@ function ReportDetails({dateStrings={start: '', end: ''}, eventsCount=0}){
     )    
 }
 
-function ModeSelection({mode, setMode}){
+function ModeSelection({setMode}){
     const [selected, setSelected] = useState(0)    
 
     function handleModeChange(value){
@@ -277,7 +285,7 @@ function BudgetReportCard({year}){
 }
 
 export default function Dashboard({ 
-    auth,      
+    auth,    
 }) {    
     const [budgets, setBudgets] = useState(false)
 
@@ -295,7 +303,7 @@ export default function Dashboard({
         >
             <Head title="Dashboard" />
 
-            <DocumentStatuses />  
+            <DocumentStatuses user={auth.user}/>  
             {budgets && <BudgetReportCard year={budgets.find(b => b.label == new Date().getFullYear())?.label ?? false}/>}
         </AuthenticatedLayout>
     );

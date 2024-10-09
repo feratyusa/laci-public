@@ -27,6 +27,7 @@ export default function Index({
         var temp = events.filter(e => String(e.name).toLowerCase().includes(String(value).toLowerCase()) ||
                                         String(e.id).toLowerCase().includes(String(value).toLowerCase()) ||                                        
                                         String(e?.location?.name).toLowerCase().includes(String(value).toLowerCase()) ||
+                                        String(e?.location?.id).toLowerCase().includes(String(value).toLowerCase()) ||
                                         changeToIndonesiaDateTime(e.start_date, true).toLowerCase().includes(String(value).toLowerCase()) ||
                                         changeToIndonesiaDateTime(e.end_date, true).toLowerCase().includes(String(value).toLowerCase())
                                 )
@@ -63,6 +64,7 @@ export default function Index({
                         setEnd={setEndDate}
                         setEvents={setEvents}
                         apiURL={'/api/calendar/changeEvents'}
+                        params={{start: startDate, end: endDate}}
                     />
                 </div>            
                 {
@@ -80,7 +82,7 @@ export default function Index({
                         </div>
                     </div>
                     :
-                    <CalendarChart events={eventsFiltered} start={startDate} end={endDate}/>
+                    <CalendarChart events={eventsFiltered} handleEventChange={handleEventChange}/>
                 }
             </div>
 
@@ -106,7 +108,7 @@ export default function Index({
                             onChange={(e) => handleEventChange(e.target.value)}
                             className="rounded-md mb-5"
                         />
-                        <EventList start={startDate} end={endDate} events={eventsFiltered} className="mx-5 mb-5 pb-5"/>
+                        <EventList events={eventsFiltered} />
                     </>
                 }
             </div>

@@ -1,10 +1,8 @@
-import Colors from '@/Base/Colors';
 import InputDate from '@/Components/Form/InputDate';
 import { changeToIndonesiaDateTime, changeToInputDate } from '@/helpers/IndoesiaDate';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import { useForm } from '@inertiajs/react';
-import { Button, IconButton } from '@material-tailwind/react';
+import { IconButton, Tooltip } from '@material-tailwind/react';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import "gantt-task-react/dist/index.css";
 import { useEffect, useState } from 'react';
@@ -39,7 +37,7 @@ function EventHeaderSelected({onClose}){
     )
 }
 
-function EventTableSelected({event, color, ...props}){
+function EventTableSelected({event, color}){
     const attrClassName = "p-2 border-x-2 border-b-2 first:border-t-2 border-black text-white"
     const valueClassName = "p-2 bg-gray-100 text-black border-b-2 border-r-2 last:border-t-2 border-black"
     return(
@@ -102,15 +100,10 @@ function EventTableSelected({event, color, ...props}){
 
 export default function CalendarChart({
     events=[],
-    start='',
-    end=''
+    handleEventChange,
 }){
     const [eventSelected, setEventSelected] = useState(false)
-    const [isDirty, setIsDirty] = useState(false)
-    const [defaultTasks, setDefaultTasks] = useState([])
-    const {data, setData, put, processing} = useForm({
-        tasks: []
-    })
+    const [data, setData] = useState([])
 
     function handleOnClose(){
         setEventSelected(false)
@@ -122,9 +115,8 @@ export default function CalendarChart({
     }
     
     function generateTasks(){
-        var temps = []
-        console.log(events)
-        events?.forEach((element, index) => {
+        var temps = []        
+        events?.forEach((element) => {
             var color = String(element?.location?.name).toLowerCase().includes('prigen') ? "rgb(34 197 94)" : "rgb(59 130 246)"
             temps.push({
                 start: new Date(element.start_date),
@@ -142,17 +134,8 @@ export default function CalendarChart({
             })
         });
 
-        setDefaultTasks([...temps])
-        setData('tasks', temps)
-    }
-
-    function checkDirtyTasks(tasks){
-        var flag = false
-        tasks.map(element => {
-            if(element?.dirty == true) flag = true
-        })
-        setIsDirty(flag)
-    }    
+        setData(temps)
+    }      
     
     useEffect(() => {        
         generateTasks()
@@ -161,13 +144,15 @@ export default function CalendarChart({
     return(
             <>
             {
-                data.tasks.length != 0 ?
+                data.length != 0 ?
                 <>
                 <div className='flex justify-center gap-10 mb-5'>
-                    <div className='flex items-center gap-2'>
-                        <div className='w-5 h-5 bg-green-500'></div>
-                        <p className='text-green-500 font-bold'>: Lokasi di Prigen (PRNG)</p>
-                    </div>
+                    <Tooltip content="Filter">
+                        <div className='flex items-center gap-2 cursor-pointer' onClick={() => handleEventChange('PRGN')}>
+                            <div className='w-5 h-5 bg-green-500'></div>
+                            <p className='text-green-500 font-bold'>: Lokasi di Prigen (PRNG)</p>
+                        </div>
+                    </Tooltip>
                     <div className='flex items-center gap-2'>
                         <div className='w-5 h-5 bg-blue-500'></div>
                         <p className='text-blue-500 font-bold'>: Lokasi Bukan di Prigen</p>
@@ -175,7 +160,7 @@ export default function CalendarChart({
                 </div>
                 <div className='relative'>
                     <Gantt 
-                        tasks={data.tasks}
+                        tasks={data}
                         viewMode={ViewMode.Day}
                         TooltipContent={(component) => ToolTipCustom(component, events.find(e => e.id == component.task.id))}
                         preStepsCount={2}
@@ -190,8 +175,8 @@ export default function CalendarChart({
                                 <>
                                     <EventHeaderSelected onClose={() => handleOnClose()} />
                                     <EventTableSelected 
-                                        event={data.tasks.find(t => t.id == eventSelected)}
-                                        color={data.tasks.find(t => t.id == eventSelected).styles.backgroundColor}
+                                        event={data.find(t => t.id == eventSelected)}
+                                        color={data.find(t => t.id == eventSelected).styles.backgroundColor}
                                     />
                                 </>
                                 :

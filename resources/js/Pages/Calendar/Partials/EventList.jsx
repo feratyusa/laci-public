@@ -1,11 +1,8 @@
-import DialogDelete from "@/Components/Dialogs/DialogDelete";
-import EmptyRow from "@/Components/Table/EmptyRow";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
-import { Card, CardBody } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 
-export default function EventList({events=[], start='', end='', className='', ...props}){
+export default function EventList({events=[]}){
     const columnHelper = createColumnHelper()
 
     const columns = [
@@ -37,10 +34,10 @@ export default function EventList({events=[], start='', end='', className='', ..
             header: <span>Tanggal Selesai</span>,
             cell: info => `${changeToIndonesiaDateTime(info.getValue(), true)}`
         }),
-        columnHelper.accessor(row => row?.location?.name ?? '', {
+        columnHelper.accessor(row => row?.location ?? '', {
             id: 'location',
             header: <span>Lokasi</span>,
-            cell: info => info.getValue()
+            cell: info => `${info.getValue()?.name} (${info.getValue()?.id})`
         }),
     ]
 

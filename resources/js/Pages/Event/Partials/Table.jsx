@@ -67,14 +67,14 @@ function FiltersTable({table=useReactTable({})}){
                 </div>               
             </div>
             <div className="flex items-center gap-3 mb-3">
-                <p className="font-bold text-nowrap">Tanggal Masuk</p>
+                <p className="font-bold text-nowrap">Tanggal Mulai</p>
                 <div className="flex items-center gap-2 w-full">
                     <p>Dari</p>
                     <input
                         type="date"
                         placeholder="Tanggal Masuk"
                         className="rounded-md w-full"
-                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), start: e.target.value})}
+                        onChange={(e) => table.getColumn('start_date').setFilterValue({...table.getColumn('start_date').getFilterValue(), start: e.target.value})}
                     />
                 </div>
                 <div className="flex items-center gap-2 w-full">
@@ -82,7 +82,7 @@ function FiltersTable({table=useReactTable({})}){
                     <input 
                         type="date"
                         className="rounded-md w-full"
-                        onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), end: e.target.value})}
+                        onChange={(e) => table.getColumn('start_date').setFilterValue({...table.getColumn('start_date').getFilterValue(), end: e.target.value})}
                     />
                 </div>
             </div>            
@@ -259,9 +259,10 @@ export default function TableEvent(){
             DateCustomFilter: (row, columnID, filterValue) => {
                 const start = filterValue?.start != null && filterValue?.start != "" ? filterValue.start : null
                 const end = filterValue?.end != null && filterValue?.end != "" ? filterValue.end : null
-                if(start && end) return filterValue.start <= row.original.entry_date && filterValue.end >= row.original.entry_date
-                else if(start) return filterValue.start <= row.original.entry_date
-                else return filterValue.end <= row.original.entry_date                
+                if(start && end) return start <= row.original.start_date && end >= row.original.start_date
+                else if(start) return start <= row.original.start_date
+                else if(end) return end >= row.original.start_date                
+                else return true
             },
             StatusFilter: (row, columnID, filterValue) => {
                 if(filterValue?.length == 0 || filterValue == "") return true 

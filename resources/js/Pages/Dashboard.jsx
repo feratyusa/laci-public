@@ -143,6 +143,7 @@ function BudgetReportTable({budget, budgetTypePrices}){
         <table className="table-auto w-full text-center border-2 border-red-500">
             <thead className="bg-red-500 text-white font-bold">
                 <tr className="border-b-2 border-white">
+                    <th rowSpan={2} className={headerClass}>COA</th>
                     <th rowSpan={2} className={headerClass}>Tipe Anggaran</th>
                     <th rowSpan={2} className={headerClass}>Rancangan</th>
                     <th colSpan={2} className={headerClass}>Nominal</th>
@@ -165,6 +166,7 @@ function BudgetReportTable({budget, budgetTypePrices}){
                         const remainderPercentage = (remainderNominal / budgetValue) * 100
                         return (
                             <tr className="border-b-2 border-red-500">
+                                <td className={bodyClass}>{detail?.budget_type.coa}</td>
                                 <td className={bodyClass}>{detail?.budget_type.name}</td>
                                 <td className={bodyClass}>{ToRupiah(budgetValue)}</td>
                                 <td className={bodyClass}>{ToRupiah(recapNominal)}</td>
@@ -176,7 +178,7 @@ function BudgetReportTable({budget, budgetTypePrices}){
                     })
                 }
                 <tr className="border-b-2 border-red-500 font-bold text-xl text-black">
-                    <td className={bodyClass}>Total</td>
+                    <td colSpan={2} className={bodyClass}>Total</td>
                     <td className={bodyClass}>{`Rp ${totalBudget.toLocaleString()}`}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRecap)}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRemainder)}</td>

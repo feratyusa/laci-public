@@ -1,5 +1,5 @@
 const _24_09_2024 = {
-title: 'v0.25 (10 Oktober 2024)',
+title: 'v0.25 (24 September 2024)',
 md: `
 #### Features
 - **Local server launched!**

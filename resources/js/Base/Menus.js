@@ -11,6 +11,7 @@ const MainMenu = [
             {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
             {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
         ], url: 'master'},
+        {name: 'Change Log', link: 'changeLog.index', url: 'changelog'},
         {name: 'Tutorial', link: 'tutorial.index', url: 'tutorial'},
     ]
 

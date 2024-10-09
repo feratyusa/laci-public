@@ -1,4 +1,3 @@
-import { MapPinIcon } from "@heroicons/react/24/outline";
 import { 
     AcademicCapIcon, 
     ArrowLeftStartOnRectangleIcon, 
@@ -14,7 +13,9 @@ import {
     LightBulbIcon, 
     TagIcon, 
     UserCircleIcon, 
-    UserPlusIcon
+    UserPlusIcon,
+    SquaresPlusIcon,
+    MapPinIcon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -63,6 +64,9 @@ export default function MenuIconSelector({name=''}){
         :
         name === 'master/locations' ? 
         <MapPinIcon className="w-5"/>
+        :
+        name === 'changelog' ? 
+        <SquaresPlusIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

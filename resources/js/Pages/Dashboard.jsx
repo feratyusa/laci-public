@@ -31,15 +31,15 @@ function TitleReportCard({textSize='md', children}){
 
 function DocumentStatuses(){
     const [unfinishedDocuments, setUnfinishedDocuments] = useState({
-        proposal: false,
-        public: false,
-        inHouse: false,
+        proposal: null,
+        public: null,
+        inHouse: null,
     })
 
     function DoucumentsCount({count}){
         const color = {green: 'text-green-500', red: 'text-red-500', yellow: 'text-amber-500'}
         return(
-            count ?
+            count != null ?
             <p className={`text-4xl ${count < 5 ? color.green : count < 10 ? color.yellow : color.red}`}>{count}</p>
             :
             <div className='my-5'>

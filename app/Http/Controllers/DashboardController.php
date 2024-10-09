@@ -31,7 +31,7 @@ class DashboardController extends Controller
         $uncompleteCount['proposal'] = 0;
         $proposals = Proposal::where('assign_to', $user->username)->get();
         foreach($proposals as $proposal){
-            if($proposal->isMissingCategories()) $uncompleteCount['proposal'] += 1;            
+            if($proposal->isMissingCategories() == false) $uncompleteCount['proposal'] += 1;            
         }
         
         $uncompleteCount['public'] = 0;
@@ -39,7 +39,7 @@ class DashboardController extends Controller
             $query->where('event_category', EventCategory::PT->value);
         })->where('assign_to', $user->username)->get();
         foreach($publics as $event){
-            if($event->isMissingCategories()) $uncompleteCount['public'] += 1;
+            if($event->isMissingCategories()  == false) $uncompleteCount['public'] += 1;
         }
 
         $uncompleteCount['inHouse'] = 0;
@@ -47,7 +47,7 @@ class DashboardController extends Controller
             $query->where('event_category', EventCategory::PT->value);
         })->where('assign_to', $user->username)->get();
         foreach($inHouses as $event){
-            if($event->isMissingCategories()) $uncompleteCount['inHouse'] += 1;
+            if($event->isMissingCategories()  == false) $uncompleteCount['inHouse'] += 1;
         }
 
         return response()->json([

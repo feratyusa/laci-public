@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ChangeLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
@@ -104,6 +105,10 @@ Route::middleware('auth')->group(function () {
         Route::get('', [TutorialController::class, 'index'])->name('tutorial.index');        
     });
 
+    Route::prefix('change-logs')->group(function (){
+        Route::get('', [ChangeLogController::class, 'index'])->name('changeLog.index');        
+    });
+
     Route::prefix('master')->group(function(){
    
         Route::prefix('categories')->group(function(){
@@ -151,7 +156,6 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
             Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
-
     });
 });
 

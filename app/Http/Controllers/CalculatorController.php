@@ -185,10 +185,23 @@ class CalculatorController extends Controller
         $validated = $request->validate([
             'start' => ['nullable', 'date'],
             'end' => ['nullable', 'date'],
+            'mode' => ['required', 'integer']
         ]);
 
         $start = $validated['start'] ?? null;
         $end = $validated['end'] ?? null;
+        $query = 'start_date between ? and ?';
+
+        $dataBind = [$start, $end];
+        if($validated['mode'] == 1) {
+            $query .= ' and defaultPrices in (? ,?)';
+            $dataBind[] = 0;
+            $dataBind[] = 1;
+        }
+        else{
+            $query .= ' and defaultPrices = ?';
+            $dataBind[] = 0;
+        }
         
         $publics = [];
         $inHouses = [];
@@ -198,16 +211,15 @@ class CalculatorController extends Controller
         if($start != null && $end != null && strtotime($start) <= strtotime($end)){
             $publics = Event::whereHas('proposal', function(Builder $query){
                 $query->where('event_category', EventCategory::PT->value);
-            })->whereRaw('start_date between ? and ?', [$start, $end])->get();
+            })->whereRaw($query, $dataBind)->get();
             $inHouses = Event::whereHas('proposal', function(Builder $query){
                 $query->where('event_category', EventCategory::IHT->value);
-            })->whereRaw('start_date between ? and ?', [$start, $end])->get();
+            })->whereRaw($query, $dataBind)->get();
             
             foreach($inHouses as $event){
                 $totalPrice = 0;
                 $totalParticipants = $event->participant_number_type == ParticipantNumberType::DYNAMIC->value ? $event->participants()->count() : $event->participant_number;
                 foreach($event->prices as $price){
-
                     if($price->defaultParticipants) $participants = $event->participants()->count();
                     else $participants = intval($price->participantNum);
                     

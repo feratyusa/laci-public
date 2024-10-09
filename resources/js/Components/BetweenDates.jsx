@@ -10,11 +10,12 @@ export default function BetweenDates({
     title=null,
     start, 
     end,
+    mode,
     setStart,
     setEnd,
     setEvents,
-    apiURL,    
-    routeSubmit,   
+    apiURL,
+    params,
 })
 {
     function handleReset(){
@@ -23,11 +24,11 @@ export default function BetweenDates({
     }
 
     useEffect(() => {
-        axios.get(apiURL, {params: {start: start, end: end}})
+        axios.get(apiURL, {params: params})
             .then((response) => {
                 setEvents(response.data.events)
             })
-    }, [start, end])
+    }, [start, end, mode])
 
     return(
         <>

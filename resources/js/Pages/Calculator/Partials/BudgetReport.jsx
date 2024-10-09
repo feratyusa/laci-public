@@ -155,7 +155,7 @@ export default function BudgetReport({
                 <div className="col-span-6 grid grid-cols-12 items-center">
                     <div className="col-span-1">
                         <label htmlFor="budget">
-                            Tahun
+                            Mode
                         </label>
                     </div>
                     <div className="col-span-11">

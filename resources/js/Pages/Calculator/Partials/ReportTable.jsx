@@ -34,8 +34,9 @@ function PricesTable({event}){
                     <table className="table-auto w-full text-center border-2 border-amber-500 mb-5">
                         <thead>
                             <tr className="bg-amber-500 text-white">
-                                <th className="p-3">Tipe Anggaran</th>                                
+                                <th className="p-3">Tipe Anggaran</th>  
                                 <th>Biaya</th>
+                                <th>Tipe Jumlah Partisipan</th>                              
                                 <th>Jumlah</th>
                             </tr>
                         </thead>
@@ -45,6 +46,15 @@ function PricesTable({event}){
                                     <tr className="border-b-2 border-amber-500">
                                         <td className="p-3">{price?.budget_type?.name}</td>                                        
                                         <td>{`Rp ${Number(price.price).toLocaleString()}`}</td>
+                                        <td>
+                                            <div className="flex justify-center">
+                                                <Chip 
+                                                    className="w-fit"
+                                                    value={price.defaultParticipants ? 'DYNAMIC' : 'FIXED'}
+                                                    color="purple"
+                                                />
+                                            </div>
+                                        </td>
                                         <td>{price.defaultParticipants == '1' ? event.participants.length : price.participantNum}</td>
                                     </tr>
                                 ))
@@ -79,7 +89,6 @@ function EventsTable({events=[], mode}){
                         </td>
                         :
                         events.map(event => {
-                            if(mode == 0 && event.defaultPrices == 1) return
                             return(
                                 <PricesTable event={event}/>
                             )
@@ -91,9 +100,17 @@ function EventsTable({events=[], mode}){
     )
 }
 
-function Totals({totalPrice, totalParticipants}){
+function Totals({totalEvents=0, totalPrice, totalParticipants}){
     return(
         <>
+            <div className="flex items-center border-2 bg-gray-100 rounded-lg w-fit overflow-hidden">
+                <div className="p-3">
+                    <p className="font-bold">Total Event</p>
+                </div>
+                <div className="bg-red-500 p-3 text-white">
+                    <p className="font-extrabold text-lg">{totalEvents}</p>
+                </div>
+            </div>
             <div className="flex items-center border-2 bg-gray-100 rounded-lg w-fit overflow-hidden">
                 <div className="p-3">
                     <p className="font-bold">Total Partisipan</p>
@@ -115,8 +132,7 @@ function Totals({totalPrice, totalParticipants}){
 }
 
 export default function ReportTable({    
-    data,
-    mode,
+    data,    
 }){
     return(
         data == null || (data?.inHouses.length == 0 && data?.publics.length == 0)?
@@ -143,7 +159,7 @@ export default function ReportTable({
                     </tr>
                     <tr>
                         <td colSpan={3}>
-                            <EventsTable events={data.inHouses} mode={mode}/>
+                            <EventsTable events={data.inHouses}/>
                         </td>
                     </tr>
                     <tr className="bg-gray-200">
@@ -153,13 +169,13 @@ export default function ReportTable({
                     </tr>
                     <tr>
                         <td colSpan={3}>
-                            <EventsTable events={data.publics} mode={mode}/>
+                            <EventsTable events={data.publics}/>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div className="flex w-full items-center justify-center gap-10">
-                <Totals totalPrice={data.totalPrice} totalParticipants={data.totalParticipants}/>
+                <Totals totalEvents={data.inHouses?.length + data.publics?.length} totalPrice={data.totalPrice} totalParticipants={data.totalParticipants}/>
             </div>
         </>
     )

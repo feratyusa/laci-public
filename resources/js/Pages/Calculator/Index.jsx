@@ -47,10 +47,12 @@ export default function Index({
                         title={null}
                         start={startDate}
                         end={endDate}
+                        mode={mode}
                         setStart={setStartDate}
                         setEnd={setEndDate}
                         setEvents={setEvents}
                         apiURL={"/api/calculator/changeEvents"}
+                        params={{start: startDate, end: endDate, mode: mode}}
                     />
                 </div>
                 {
@@ -61,7 +63,7 @@ export default function Index({
                         </div>
                     </div>
                     :
-                    <ReportTable data={events} mode={mode}/>
+                    <ReportTable data={events}/>
                 }
             </Card>
 

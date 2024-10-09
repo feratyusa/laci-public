@@ -13,9 +13,7 @@ class ChangeLogController extends Controller
      */
     public function index()
     {
-        return Inertia::render('ChangeLog/Index', [
-            'changeLogs' => ChangeLog::all(),
-        ]);
+        return Inertia::render('ChangeLog/Index');
     }
 
     /**

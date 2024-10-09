@@ -9,6 +9,7 @@
         "@headlessui/react": "^2.0.0",
         "@inertiajs/react": "^1.0.0",
         "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/typography": "^0.5.15",
         "@vitejs/plugin-react": "^4.2.0",
         "autoprefixer": "^10.4.12",
         "axios": "^1.6.4",
@@ -28,7 +29,9 @@
         "gantt-task-react": "^0.3.9",
         "react-chartjs-2": "^5.2.0",
         "react-currency-input-field": "^3.8.0",
+        "react-markdown": "^9.0.1",
         "react-responsive": "^10.0.0",
-        "react-select": "^5.8.0"
+        "react-select": "^5.8.0",
+        "remark-gfm": "^4.0.0"
     }
 }

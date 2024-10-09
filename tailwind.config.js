@@ -29,5 +29,6 @@ export default withMT({
 
     plugins: [
         forms,
+        require('@tailwindcss/typography'),
     ],
 });

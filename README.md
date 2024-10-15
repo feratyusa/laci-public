@@ -1,6 +1,6 @@
 # Sistem Administrasi Learning Center (in development)
 
-# LACI Development (v0.22)
+# LACI Development (v0.50)
 
 ## Prerequisite
 

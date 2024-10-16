@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('nama');
             $table->string('jabatan');
             $table->string('cabang');
+            $table->string('seksi');
+            $table->string('jobfam');
+            $table->string('eselon');
             $table->timestamps();
         });
     }

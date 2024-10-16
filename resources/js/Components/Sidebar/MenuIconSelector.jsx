@@ -15,7 +15,9 @@ import {
     UserCircleIcon, 
     UserPlusIcon,
     SquaresPlusIcon,
-    MapPinIcon
+    MapPinIcon,
+    BeakerIcon,
+    BookmarkSquareIcon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -67,6 +69,12 @@ export default function MenuIconSelector({name=''}){
         :
         name === 'changelog' ? 
         <SquaresPlusIcon className="w-5"/>
+        :
+        name === 'utilities' ?
+        <BeakerIcon className="w-5"/>
+        :
+        name === 'utilities/nugies' ? 
+        <BookmarkSquareIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

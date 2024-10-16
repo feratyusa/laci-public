@@ -17,22 +17,8 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
 use App\Http\Controllers\TutorialController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Utilities\NugieController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
-// Route::get('/', function () {   
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -156,7 +142,19 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
             Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
+
     });
+
+    Route::prefix('utilites')->group(function() {
+
+        Route::prefix('nugies')->group(function() {
+            Route::get('', [NugieController::class, 'index'])->name('nugie.index');
+            Route::post('', [NugieController::class, 'store'])->name('nugie.store');
+            Route::put('/{id}', [NugieController::class, 'update'])->name('nugie.update');
+            Route::delete('/{id}', [NugieController::class, 'destroy'])->name('nugie.destroy');
+        });
+    });
+
 });
 
 Route::prefix('api')->group(function (){
@@ -186,5 +184,5 @@ Route::prefix('api')->group(function (){
     Route::prefix('calendar')->group(function() {
         Route::get('changeEvents', [CalendarController::class, 'changeEvents'])->name('calendar.changeEvents');
     });
-});
+})->middleware('auth');
 

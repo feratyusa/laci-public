@@ -31,23 +31,13 @@ class MigrateTableEHC extends Command
     {
         $this->call('migrate', ['--path' => '/database/migrations/ehc_table']);
 
-        
-        $this->info('Seeding Courses table from EHC Database V_LACI_KURSUS Table');
+        $this->info('Seeding courses table from EHC Database V_LACI_KURSUS Table');
         $ehc_kursus = DB::connection('ehc')->table('V_LACI_KURSUS')->where('lengkap', '<>', null)->orderByDesc('sandi')->get();
         foreach($ehc_kursus as $kursus){
-            if(! $kursus->lengkap) continue;
-            $kategori = null;
-            if(strtolower($kursus->kategori) == 'public'){
-                $kategori = EventCategory::PT->value;
-            }
-            else if(strtolower($kursus->kategori) == 'in house'){
-                $kategori = EventCategory::IHT->value;
-            }
-
             Kursus::createOrFirst([
                 'sandi' => $kursus->sandi,
                 'lengkap' => $kursus->lengkap,
-                'kategori' => $kategori
+                'kategori' => $kursus->kategori
             ]);
         }
 
@@ -59,6 +49,9 @@ class MigrateTableEHC extends Command
                 'nama' => $employee->nama,
                 'jabatan' => $employee->jabatan,
                 'cabang' => $employee->cabang,
+                'seksi' => $employee->seksi,
+                'jobfam' => $employee->jobfam,
+                'eselon' => $employee->eselon,
             ]);
         }
     }

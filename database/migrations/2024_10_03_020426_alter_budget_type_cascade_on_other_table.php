@@ -13,30 +13,33 @@ return new class extends Migration
     {
         Schema::table('budget_details', function(Blueprint $table) {
             $table->dropForeign('budget_details_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');            
-        });
 
-        Schema::table('budget_details', function(Blueprint $table) {            
-            $table->foreignId('budget_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details')
+                    ->cascadeOnUpdate()
+                    ->cascadeOnDelete();            
         });
 
         Schema::table('proposal_prices', function(Blueprint $table) {
             $table->dropForeign('proposal_prices_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');
-        });
 
-        Schema::table('proposal_prices', function(Blueprint $table) {
-            $table->foreignId('budget_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-        });
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details')
+                    ->cascadeOnUpdate()
+                    ->cascadeOnDelete();
+        });        
 
         Schema::table('event_prices', function(Blueprint $table) {
             $table->dropForeign('event_prices_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');
-        });
-
-        Schema::table('event_prices', function(Blueprint $table) {            
-            $table->foreignId('budget_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-        });
+            
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details')
+                    ->cascadeOnUpdate()
+                    ->cascadeOnDelete();
+        });        
     }
 
     /**
@@ -46,29 +49,26 @@ return new class extends Migration
     {
         Schema::table('budget_details', function(Blueprint $table) {
             $table->dropForeign('budget_details_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');            
-        });
 
-        Schema::table('budget_details', function(Blueprint $table) {            
-            $table->foreignId('budget_type_id')->constrained();
-        });
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details');        
+        });        
 
         Schema::table('proposal_prices', function(Blueprint $table) {
             $table->dropForeign('proposal_prices_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');
-        });
-
-        Schema::table('proposal_prices', function(Blueprint $table) {
-            $table->foreignId('budget_type_id')->constrained();
+            
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details');        
         });
 
         Schema::table('event_prices', function(Blueprint $table) {
             $table->dropForeign('event_prices_budget_type_id_foreign');
-            $table->dropColumn('budget_type_id');
-        });
-
-        Schema::table('event_prices', function(Blueprint $table) {            
-            $table->foreignId('budget_type_id')->constrained();
+            
+            $table->foreign('budget_type_id')
+                    ->references('id')
+                    ->on('budget_details');        
         });
     }
 };

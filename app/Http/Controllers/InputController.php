@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enum\EventCategory;
+use App\Models\EHC\Diklat;
 use App\Models\EHC\Kursus;
+use App\Models\EHC\Vendor;
 use App\Models\Master\Budget;
 use App\Models\Master\BudgetType;
 use App\Models\Master\Location;
@@ -53,6 +55,13 @@ class InputController extends Controller
     {
         return response()->json([
             'budgets' => $this->selectOptions(Budget::all()->toArray(), 'id', 'year', false)
+        ]);
+    }
+
+    public function getVendorOptions()
+    {
+        return response()->json([
+            'vendors' => $this->selectOptions(Vendor::all()->toArray(), 'sandi', 'lengkap')
         ]);
     }
 }

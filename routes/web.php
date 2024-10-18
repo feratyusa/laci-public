@@ -150,6 +150,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('nugies')->group(function() {
             Route::get('', [NugieController::class, 'index'])->name('nugie.index');
             Route::post('', [NugieController::class, 'store'])->name('nugie.store');
+            Route::get('/{id}', [NugieController::class, 'show'])->name('nugie.show');
             Route::put('/{id}', [NugieController::class, 'update'])->name('nugie.update');
             Route::delete('/{id}', [NugieController::class, 'destroy'])->name('nugie.destroy');
         });
@@ -172,6 +173,7 @@ Route::prefix('api')->group(function (){
         Route::get('budgetTypes', [InputController::class, 'getBudgetTypeOptions'])->name('input.budgetTypes');
         Route::get('locations', [InputController::class, 'getLocationOptions'])->name('input.locations');
         Route::get('budgets', [InputController::class, 'getBudgetOptions'])->name('input.budgets');
+        Route::get('vendors', [InputController::class, 'getVendorOptions'])->name('input.vendors');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

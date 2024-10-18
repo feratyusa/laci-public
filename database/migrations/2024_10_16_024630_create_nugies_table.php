@@ -22,7 +22,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('nugie_id')->constrained()->cascadeOnDelete();
-            $table->string('kd_kursus');
+            $table->string('kd_kursus');            
             $table->boolean('is_sql')->default(1);            
             $table->string('sql')->nullable()->default(null);
             $table->timestamps();
@@ -31,8 +31,11 @@ return new class extends Migration
         Schema::create('nugie_rules', function(Blueprint $table) {
             $table->id();
             $table->foreignId('nugie_detail_id')->constrained()->cascadeOnDelete();
+            $table->integer('index');
+            $table->integer('child');
+            $table->string('prefix')->nullable()->default(null);
             $table->string('column');
-            $table->boolean('is_not');
+            $table->string('verb');
             $table->string('parameter');
             $table->timestamps();
         });

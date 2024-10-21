@@ -51,11 +51,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
         Route::delete('/{id}', [FileController::class, 'destroy'])->name('file.destroy');
     });
-    
+
     Route::prefix('events')->group(function () {
         Route::get('', [EventController::class, 'index'])->name('event.index');
         Route::get('/create', [EventController::class, 'create'])->name('event.create');
-        Route::post('', [EventController::class, 'store'])->name('event.store');   
+        Route::post('', [EventController::class, 'store'])->name('event.store');
         Route::prefix('{id}')->group(function (){
             Route::get('', [EventController::class, 'show'])->name('event.show');
             Route::get('/edit', [EventController::class, 'edit'])->name('event.edit');
@@ -71,8 +71,8 @@ Route::middleware('auth')->group(function () {
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
             Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');
-        }); 
-        
+        });
+
     });
 
     Route::prefix('calculator')->group(function (){
@@ -88,15 +88,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('tutorials')->group(function (){
-        Route::get('', [TutorialController::class, 'index'])->name('tutorial.index');        
+        Route::get('', [TutorialController::class, 'index'])->name('tutorial.index');
     });
 
     Route::prefix('change-logs')->group(function (){
-        Route::get('', [ChangeLogController::class, 'index'])->name('changeLog.index');        
+        Route::get('', [ChangeLogController::class, 'index'])->name('changeLog.index');
     });
 
     Route::prefix('master')->group(function(){
-   
+
         Route::prefix('categories')->group(function(){
             Route::get('', [CategoryController::class, 'index'])->name('category.index');
             Route::post('', [CategoryController::class, 'store'])->name('category.store');
@@ -145,7 +145,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::prefix('utilites')->group(function() {
+    Route::prefix('utilities')->group(function() {
 
         Route::prefix('nugies')->group(function() {
             Route::get('', [NugieController::class, 'index'])->name('nugie.index');

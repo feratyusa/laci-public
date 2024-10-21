@@ -23,34 +23,44 @@ class NugieSeeder extends Seeder
         $nugie_details = NugieDetail::create([
             'nugie_id' => $nugie->id,
             'name' => 'Detail 1',
-            'kd_kursus' => '98717',
-            'is_sql' => 0,
-            'sql' => null
         ]);
 
         $nugie_details->rules()->createMany([
             [
+                'type' => 'course',
                 'index' => 1,
                 'child' => 1,
-                'column' => 'jobfam',
+                'prefix' => null,
+                'column' => 'kd_kursus',
                 'verb' => 'in',
-                'parameter' => 'Akuntansi & Umum;Kredit Mikro'
+                'parameter' => '90826;92818'
             ],
             [
+                'type' => 'employee',
+                'index' => 1,
+                'child' => 1,
+                'prefix' => null,
+                'column' => 'jabatan',
+                'verb' => 'like',
+                'parameter' => 'Officer'
+            ],
+            [
+                'type' => 'employee',
                 'index' => 2,
                 'child' => 1,
                 'prefix' => 'and',
-                'column' => 'jabatan',
+                'column' => 'jobfam',
                 'verb' => 'like',
-                'parameter' => '%Officer%'
+                'parameter' => 'Akuntansi & Umum'
             ],
             [
+                'type' => 'employee',
                 'index' => 2,
                 'child' => 2,
                 'prefix' => 'or',
                 'column' => 'cabang',
-                'verb' => 'like',
-                'parameter' => 'Cab. Madiun'
+                'verb' => 'not in',
+                'parameter' => 'Cab. Malang;Cab. Madiun'
             ],
         ]);
 

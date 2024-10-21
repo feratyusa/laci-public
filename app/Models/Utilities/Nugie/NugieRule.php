@@ -12,8 +12,12 @@ class NugieRule extends Model
 
     protected $fillable = [
         'nugie_detail_id',
+        'type',
+        'index',
+        'child',
+        'prefix',
         'column',
-        'is_not',
+        'verb',
         'parameter',
     ];
 

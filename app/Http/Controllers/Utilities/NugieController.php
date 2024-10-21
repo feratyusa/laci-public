@@ -21,7 +21,7 @@ class NugieController extends Controller
         $completed = Employee::whereIn('nip', $activeCourse)
                                 ->whereRaw($detail->sql)
                                 ->get();
-        $notCompleted = Employee::whereNotIn('nip', $activeCourse)                                
+        $notCompleted = Employee::whereNotIn('nip', $activeCourse)
                                 ->whereRaw($detail->sql)
                                 ->get();
         return ['completed' => $completed, 'notCompleted' => $notCompleted];
@@ -33,11 +33,31 @@ class NugieController extends Controller
         foreach($detail->rules as $rule){
             $temp = '';
             if($rule->index != 1 && $rule->child != 1) $temp .= $rule->prefix;
-            
+
 
             if(array_key_exists($rule->index, $sql)) $sql[$rule->index] .= " ".$temp;
             $sql[$rule->index] = $temp;
         }
+    }
+
+    private function handleQueryBuilder(string $verb, int $numData){
+        $data = explode(';', $rule->parameter);
+        $bindString = $this->handleDataBind($rule->verb, count($data));
+        $bindString = '';
+        if(strcmp('in', $verb) == 0 || strcmp('not in', $verb) == 0){
+            $bindString = '(';
+            for ($i=0; $i < $numData; $i++) {
+                $bindString .= '?';
+                if($numData - 1 != $i) $bindString .= ',';
+            }
+            $bindString .= ')';
+        }
+        else{
+            $bindString .= '?';
+        }
+
+
+        return $bindString;
     }
 
     public function index()
@@ -51,21 +71,18 @@ class NugieController extends Controller
     {
         $nugie = Nugie::findOrFail($id);
 
+        $res = [];
         foreach($nugie->details as $detail){
-            $activeCourse = Diklat::select('nip')->where('kd_kursus', $detail->kd_kursus)->pluck('nip')->toArray();
-    
-            if($detail->is_sql){
-                $result = $this->handleSQL($detail, $activeCourse);
-            }
-            else{
+            $emp_rules = $detail->rules()->where('type', 'employee')->get();
 
+            foreach($emp_rules as $rule){
             }
-            
         }
 
         return response()->json([
-            'res' => $result
+            'res' => $res
         ]);
+
     }
 
     public function store(NugieFormRequest $request)
@@ -114,6 +131,6 @@ class NugieController extends Controller
 
         $validated = $request->validated();
 
-    
+
     }
 }

@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\File\Category;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,7 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             BudgetSeeder::class,
-            LocationSeeder::class,            
+            LocationSeeder::class,
             CategorySeeder::class,
             MandatoryFileCategorySeeder::class,
             ProposalSeeder::class,

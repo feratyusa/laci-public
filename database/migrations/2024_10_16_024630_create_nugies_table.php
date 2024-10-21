@@ -17,20 +17,19 @@ return new class extends Migration
             $table->string('created_by')->default(null);
             $table->timestamps();
         });
-        
+
+
         Schema::create('nugie_details', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('nugie_id')->constrained()->cascadeOnDelete();
-            $table->string('kd_kursus');            
-            $table->boolean('is_sql')->default(1);            
-            $table->string('sql')->nullable()->default(null);
             $table->timestamps();
         });
 
-        Schema::create('nugie_rules', function(Blueprint $table) {
+        Schema::create('nugie_rules', function(Blueprint $table){
             $table->id();
             $table->foreignId('nugie_detail_id')->constrained()->cascadeOnDelete();
+            $table->enum('type', ['course', 'employee']);
             $table->integer('index');
             $table->integer('child');
             $table->string('prefix')->nullable()->default(null);
@@ -46,7 +45,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nugie_rules');
+        Schema::dropIfExists('nugie_employee_rules');
+        Schema::dropIfExists('nugie_course_rules');
         Schema::dropIfExists('nugie_details');
         Schema::dropIfExists('nugies');
     }

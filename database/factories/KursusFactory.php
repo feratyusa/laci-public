@@ -115,13 +115,14 @@ class KursusFactory extends Factory
                     "Pendidikan Pengelolaan Aset Berisiko",
                     "Pelatihan Strategi Pengembangan Bisnis Perbankan",
                     "Pengenalan Analisis Pasar Finansial",
-                    "Pelatihan Manajemen Kualitas dan Kepuasan Nasabah"];
+                    "Pelatihan Manajemen Kualitas dan Kepuasan Nasabah"
+            ];
 
         // Kategori
         $category = array_column(EventCategory::cases(), 'value');
 
         return [
-            'sandi' => fake()->numberBetween(90000, 99000),
+            'sandi' => fake()->unique()->numberBetween(90000, 99000),
             'lengkap' => fake()->unique()->randomElement($kursus),
             'kategori' => fake()->randomElement($category),
         ];

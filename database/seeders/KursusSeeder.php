@@ -14,7 +14,16 @@ class KursusSeeder extends Seeder
     public function run(): void
     {
         if(env('EHC_ENV', 'sqlite') == 'sqlite'){
-            Kursus::factory()->count(100)->create();
+            Kursus::factory()->create([
+                'sandi' => 90111,
+            ]);
+            Kursus::factory()->create([
+                'sandi' => 90222,
+            ]);
+            Kursus::factory()->create([
+                'sandi' => 90333,
+            ]);
+            Kursus::factory()->count(96)->create();
         }
         else{
             exit('FORBIDDEN to seed EHC Database');

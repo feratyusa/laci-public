@@ -24,7 +24,7 @@ class ProposalSeeder extends Seeder
         $proposalNum = 100;
 
         for ($i=0; $i < $proposalNum; $i++) { 
-            $k = $kursus[rand(0,99)];
+            $k = $kursus[rand(0,97)];
             $n = rand(1,100);
 
             $proposal = Proposal::factory()

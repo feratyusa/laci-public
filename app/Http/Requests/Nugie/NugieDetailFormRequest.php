@@ -23,14 +23,16 @@ class NugieDetailFormRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'nugie_id' => ['required', 'integer'],
-            'kd_kursus' => ['required', 'string'],
-            'is_sql' => ['required', 'boolean'],
-            'sql' => ['required_if:is_sql,1', 'string'],
-            'rules' => ['required_if:is_sql,0', 'array'],
-            'rules.*.column' => ['required_if:is_sql,0', 'string'],
-            'rules.*.is_not' => ['required_if:is_sql,0', 'boolean'],
-            'rules.*.parameter' => ['required_if:is_sql,0', 'string'],
+            'nugie_id' => ['required', 'integer'],                        
+            'rules' => ['required', 'array'],
+            'rules.*.type' => ['required', 'string'],
+            'rules.*.prefix' => ['required', 'string'],
+            'rules.*.index' => ['required', 'string'],
+            'rules.*.child' => ['required', 'string'],
+            'rules.*.column' => ['required', 'string'],  
+            'rules.*.verb' => ['required', 'string'],
+            'rules.*.parameters' => ['required', 'array'],
+            'rules.*.parameters.*' => ['required', 'string'],
         ];
     }
 }

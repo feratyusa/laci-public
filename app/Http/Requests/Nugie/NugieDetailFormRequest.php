@@ -23,16 +23,23 @@ class NugieDetailFormRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'nugie_id' => ['required', 'integer'],                        
-            'rules' => ['required', 'array'],
-            'rules.*.type' => ['required', 'string'],
-            'rules.*.prefix' => ['required', 'string'],
-            'rules.*.index' => ['required', 'string'],
-            'rules.*.child' => ['required', 'string'],
-            'rules.*.column' => ['required', 'string'],  
-            'rules.*.verb' => ['required', 'string'],
-            'rules.*.parameters' => ['required', 'array'],
-            'rules.*.parameters.*' => ['required', 'string'],
+            'nugie_id' => ['required', 'integer'],
+            'course_rules' => ['required', 'array'],
+            'course_rules.*.type' => ['required', 'string'],
+            'course_rules.*.prefix' => ['nullable', 'string'],
+            'course_rules.*.index' => ['required', 'numeric'],
+            'course_rules.*.child' => ['required', 'numeric'],
+            'course_rules.*.column' => ['required', 'string'],  
+            'course_rules.*.verb' => ['required', 'string'],
+            'course_rules.*.parameter' => ['required', 'string'],           
+            'emp_rules' => ['required', 'array'],
+            'emp_rules.*.type' => ['required', 'string'],
+            'emp_rules.*.prefix' => ['nullable', 'string'],
+            'emp_rules.*.index' => ['required', 'numeric'],
+            'emp_rules.*.child' => ['required', 'numeric'],
+            'emp_rules.*.column' => ['required', 'string'],  
+            'emp_rules.*.verb' => ['required', 'string'],
+            'emp_rules.*.parameter' => ['required', 'string'],
         ];
     }
 }

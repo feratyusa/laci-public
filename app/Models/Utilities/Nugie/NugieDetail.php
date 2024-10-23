@@ -14,6 +14,7 @@ class NugieDetail extends Model
     protected $fillable = [
         'nugie_id',
         'name',
+        'description'
     ];
 
     protected $with = ['rules'];

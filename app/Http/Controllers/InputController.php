@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enum\EventCategory;
+use App\Enum\Prefixes;
+use App\Enum\Verbs;
 use App\Models\EHC\Diklat;
+use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\Vendor;
 use App\Models\Master\Budget;
@@ -62,6 +65,48 @@ class InputController extends Controller
     {
         return response()->json([
             'vendors' => $this->selectOptions(Vendor::all()->toArray(), 'sandi', 'lengkap')
+        ]);
+    }
+
+    public function getDiklatColumns()
+    {
+        $diklatColumns = collect(Diklat::first())->keys();
+        $except = ['id', 'nip', 'nama', 'jabatan', 'cabang', 'created_at', 'updated_at'];
+        $options = [];
+        foreach ($diklatColumns as $value) {
+            if(in_array($value, $except)) continue;
+            $options[] = ['value' => $value];
+        }
+        return response()->json([
+            'diklatColumns' => $this->selectOptions($options, 'value', 'value', false)
+        ]);
+    }
+
+    public function getEmployeeColumns()
+    {
+        $empColumns = collect(Employee::first())->keys();
+        $except = ['created_at', 'updated_at'];
+        $options = [];
+        foreach ($empColumns as $value) {
+            if(in_array($value, $except)) continue;
+            $options[] = ['value' => $value];
+        }
+        return response()->json([
+            'empColumns' => $this->selectOptions($options, 'value', 'value', false)
+        ]);
+    }
+
+    public function getVerbOptions()
+    {
+        return response()->json([
+            'verbs' => Verbs::selection()
+        ]);
+    }
+
+    public function getPrefixOptions()
+    {
+        return response()->json([
+            'prefixes' => Prefixes::selection()
         ]);
     }
 }

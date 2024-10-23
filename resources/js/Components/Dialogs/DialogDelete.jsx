@@ -58,7 +58,7 @@ export default function DialogDelete({mode='icon', content, title, message, rout
                     <div className="flex min-h-full items-center justify-center p-4">
                         <DialogPanel
                             transition
-                            className="w-full max-w-md rounded-xl bg-white p-6 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                            className="w-full max-w-lg rounded-xl bg-white p-6 duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
                             >
                             <Typography variant="h5" className="mb-8">
                                 {title}
@@ -68,17 +68,17 @@ export default function DialogDelete({mode='icon', content, title, message, rout
                             </Typography>
                             <div className="flex flex-row justify-center gap-5 mt-8">
                                 <Button
-                                    color="yellow"
-                                    onClick={handleClose}
-                                    >
-                                    Cancel
-                                </Button>
-                                <Button
                                     color="red"
                                     loading={processing}
                                     onClick={handleDelete}
                                     >
                                     Hapus
+                                </Button>
+                                <Button
+                                    color="yellow"
+                                    onClick={handleClose}
+                                    >
+                                    Cancel
                                 </Button>
                             </div>
                         </DialogPanel>

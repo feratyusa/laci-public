@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Utilities;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Nugie\NugieDetailFormRequest;
 use App\Http\Requests\Nugie\NugieFormRequest;
+use App\Http\Requests\Nugie\NugieSQL;
 use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
@@ -13,48 +14,46 @@ use App\Models\Utilities\Nugie\NugieDetail;
 use App\Models\Utilities\Nugie\NugieRule;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class NugieController extends Controller
 {
-    private function handleParameters(NugieDetail $detail, string $type)
+    private function handleParameters(array $rules)
     {
-        $emp_rules = $detail->rules()->where('type', $type)->get();
-
         $sql = [];
-        foreach($emp_rules as $rule){
-            $data = explode(";", $rule->parameter);
-
+        foreach($rules as $index => $rule){            
+            $data = explode(";", $rule['parameter']);
+            
             $param = "";
-            if(strcmp('in', $rule->verb) == 0 || strcmp('not in', $rule->verb) == 0){
+            if(strcmp('in', $rule['verb']) == 0 || strcmp('not in', $rule['verb']) == 0){
                 $bindParam = array_fill(0, count($data), "?");
 
                 $param .= "(" . implode(",", $bindParam) . ")";               
             }
-            else if((strcmp('like', $rule->verb) == 0 || strcmp('not like', $rule->verb) == 0) 
-                        && count($data) == 1){
+            else if((strcmp('like', $rule['verb']) == 0 || strcmp('not like', $rule['verb']) == 0)){
                 $param .= "?";
             }
             else{
                 throw ValidationException::withMessages(['parameter' => 'invalid parameter length with verb']);
             }
             
-            $temp = $rule->column . " " . $rule->verb . " " . $param;
-            $sql[$rule->index][$rule->child] = ['prefix' => $rule->prefix, 'sql' => $temp, 'parameters' => $data];
+            $temp = $rule['column'] . " " . $rule['verb'] . " " . $param;
+            $sql[$rule['index']][$rule['child']] = ['prefix' => $rule['prefix'], 'sql' => $temp, 'parameters' => $data];
         }
 
         return $sql;
 
     }
 
-    private function queryBuilder(NugieDetail $nugie_detail, string $type)
+    private function queryBuilder(array $rules)
     {
         $sql = ''; 
         $bind = [];
 
-        $tempRes = $this->handleParameters($nugie_detail, $type);        
+        $tempRes = $this->handleParameters($rules);
         foreach ($tempRes as $index => $array) {                 
             foreach($array as $child => $value){
                 $temp = $value['sql'];
@@ -76,6 +75,7 @@ class NugieController extends Controller
         }
         return ['sql' => trim($sql), 'bind' => $bind];
     }
+
     public function index()
     {
         return Inertia::render('Utility/Nugie/Index', [
@@ -87,26 +87,31 @@ class NugieController extends Controller
     {
         $nugie = Nugie::findOrFail($id);
 
-        $result = []; $temp = [];
-        foreach($nugie->details as $detail){
-            $diklatSQL = $this->queryBuilder($detail, 'course');
-            $employeeSQL = $this->queryBuilder($detail, 'employee');
+        $details = [];
+        foreach($nugie->details as $index => $detail){
+            
+            $diklatSQL = $this->queryBuilder($detail->rules()->where('type', 'course')->get()->toArray());
+            $employeeSQL = $this->queryBuilder($detail->rules()->where('type', 'employee')->get()->toArray());            
 
-            $diklat = Diklat::whereRaw($diklatSQL['sql'], $diklatSQL['bind'])->pluck('nip')->toArray();
-            $empIn = Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
-                            ->whereIn('nip', $diklat)
-                            ->get();
-            $empOut = Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
-                            ->whereNotIn('nip', $diklat)
-                            ->get();
-            $temp[] = [$diklatSQL, $employeeSQL];
-            $result[] = ['name' => $detail->name, 'countIn' => count($empIn), 'empIn' => $empIn, 'countOut' => count($empOut), 'empOut' => $empOut];
-        }
+            $details[] = [     
+                'id' => $detail->id,           
+                'name' => $detail->name,
+                'rules' => [
+                    'id' => $detail->id,
+                    'name' => $detail->name,
+                    'course_rules' => $detail->rules()->where('type', 'course')->get(),
+                    'emp_rules' => $detail->rules()->where('type', 'employee')->get()
+                ],
+                'diklatSQL' => Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind'])->toRawSql(),
+                'empSQL' => Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])                                    
+                                    ->toRawSql(),                
+            ];
+        }        
 
-        return response()->json([
-            'temp' => $temp,
-            'result' => $result
-        ]);                     
+        return Inertia::render('Utility/Nugie/Show', [
+            'nugie' => $nugie,
+            'details' => $details,
+        ]);                
     }
 
     public function store(NugieFormRequest $request)
@@ -139,10 +144,12 @@ class NugieController extends Controller
     }
 
     public function storeDetails(NugieDetailFormRequest $request, string $id)
-    {
+    {        
         $nugie = Nugie::findOrFail($id);
 
         $validated = $request->validated();
+
+        $rules = array_merge($validated['emp_rules'], $validated['course_rules']);
 
         DB::beginTransaction();
 
@@ -151,35 +158,99 @@ class NugieController extends Controller
                 'name' => $validated['name']
             ]);
             
-            foreach($validated['rules'] as $rule){
-                $param = implode(";", $rule['parameters']);
+            foreach($rules as $rule){
                 NugieRule::create([
                     'nugie_detail_id' => $detail->id,
-                    'type' => $rule->type,
-                    'index' => $rule->index,
-                    'child' => $rule->child,
-                    'prefix' => $rule->prefix,
-                    'column' => $rule->column,
-                    'verb' => $rule->verb,
-                    'parameter' => $param,
+                    'type' => $rule['type'],
+                    'index' => $rule['index'],
+                    'child' => $rule['child'],
+                    'prefix' => $rule['prefix'] == 'null' ? null : $rule['prefix'],
+                    'column' => $rule['column'],
+                    'verb' => $rule['verb'],
+                    'parameter' => $rule['parameter'],
                 ]);
             }
 
             DB::commit();
         }
-        catch(Exception){
+        catch(Exception $e){           
             DB::rollback();
+            throw $e;
         }
 
         return redirect()->route('nugie.show', ['id' => $nugie->id]);
     }
 
-    public function updateDetails(NugieDetailFormRequest $request, string $id)
+    public function updateDetails(NugieDetailFormRequest $request, string $id, string $detail_id)
     {
+
         $nugie = Nugie::findOrFail($id);
+        
+        $detail = $nugie->details()->findOrFail($detail_id);
 
         $validated = $request->validated();
 
+        $rules = array_merge($validated['emp_rules'], $validated['course_rules']);
 
+        DB::beginTransaction();
+        
+        try{
+            $detail->updateOrFail([
+                'name' => $validated['name']
+            ]);
+
+            $detail->rules()->delete();
+
+            foreach($rules as $rule){                
+                NugieRule::create([
+                    'nugie_detail_id' => $detail->id,
+                    'type' => $rule['type'],
+                    'index' => $rule['index'],
+                    'child' => $rule['child'],
+                    'prefix' => $rule['prefix'] == 'null' ? null : $rule['prefix'],
+                    'column' => $rule['column'],
+                    'verb' => $rule['verb'],
+                    'parameter' => $rule['parameter'],
+                ]);
+            }
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        return redirect()->route('nugie.show', ['id' => $nugie->id]);
+    }
+
+    public function destroyDetails(string $id, string $detail_id)
+    {
+        $nugie = Nugie::findOrFail($id);
+
+        $detail = $nugie->details()->findOrFail($detail_id);
+
+        $detail->deleteOrFail();
+
+        return redirect()->route('nugie.show', ['id' => $nugie->id]);
+    }
+
+    public function getNugieData(string $id, string $detail_id)
+    {
+        $nugieDetail = NugieDetail::findOrFail($detail_id);
+        
+        $diklatSQL = $this->queryBuilder($nugieDetail->rules()->where('type', 'course')->get()->toArray());
+        $employeeSQL = $this->queryBuilder($nugieDetail->rules()->where('type', 'employee')->get()->toArray());
+
+        $diklat = Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind']);
+        $empIn = Employee::whereIn('nip', $diklat)
+                            ->whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                            ->get();
+        $empOut = Employee::whereNotIn('nip', $diklat)
+                            ->whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                            ->get();
+        
+        return response()->json([
+            'employees' => ['in' => $empIn, 'not' => $empOut]
+        ]);
     }
 }

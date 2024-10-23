@@ -153,6 +153,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}', [NugieController::class, 'show'])->name('nugie.show');
             Route::put('/{id}', [NugieController::class, 'update'])->name('nugie.update');
             Route::delete('/{id}', [NugieController::class, 'destroy'])->name('nugie.destroy');
+            Route::post('/{id}/details', [NugieController::class, 'storeDetails'])->name('nugie.store.details');
+            Route::put("/{id}/details/{detail_id}", [NugieController::class, 'updateDetails'])->name('nugie.update.details');
+            Route::delete("/{id}/details/{detail_id}", [NugieController::class, 'destroyDetails'])->name('nugie.destroy.details');
         });
     });
 
@@ -174,6 +177,10 @@ Route::prefix('api')->group(function (){
         Route::get('locations', [InputController::class, 'getLocationOptions'])->name('input.locations');
         Route::get('budgets', [InputController::class, 'getBudgetOptions'])->name('input.budgets');
         Route::get('vendors', [InputController::class, 'getVendorOptions'])->name('input.vendors');
+        Route::get('diklatColumns', [InputController::class, 'getDiklatColumns'])->name('input.diklatColumns');
+        Route::get('employeeColumns', [InputController::class, 'getEmployeeColumns'])->name('input.employeeColumns');
+        Route::get('verbs', [InputController::class, 'getVerbOptions'])->name('input.verbs');
+        Route::get('prefixes', [InputController::class, 'getPrefixOptions'])->name('input.prefixes');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');
@@ -185,6 +192,9 @@ Route::prefix('api')->group(function (){
     });
     Route::prefix('calendar')->group(function() {
         Route::get('changeEvents', [CalendarController::class, 'changeEvents'])->name('calendar.changeEvents');
+    });
+    Route::prefix('nugies')->group(function(){
+        Route::get('/{id}/nugieData/{detail_id}', [NugieController::class, 'getNugieData'])->name('nugie.nugieData');
     });
 })->middleware('auth');
 

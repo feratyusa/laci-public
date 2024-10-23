@@ -4,14 +4,15 @@ namespace App\Models\EHC;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class Diklat extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlite';
+    protected $connection = 'ehc';
 
-    protected $table = 'diklat';
+    protected $table = 'V_LACI_DIKLAT';
 
     protected $fillable = [
         'nip',

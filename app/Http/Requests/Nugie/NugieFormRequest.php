@@ -23,6 +23,7 @@ class NugieFormRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'created_by' => ['required', 'string']
         ];
     }

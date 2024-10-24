@@ -1,6 +1,6 @@
 import Selection from "@/Components/Form/Selection";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-import { Cog8ToothIcon, PlusIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import isObjectEmpty from "@/helpers/isObjectEmpty";
+import { PlusIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
 import axios from "axios";
@@ -138,9 +138,9 @@ function RulesForm({data, setData}){
 
     return(
         <div>
-            <p>Rules(s)</p>
+            <p className="text-red-500 font-bold text-lg">Rules(s)</p>
             <div className="mb-5">
-                <p>Tabel Diklat</p>
+                <p className="font-bold">Tabel Diklat</p>
                 {
                     data.course_rules.map((rule, index) => (
                         <DetailRuleForm  
@@ -161,7 +161,7 @@ function RulesForm({data, setData}){
                 </Button>
             </div>
             <div className="mb-5">
-                <p>Tabel Pegawai</p>
+                <p className="font-bold">Tabel Pegawai</p>
                 {
                     data.emp_rules.map((rule, index) => (
                         <DetailRuleForm  
@@ -186,10 +186,21 @@ function RulesForm({data, setData}){
 
 }
 
-export default function NugieDetailForm({mode='create', nugie, detail={id: '', name: '', course_rules: [], emp_rules: []}}){
+export default function NugieDetailForm({
+    mode='create', 
+    nugie, 
+    detail={
+        id: '', 
+        name: '',
+        nugie_id: '', 
+        course_rules: [{type: 'course', index: '1', child: '1', prefix: 'null', column: 'kd_kursus', verb: 'in', parameter: ''}], 
+        emp_rules: [{type: 'employee', index: '1', child: '1', prefix: 'null', column: 'nip', verb: 'in', parameter: ''}],
+        sql: ''
+    }
+    }){
     const [defaultDetail, ] = useState(structuredClone(detail))
 
-    const {data, setData, post, put, reset, processing, errors} = useForm({
+    const {data, setData, post, put, clearErrors, processing, errors} = useForm({
         name: detail.name,
         nugie_id: nugie.id,
         course_rules:
@@ -200,8 +211,9 @@ export default function NugieDetailForm({mode='create', nugie, detail={id: '', n
             detail.emp_rules.length != 0
             ? [...detail.emp_rules]
             : [{type: 'employee', index: '1', child: '1', prefix: 'null', column: 'nip', verb: 'in', parameter: ''}]
-    })    
+    })
 
+    const [generatedSQL, setGeneratedSQL] = useState(detail.sql)
     const [valid, setValid] = useState([])
 
     function checkValidDetail(){
@@ -243,33 +255,56 @@ export default function NugieDetailForm({mode='create', nugie, detail={id: '', n
     }
 
     function handleReset(){        
-        setData(data => (structuredClone(defaultDetail)))
+        setData((structuredClone(defaultDetail)))
+        clearErrors()
+    }
 
+    function handleSQLCheck(){
+        setGeneratedSQL(false)
+        axios.post('/api/nugies/generateSQL', data)
+            .then((response) => {
+                console.log(response)
+                setGeneratedSQL(response.data.sql)
+            })
     }
 
     function handleSubmit(){  
         if(mode == 'edit'){
             put(route('nugie.update.details', {id: nugie.id, detail_id: detail.id }), {
-                preserveState: false,            
-                onSuccess: () => reset()
+                preserveScroll: true,             
             })
         }
         else{
             post(route('nugie.store.details', [nugie.id]), {
-                preserveState: false,            
-                onSuccess: () => reset()
+                preserveScroll: true,                
             })
         }   
     }
 
     useEffect(() => {
         setValid(checkValidDetail())
-    }, [data])    
+    }, [data])   
 
     return(
-        <form>            
+        <form>
+            {
+                isObjectEmpty(errors) == false &&
+                <div className="bg-red-100 p-3 font-bold rounded-lg border-2 border-red-500 mb-2 mt-5">
+                    <div className="flex gap-2 text-red-500 mb-1">
+                        <XCircleIcon className="w-5"/>
+                        <p className="text-lg">Form Error</p>
+                    </div>
+                    <div className="pl-5">
+                        {
+                            Object.keys(errors).map(key => (
+                                <p>* {errors[key]}</p>
+                            ))
+                        }
+                    </div>
+                </div>
+            }          
             <div className="mb-2">
-                <label htmlFor="name">Nama Detail</label>
+                <label htmlFor="name" className="font-bold text-red-500 text-lg">Nama Detail</label>
                 <input
                     id="name"
                     placeholder="Nama Detail"
@@ -299,11 +334,18 @@ export default function NugieDetailForm({mode='create', nugie, detail={id: '', n
                 data={data}
                 setData={setData}
             />
+            {
+                generatedSQL != '' &&
+                <div className="p-3 mb-5 text-white bg-blue-500 border-2 border-blue-900">
+                    <p className="text-xl font-bold">Generated SQL:</p>
+                    <p className="pl-5">{generatedSQL}</p>
+                </div>
+            }
             <div className="flex gap-5 mb-5">
                 <Button color="green" loading={processing} disabled={valid.length > 0} onClick={() => handleSubmit()}>
                     Simpan
                 </Button>
-                <Button color="amber" disabled={valid.length > 0}>
+                <Button color="amber" disabled={valid.length > 0} onClick={() => handleSQLCheck()}>
                     Cek SQL
                 </Button>
                 <Button color="blue" onClick={() => handleReset()}>

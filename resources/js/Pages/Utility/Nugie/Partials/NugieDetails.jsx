@@ -7,7 +7,6 @@ import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid"
 import DialogDelete from "@/Components/Dialogs/DialogDelete"
 import { useEffect } from "react"
 import axios from "axios"
-import LoadingText from "@/Components/Loading/LoadingText"
 import LoadingCircle from "@/Components/Loading/LoadingCircle"
 
 function DetailRow({nugie, detail, setEmployees}){
@@ -19,7 +18,7 @@ function DetailRow({nugie, detail, setEmployees}){
             .then((response) => {
                 setEmps(response.data.employees)
             })
-    }, [])
+    }, [detail])
 
     return(
         <>
@@ -53,7 +52,7 @@ function DetailRow({nugie, detail, setEmployees}){
                                 <LoadingCircle size="h-2 w-2"/>
                             </div>
                             :
-                            <IconButton size="sm" color="blue" onClick={() => setEmployees({empIn: emps?.in, empOut: emps?.not})}>
+                            <IconButton size="sm" color="blue" onClick={() => setEmployees({name: detail.name, empIn: emps?.in, empOut: emps?.not})}>
                                 <EyeIcon className="w-full"/>
                             </IconButton>
 

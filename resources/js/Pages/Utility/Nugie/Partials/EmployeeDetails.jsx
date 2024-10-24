@@ -52,11 +52,13 @@ export default function EmployeeDetails({empIn=[], empOut=[]}){
         getSortedRowModel: getSortedRowModel(),
     })
 
+    const tabClass = "p-3 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"
+
     return(
         <TabGroup>
-            <TabList>
-                <Tab>Sudah</Tab>
-                <Tab>Belum</Tab>
+            <TabList className={'grid grid-cols-2 gap-2 mb-5'}>
+                <Tab className={tabClass}>Sudah</Tab>
+                <Tab className={tabClass}>Belum</Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>

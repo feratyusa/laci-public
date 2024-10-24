@@ -14,11 +14,13 @@ use App\Models\Master\BudgetType;
 use App\Models\Master\Location;
 use App\Models\User;
 use App\Trait\InputHelpers;
-use Illuminate\Http\Request;
+use App\Trait\TableColumnsHelper;
 
 class InputController extends Controller
 {
     use InputHelpers;
+    use TableColumnsHelper;
+
     public function getCoursesOptions()
     {
         return response()->json([
@@ -70,27 +72,16 @@ class InputController extends Controller
 
     public function getDiklatColumns()
     {
-        $diklatColumns = collect(Diklat::first())->keys();
-        $except = ['id', 'nip', 'nama', 'jabatan', 'cabang', 'created_at', 'updated_at'];
-        $options = [];
-        foreach ($diklatColumns as $value) {
-            if(in_array($value, $except)) continue;
-            $options[] = ['value' => $value];
-        }
+        $options = $this->getTableDiklatColumns();
         return response()->json([
+            'hello' => 'hello',
             'diklatColumns' => $this->selectOptions($options, 'value', 'value', false)
         ]);
     }
 
     public function getEmployeeColumns()
     {
-        $empColumns = collect(Employee::first())->keys();
-        $except = ['created_at', 'updated_at'];
-        $options = [];
-        foreach ($empColumns as $value) {
-            if(in_array($value, $except)) continue;
-            $options[] = ['value' => $value];
-        }
+        $options = $this->getTableEmployeeColumns();
         return response()->json([
             'empColumns' => $this->selectOptions($options, 'value', 'value', false)
         ]);

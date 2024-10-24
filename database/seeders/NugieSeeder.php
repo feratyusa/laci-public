@@ -16,7 +16,8 @@ class NugieSeeder extends Seeder
     public function run(): void
     {
         $nugie = Nugie::create([
-            'name' => 'Testing Nugie',
+            'name' => 'Report Testing Nugie',
+            'description' => 'Report ini digunakan untuk menguji coba fitur Nugie, Dynamic Utility for General Information on Education or Report Maker.',
             'created_by' => 'Nugie'
         ]);
 

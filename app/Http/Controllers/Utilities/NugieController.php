@@ -5,47 +5,38 @@ namespace App\Http\Controllers\Utilities;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Nugie\NugieDetailFormRequest;
 use App\Http\Requests\Nugie\NugieFormRequest;
-use App\Http\Requests\Nugie\NugieSQL;
+use App\Http\Requests\Nugie\NugieGenerateSQLRequest;
 use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
-use App\Models\EHC\Kursus;
 use App\Models\Utilities\Nugie\Nugie;
 use App\Models\Utilities\Nugie\NugieDetail;
 use App\Models\Utilities\Nugie\NugieRule;
+use App\Trait\NugieVerbHelper;
+use App\Trait\TableColumnsHelper;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class NugieController extends Controller
 {
+    use TableColumnsHelper;
+    use NugieVerbHelper;
+
     private function handleParameters(array $rules)
     {
         $sql = [];
-        foreach($rules as $index => $rule){            
-            $data = explode(";", $rule['parameter']);
+        foreach($rules as $rule){            
+            $result = $this->generateParams($rule);
             
-            $param = "";
-            if(strcmp('in', $rule['verb']) == 0 || strcmp('not in', $rule['verb']) == 0){
-                $bindParam = array_fill(0, count($data), "?");
+            if($result == false) throw ValidationException::withMessages(['rules' => 'one of the verbs is invalid, stupid']);
 
-                $param .= "(" . implode(",", $bindParam) . ")";               
-            }
-            else if((strcmp('like', $rule['verb']) == 0 || strcmp('not like', $rule['verb']) == 0)){
-                $param .= "?";
-            }
-            else{
-                throw ValidationException::withMessages(['parameter' => 'invalid parameter length with verb']);
-            }
-            
-            $temp = $rule['column'] . " " . $rule['verb'] . " " . $param;
-            $sql[$rule['index']][$rule['child']] = ['prefix' => $rule['prefix'], 'sql' => $temp, 'parameters' => $data];
+            $prefix = strcmp($rule['prefix'], "null") == 0 ? null : $rule['prefix'];
+            $temp = $rule['column'] . " " . $rule['verb'] . " " . $result['params'];
+            $sql[$rule['index']][$rule['child']] = ['prefix' => $prefix, 'sql' => $temp, 'parameters' => $result['data']];
         }
 
         return $sql;
-
     }
 
     private function queryBuilder(array $rules)
@@ -53,8 +44,8 @@ class NugieController extends Controller
         $sql = ''; 
         $bind = [];
 
-        $tempRes = $this->handleParameters($rules);
-        foreach ($tempRes as $index => $array) {                 
+        $tempRes = $this->handleParameters($rules);        
+        foreach ($tempRes as $index => $array) {
             foreach($array as $child => $value){
                 $temp = $value['sql'];
                 if($child == 1){
@@ -88,23 +79,24 @@ class NugieController extends Controller
         $nugie = Nugie::findOrFail($id);
 
         $details = [];
-        foreach($nugie->details as $index => $detail){
+        foreach($nugie->details as $detail){
             
             $diklatSQL = $this->queryBuilder($detail->rules()->where('type', 'course')->get()->toArray());
             $employeeSQL = $this->queryBuilder($detail->rules()->where('type', 'employee')->get()->toArray());            
 
             $details[] = [     
-                'id' => $detail->id,           
+                'id' => $detail->id,    
                 'name' => $detail->name,
                 'rules' => [
                     'id' => $detail->id,
                     'name' => $detail->name,
+                    'nugie_id' => $nugie->id,
                     'course_rules' => $detail->rules()->where('type', 'course')->get(),
-                    'emp_rules' => $detail->rules()->where('type', 'employee')->get()
-                ],
-                'diklatSQL' => Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind'])->toRawSql(),
-                'empSQL' => Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])                                    
-                                    ->toRawSql(),                
+                    'emp_rules' => $detail->rules()->where('type', 'employee')->get(),
+                    'sql' => Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                                    ->whereIn('nip', Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind']))
+                                    ->toRawSql(),
+                ],                 
             ];
         }        
 
@@ -149,6 +141,10 @@ class NugieController extends Controller
 
         $validated = $request->validated();
 
+        if($this->isDiklatColumnsValid(array_column($validated['course_rules'],'column')) == false) throw ValidationException::withMessages(['rules' => 'diklat column name is invalid']);
+
+        if($this->isEmployeeColumnsValid(array_column($validated['emp_rules'], 'column')) == false) throw ValidationException::withMessages(['rules' => 'employee column name is invalid']);
+
         $rules = array_merge($validated['emp_rules'], $validated['course_rules']);
 
         DB::beginTransaction();
@@ -189,6 +185,10 @@ class NugieController extends Controller
         $detail = $nugie->details()->findOrFail($detail_id);
 
         $validated = $request->validated();
+
+        if($this->isDiklatColumnsValid(array_column($validated['course_rules'],'column')) == false) throw ValidationException::withMessages(['rules' => 'diklat column name is invalid']);
+
+        if($this->isEmployeeColumnsValid(array_column($validated['emp_rules'], 'column')) == false) throw ValidationException::withMessages(['rules' => 'employee column name is invalid']);
 
         $rules = array_merge($validated['emp_rules'], $validated['course_rules']);
 
@@ -251,6 +251,26 @@ class NugieController extends Controller
         
         return response()->json([
             'employees' => ['in' => $empIn, 'not' => $empOut]
+        ]);
+    }
+
+    public function generateSQL(NugieGenerateSQLRequest $request)
+    {
+        $validated = $request->validated();        
+
+        if($this->isDiklatColumnsValid(array_column($validated['course_rules'],'column')) == false) throw ValidationException::withMessages(['rules' => 'diklat column name is invalid']);
+
+        if($this->isEmployeeColumnsValid(array_column($validated['emp_rules'], 'column')) == false) throw ValidationException::withMessages(['rules' => 'employee column name is invalid']);
+
+        $diklatSQL = $this->queryBuilder($validated['course_rules']);
+        $employeeSQL = $this->queryBuilder($validated['emp_rules']);
+
+        $diklat = Diklat::whereRaw($diklatSQL['sql'], $diklatSQL['bind']);
+
+        return response()->json([
+            'sql' => Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                                ->whereIn('nip', $diklat)
+                                ->toRawSql()
         ]);
     }
 }

@@ -195,6 +195,7 @@ Route::prefix('api')->group(function (){
     });
     Route::prefix('nugies')->group(function(){
         Route::get('/{id}/nugieData/{detail_id}', [NugieController::class, 'getNugieData'])->name('nugie.nugieData');
+        Route::post('generateSQL', [NugieController::class, 'generateSQL'])->name('nugie.generateSQL');
     });
 })->middleware('auth');
 

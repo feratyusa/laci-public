@@ -10,13 +10,10 @@ import { useEffect, useState } from "react";
 
 export default function Index({
     auth,
-    start='',
-    end='',
+    year=new Date().getFullYear()
 }){
-    const dateString = start && end ? ` (${changeToIndonesiaDateTime(start, true)} - ${changeToIndonesiaDateTime(end, true)})` : null
-
-    const [startDate, setStartDate] = useState('2024-10-01')
-    const [endDate, setEndDate] = useState('2024-10-1')
+    const [startDate, setStartDate] = useState(`${year}-01-01`)
+    const [endDate, setEndDate] = useState(`${year}-12-31`)
     const [events, setEvents] = useState(null)
 
     const [filter, setFilter] = useState('')
@@ -51,8 +48,8 @@ export default function Index({
                 <div className="flex items-center gap-5 mb-5 text-red-500">
                     <CalendarDateRangeIcon className="w-8"/>
                     <div>
-                        <p className="font-bold text-2xl">{`Kalender Event${dateString ?? ''}`}</p>
-                        <p className="italic text-sm text-gray-500">{`${dateString ? `Edit kotak input untuk mengubah nominal` : `Pilih Tanggal Mulai event`}`}</p>
+                        <p className="font-bold text-2xl">{`Kalender Event ${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)}`}</p>
+                        <p className="italic text-sm text-gray-500">{`${startDate ? `Edit kotak input untuk mengubah nominal` : `Pilih Tanggal Mulai event`}`}</p>
                     </div>
                 </div>
                 <div className="p-5 bg-white rounded-md shadow-lag mb-10">
@@ -90,7 +87,7 @@ export default function Index({
                 <div className="flex items-center gap-5 mb-10 text-red-500">
                     <NumberedListIcon className="w-8"/>
                     <div>
-                        <p className="font-bold text-2xl">{`Daftar Event${dateString ?? ''}`}</p>                        
+                        <p className="font-bold text-2xl">{`Daftar Event ${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)}`}</p>
                     </div>
                 </div>
                 {

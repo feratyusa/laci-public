@@ -11,17 +11,14 @@ import BudgetReport from "./Partials/BudgetReport";
 import ReportTable from "./Partials/ReportTable";
 
 export default function Index({
-    auth,     
-    inHouses=[],
-    publics=[],    
+    auth,
     budget=null,
-    budgets=[],
-    budgetTypePrices=[],
-}){
-    const [startDate, setStartDate] = useState('2024-10-01')
-    const [endDate, setEndDate] = useState('2024-10-31')
+    year=new Date().getFullYear(),    
+}){    
+    const [startDate, setStartDate] = useState(`${year}-01-01`)
+    const [endDate, setEndDate] = useState(`${year}-12-31`)
     const [events, setEvents] = useState(null)    
-    const [budgetID, setBudgetID] = useState(null)
+    const [budgetID, setBudgetID] = useState(budget)
     const [mode, setMode] = useState(1)
 
     const dateString = startDate && endDate ? ` (${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)})` : null    
@@ -71,7 +68,7 @@ export default function Index({
                 <div className="flex items-center gap-5 mb-10 text-red-500">
                     <BanknotesIcon className="w-8"/>
                     <div>
-                        <p className="font-bold text-2xl">{`Rekap Anggaran${budget ? ` (${budget.year})` : ''}`}</p>
+                        <p className="font-bold text-2xl">{`Rekap Anggaran`}</p>
                         <p className="italic text-sm text-gray-500">Pilih tahun anggaran</p>
                     </div>
                 </div>

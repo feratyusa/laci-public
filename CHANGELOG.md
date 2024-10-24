@@ -1,3 +1,12 @@
+# v0.70 (TBD)
+
+#### New Features
+
+- Dynamic Utility for General Information on Education atau NUGIE. Fitur Report Maker untuk ,melihat ringkasan jumlah dan detail pegawai yang mengikuti pelatihan. ( basically Report Pendidikan v2.0 )
+    1. Dapat menyimpan report yang telah dibuat sehingga dapat ditinjau kembali. 
+    2. Berbasis Query Builder sehingga lebih fleksibel dalam mengatur kriteria report yang dibuat.
+    3. Dapat melihat SQL berdasarkan kriteria yang telah dibuat.
+
 # v0.50 (10 Oktober 2024)
 
 #### New Features

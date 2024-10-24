@@ -10,9 +10,9 @@ class Diklat extends Model
 {
     use HasFactory;
 
-    protected $connection = 'ehc';
+    protected $connection = 'sqlite';
 
-    protected $table = 'V_LACI_DIKLAT';
+    protected $table = 'diklat';
 
     protected $fillable = [
         'nip',

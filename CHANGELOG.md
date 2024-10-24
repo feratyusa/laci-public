@@ -7,6 +7,13 @@
     2. Berbasis Query Builder sehingga lebih fleksibel dalam mengatur kriteria report yang dibuat.
     3. Dapat melihat SQL berdasarkan kriteria yang telah dibuat.
 
+#### Todo
+- Drop file to input
+- Import excel to input participant
+- Participant checks sudah ikut diklat
+- Undangan maker
+- Logging
+
 # v0.50 (10 Oktober 2024)
 
 #### New Features

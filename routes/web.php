@@ -21,6 +21,7 @@ use App\Http\Controllers\Utilities\NugieController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/test-dev', [DashboardController::class, 'test']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,6 +48,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('files')->group(function () {
         Route::post('', [FileController::class, 'store'])->name('file.store');
+        Route::post('/{proposal_id}', [FileController::class, 'storeProposal'])->name('file.store.proposal');
+        Route::post('/{event_id}', [FileController::class, 'storeEvent'])->name('file.store.event');
         Route::get('/{id}', [FileController::class, 'show'])->name('file.show');
         Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
         Route::delete('/{id}', [FileController::class, 'destroy'])->name('file.destroy');
@@ -181,6 +184,7 @@ Route::prefix('api')->group(function (){
         Route::get('employeeColumns', [InputController::class, 'getEmployeeColumns'])->name('input.employeeColumns');
         Route::get('verbs', [InputController::class, 'getVerbOptions'])->name('input.verbs');
         Route::get('prefixes', [InputController::class, 'getPrefixOptions'])->name('input.prefixes');
+        Route::get('categories', [InputController::class, 'getCategoryOptions'])->name('input.categories');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

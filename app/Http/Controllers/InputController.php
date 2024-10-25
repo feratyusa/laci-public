@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Enum\EventCategory;
 use App\Enum\Prefixes;
 use App\Enum\Verbs;
-use App\Models\EHC\Diklat;
-use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\Vendor;
+use App\Models\File\Category;
 use App\Models\Master\Budget;
 use App\Models\Master\BudgetType;
 use App\Models\Master\Location;
@@ -74,7 +73,6 @@ class InputController extends Controller
     {
         $options = $this->getTableDiklatColumns();
         return response()->json([
-            'hello' => 'hello',
             'diklatColumns' => $this->selectOptions($options, 'value', 'value', false)
         ]);
     }
@@ -98,6 +96,13 @@ class InputController extends Controller
     {
         return response()->json([
             'prefixes' => Prefixes::selection()
+        ]);
+    }
+
+    public function getCategoryOptions()
+    {
+        return response()->json([
+            'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false)
         ]);
     }
 }

@@ -20,6 +20,10 @@ class DashboardController extends Controller
     use InputHelpers;
     use MonthHelper;
 
+    public function test(){
+        return Inertia::render('Utility/Testing/Test');
+    }
+
     public function dashboard(){                    
         return Inertia::render('Dashboard');
     }

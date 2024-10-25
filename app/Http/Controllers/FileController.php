@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enum\AppFolder;
 use App\Http\Requests\FileStoreRequest;
+use App\Http\Requests\FileUploadRequest;
 use App\Models\Event\EventFile;
 use App\Models\File\File;
 use App\Models\Proposal\ProposalFile;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
@@ -131,5 +135,65 @@ class FileController extends Controller
         $file->deleteOrFail();
 
         return redirect()->back();
+    }
+
+    private function handleFileUpload(array $validated, UploadedFile $file, string $uploadFolder, string $id)
+    {
+        DB::beginTransaction();
+
+        try{
+            $fmodel = File::create([
+                'name' => $validated['name'],
+                'path' => 'temp',
+                'size' => $file->getSize(),
+                'mime_type' => $file->extension(),
+                'category_id' => $validated['category_id'],
+            ]);
+
+            ProposalFile::create([
+                'file_id' => $fmodel->id,
+                'proposal_id' => $id
+            ]);
+
+            $path = $file->store($uploadFolder, $fmodel->id);
+
+            $fmodel->path = $path;
+            
+            $fmodel->save();
+
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function storeProposal(FileUploadRequest $request, string $proposal_id)
+    {
+        $validated = $request->validated();
+
+        $this->handleFileUpload(
+            $validated, 
+            $request->file('file'), 
+            AppFolder::PROPOSAL->value."/".$validated['id'],
+            $proposal_id
+        );
+
+        return redirect()->route('proposal.show', ['id' => $proposal_id]);
+    }
+
+    public function storeEvent(FileUploadRequest $request, string $event_id)
+    {
+        $validated = $request->validated();
+
+        $this->handleFileUpload(
+            $validated,
+            $request->file('file'),
+            AppFolder::EVENT->value."/".$validated['id'],
+            $event_id
+        );
+
+        return redirect()->route('event.show', ['id' => $event_id]);
     }
 }

@@ -18,7 +18,7 @@ function MenuItem({menu, open, selected=false}){
         <>
         {
             open ? 
-            <Link href={route(menu.link)} className={menuClass} method={menu?.method ?? 'get'} as="button">
+            <Link href={route(menu.link)} className={menuClass} method={menu?.method ?? 'get'} as={menu.link != 'logout' ? 'a' : 'button'}>
                 <div className="text-red-500 group-hover:text-white">
                     <MenuIconSelector name={menu.url} />
                 </div>
@@ -28,7 +28,7 @@ function MenuItem({menu, open, selected=false}){
             </Link>
             :
             <Tooltip content={menu.name}>
-                <Link href={route(menu.link)} className={menuClass} method={menu?.method ?? 'get'} as="button">
+                <Link href={route(menu.link)} className={menuClass} method={menu?.method ?? 'get'} as={menu.link != 'logout' ? 'a' : 'button'}>
                     <div className="text-red-500 group-hover:text-white">
                         <MenuIconSelector name={menu.url} />
                     </div>

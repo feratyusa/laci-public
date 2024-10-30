@@ -10,7 +10,7 @@ import { IconButton, Tooltip } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactSelect from "react-select";
-import { ArchiveBoxXMarkIcon, DocumentCheckIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon, ArchiveBoxXMarkIcon, DocumentCheckIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ProposalStatus from "@/Base/ProposalStatus";
 import LoadingCircle from "@/Components/Loading/LoadingCircle";
 
@@ -183,7 +183,7 @@ function CompleteStatus({isComplete, haveEvents, isEventsComplete}){
             isEventsComplete ? 
             <Tooltip content="Berkas Event Lengkap">
                 <IconButton color="green" size="sm">
-                    <DocumentCheckIcon className="w-full"/>
+                    <ArchiveBoxIcon className="w-full"/>
                 </IconButton>
             </Tooltip>
             :

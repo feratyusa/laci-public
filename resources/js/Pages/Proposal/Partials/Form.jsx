@@ -11,12 +11,14 @@ import axios from "axios";
 import LoadingInput from "@/Components/Loading/LoadingInput";
 
 function AssignToInput({data, setData, errors}){
+
     const [userOptions, setUserOptions] = useState(false)
     useEffect(()=>{
         axios.get('/api/input/users').then(function(response){
             setUserOptions(response.data.users)
         })
-    }, [userOptions])
+    }, [])
+
     return(
         <>
             <div className="table-cell pb-8 w-44">
@@ -87,7 +89,7 @@ export default function ProposalForm({auth, method, proposal=null, kursus: cours
     const date = proposal ? new Date(proposal.entry_date) : new Date()
     const date_string = `${date.getFullYear()}-${('0'+(date.getMonth() + 1)).slice(-2)}-${('0'+(date.getDate())).slice(-2)}`    
     
-    const { data, setData, post, put, cancel, processing, errors } = useForm({
+    const { data, setData, post, put, cancel, processing, errors, reset } = useForm({
         name: proposal ? proposal.name : '',
         event_category: proposal ? proposal.event_category : event_category[0].value,
         entry_date: date_string,
@@ -95,7 +97,7 @@ export default function ProposalForm({auth, method, proposal=null, kursus: cours
         status: proposal ? proposal.status : statuses[0].value,
         assign_to: proposal ? proposal.assign_to : auth.user.username
     });
-
+    console.log(errors)
     const [openSelect, setOpenSelect] = useState(false) 
 
     function setEventCategory(kd_kursus){      
@@ -129,6 +131,7 @@ export default function ProposalForm({auth, method, proposal=null, kursus: cours
         <form onSubmit={handleSubmit} 
             action="post" 
             className={"border-y-2 px-5 py-10 flex flex-col gap-8 border-gray-500"} 
+            enctype="multipart/form-data"
         >
             <div className="table w-full">
                 <div className="table-row-group">

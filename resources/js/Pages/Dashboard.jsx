@@ -98,7 +98,7 @@ function DocumentStatuses({user}){
 
 
 function RangeSelection({setRange, setBudgets}){
-    const [selected, setSelected] = useState(0)
+    const [selected, setSelected] = useState(1)
 
     function handleRangeChange(range){
         setBudgets(false)
@@ -109,17 +109,33 @@ function RangeSelection({setRange, setBudgets}){
     function RangeButton({range}){
         return(
             <Button size='sm' color={`${selected == range ? 'blue' : 'red'}`} onClick={() => handleRangeChange(range)}>
-                <p className='capitalize'>{`${range==0 ? 'This month': `Last ${range+1} months`}`}</p>
+                <p className='capitalize'>
+                    {
+                        range == 1 ?
+                        'Bulan Ini'
+                        :
+                        range == 2 ?
+                        'Q1'
+                        :
+                        range == 3 ?
+                        'Q2'
+                        :
+                        range == 4 ?
+                        'Q3'
+                        :
+                        'Q4 / Tahun Ini'
+                    }
+                </p>
             </Button>
         )
     }
     return(
         <div className='grid grid-cols-5 gap-2 mb-3'>            
-            <RangeButton range={0}/>
+            <RangeButton range={1}/>
             <RangeButton range={2}/>
+            <RangeButton range={3}/>
+            <RangeButton range={4}/>
             <RangeButton range={5}/>
-            <RangeButton range={8}/>
-            <RangeButton range={11}/>
         </div>
     )
 }
@@ -240,7 +256,7 @@ function ModeSelection({setMode}){
 
 function BudgetReportCard({year}){    
     const [mode, setMode] = useState(0)
-    const [range, setRange] = useState(0)    
+    const [range, setRange] = useState(1)    
     const [data, setData] = useState(false)
 
     useEffect(() => {

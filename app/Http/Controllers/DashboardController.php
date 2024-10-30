@@ -80,16 +80,32 @@ class DashboardController extends Controller
         $budgetTypePrices['total_value'] = 0;
 
         // Events based on range
-        $range = $validated['range'] > 11 ? 11 : $validated['range'];
-        $dateString = "first day of -{$range} month";
+        $range = $validated['range'];
+        $startString = 'first day of January';
+        $endString = '';
+        switch ($range) {
+            case 2:
+                $endString = 'last day of March';
+                break;
+            case 3:
+                $endString = 'last day of June';
+                break;
+            case 4:
+                $endString = 'last day of September';
+                break;
+            case 5:
+                $endString = 'last day of December';
+                break;
 
-        if(intval(date('m', strtotime($dateString))) > intval(date('m', strtotime("now")))){
-            $dateString = "first day of January";
-        }
+            default:
+                $startString  = 'first day of now';
+                $endString = 'last day of now';
+                break;
+        };
         
         $dateStrings = (object)[
-            'start' => $budget->year."-".date('m-d', strtotime($dateString)),
-            'end' => $budget->year."-".date('m-d', strtotime('last day of now')),
+            'start' => $budget->year."-".date('m-d', strtotime($startString)),
+            'end' => $budget->year."-".date('m-d', strtotime($endString)),
         ];        
 
         $events = Event::whereRaw('start_date between ? and ?', [$dateStrings->start, $dateStrings->end])->get();        

@@ -137,7 +137,7 @@ class FileController extends Controller
         return redirect()->back();
     }
 
-    private function handleFileUpload(array $validated, UploadedFile $file, string $uploadFolder, string $id)
+    private function handleFileUpload(array $validated, UploadedFile $file, string $uploadFolder, string $id, int $type)
     {
         DB::beginTransaction();
 
@@ -150,10 +150,23 @@ class FileController extends Controller
                 'category_id' => $validated['category'],
             ]);
 
-            ProposalFile::create([
-                'file_id' => $fmodel->id,
-                'proposal_id' => $id
-            ]);
+            switch ($type) {
+                case 1:
+                    ProposalFile::create([
+                        'file_id' => $fmodel->id,
+                        'proposal_id' => $id
+                    ]);                    
+                    break;
+                case 2:
+                    EventFile::create([
+                        'file_id' => $fmodel->id,
+                        'event_id' => $id
+                    ]);
+                    break;
+                
+                default:
+                    return redirect()->route('dashboard');                    
+            }
 
             $path = $file->store($uploadFolder);
 
@@ -179,7 +192,8 @@ class FileController extends Controller
             $validated, 
             $files[0], 
             AppFolder::PROPOSAL->value."/". $proposal_id,
-            $proposal_id
+            $proposal_id,
+            1
         );
 
         return redirect()->route('proposal.show', ['id' => $proposal_id]);
@@ -194,8 +208,9 @@ class FileController extends Controller
         $this->handleFileUpload(
             $validated,
             $files[0],
-            AppFolder::EVENT->value."/".$validated['id'],
-            $event_id
+            AppFolder::EVENT->value."/".$event_id,
+            $event_id,
+            2
         );
 
         return redirect()->route('event.show', ['id' => $event_id]);

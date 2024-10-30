@@ -1,6 +1,6 @@
 import FileCategory from "./FileCategory";
 
-export default function FileGroups({contentName, routeFile, files=[], mandatoryFiles=[]}){
+export default function FileGroups({contentName='', routeFile, files=[], mandatoryFiles=[]}){
     return(
         <div className="flex flex-col justify-start gap-2">
             <div className="w-full border-2 border-gray-500 px-5 py-5 rounded-lg">

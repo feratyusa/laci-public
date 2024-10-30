@@ -48,8 +48,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('files')->group(function () {
         Route::post('', [FileController::class, 'store'])->name('file.store');
-        Route::post('/{proposal_id}', [FileController::class, 'storeProposal'])->name('file.store.proposal');
-        Route::post('/{event_id}', [FileController::class, 'storeEvent'])->name('file.store.event');
+        Route::post('/proposal/{proposal_id}', [FileController::class, 'storeProposal'])->name('file.store.proposal');
+        Route::post('/event/{event_id}', [FileController::class, 'storeEvent'])->name('file.store.event');
         Route::get('/{id}', [FileController::class, 'show'])->name('file.show');
         Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
         Route::delete('/{id}', [FileController::class, 'destroy'])->name('file.destroy');

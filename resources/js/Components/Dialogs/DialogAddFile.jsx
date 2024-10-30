@@ -57,7 +57,7 @@ export default function DialogAddFile({
                 <Tooltip content="Tambah File">
                     <Button className="flex items-center gap-3" onClick={handleOpen} color="green">
                         <DocumentPlusIcon className="h-5 w-5"/>
-                        File
+                        Tambah File
                     </Button>
                 </Tooltip>
             }

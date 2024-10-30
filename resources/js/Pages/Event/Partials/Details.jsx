@@ -85,11 +85,11 @@ function BudgetStatus({defaultPrices}){
 
 function TableRow({name, value=null, color="red", option=null, link=null}){        
     return(
-        <tr className="">
-            <td className={"border-b-2 py-3 max-w-60"}>
+        <div className="grid grid-cols-6 border-b-2 mr-10">
+            <div className={"col-span-2 flex items-center py-3 max-w-60"}>
                 <p className="font-bold">{name}</p>
-            </td>
-            <td className={"border-b-2 pl-5 bg-gray-50"}>
+            </div>
+            <div className={"col-span-4 flex items-center pl-5 bg-gray-50"}>
                 {
                     option == 'budgetStatus' ? 
                     <div className="flex gap-5">
@@ -130,8 +130,8 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
                     :
                     <p className="">{value}</p>
                 }
-            </td>
-        </tr>
+            </div>
+        </div>
     )
 }
 
@@ -145,8 +145,8 @@ export default function EventDetails({event, categories, proposalRoute}){
     }
 
     return(
-        <table className="table-auto w-full p-2 mb-5">
-            <tbody className="">
+        <div>
+            <div className="lg:grid lg:grid-rows-8 md:grid-flow-col">
                 <TableRow name={"ID Event"} value={event.id} />
                 <TableRow name={"Nama Event"} value={event.name} />
                 <TableRow name={"Proposal"} option={'link'} link={proposalRoute} value={event.proposal} />
@@ -164,14 +164,14 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Lokasi"} value={event?.location?.name ?? 'NULL'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
-                <div className="table-row">
-                    <div className={"table-cell border-b-2 py-4"}>
+                <div className="grid grid-cols-6 border-b-2 mr-10">
+                    <div className={"col-span-2 flex items-center py-4"}>
                         <Typography variant="h6">
                             Options
                         </Typography>
                     </div>
-                    <div className={"table-cell border-b-2 py-4 pl-10 bg-gray-50"}>
-                        <div className="flex flex-row gap-5">
+                    <div className={"col-span-4 py-4 pl-10 bg-gray-50"}>
+                        <div className="flex items-center gap-5">
                             <OptionButton tip="Edit Proposal" link={route('event.edit', [event.id])} color="yellow" variant="filled">
                                 <Cog8ToothIcon className="w-5"/>
                             </OptionButton>
@@ -185,7 +185,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                         </div>
                     </div>
                 </div>
-            </tbody>
-        </table>
+            </div>
+        </div>
     )
 }

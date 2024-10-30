@@ -1,7 +1,8 @@
 import FileGroups from "@/Components/FileGroups/FileGroups";
 
-export default function Files({files=[], mandatoryFiles}){
+export default function Files({contentName, routeFile, files=[], mandatoryFiles}){
+    console.log(routeFile)
     return(
-        <FileGroups files={files} mandatoryFiles={mandatoryFiles}/>
+        <FileGroups contentName={contentName} routeFile={routeFile} files={files} mandatoryFiles={mandatoryFiles}/>
     )
 }

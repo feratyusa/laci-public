@@ -87,7 +87,7 @@ export default function EventPriceDetail({event, details}){
                 <Tooltip content="Atur Detail Anggaran">
                     <Button onClick={() => setOpen(!open)} size="sm" className="flex items-center gap-2 p-2" color={`${event?.defaultPrices ? 'red' : 'green'}`}>
                         <BanknotesIcon className="w-5" />
-                        Detail
+                        Atur Anggaran
                     </Button>
                 </Tooltip>
             }

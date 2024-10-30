@@ -147,7 +147,7 @@ class FileController extends Controller
                 'path' => 'temp',
                 'size' => $file->getSize(),
                 'mime_type' => $file->extension(),
-                'category_id' => $validated['category_id'],
+                'category_id' => $validated['category'],
             ]);
 
             ProposalFile::create([
@@ -155,7 +155,7 @@ class FileController extends Controller
                 'proposal_id' => $id
             ]);
 
-            $path = $file->store($uploadFolder, $fmodel->id);
+            $path = $file->store($uploadFolder);
 
             $fmodel->path = $path;
             
@@ -171,12 +171,14 @@ class FileController extends Controller
 
     public function storeProposal(FileUploadRequest $request, string $proposal_id)
     {
-        $validated = $request->validated();
+        $validated = $request->validated(); 
+        
+        $files = $request->file('files');
 
         $this->handleFileUpload(
             $validated, 
-            $request->file('file'), 
-            AppFolder::PROPOSAL->value."/".$validated['id'],
+            $files[0], 
+            AppFolder::PROPOSAL->value."/". $proposal_id,
             $proposal_id
         );
 
@@ -187,9 +189,11 @@ class FileController extends Controller
     {
         $validated = $request->validated();
 
+        $files = $request->file('files');
+
         $this->handleFileUpload(
             $validated,
-            $request->file('file'),
+            $files[0],
             AppFolder::EVENT->value."/".$validated['id'],
             $event_id
         );

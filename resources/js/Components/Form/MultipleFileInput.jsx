@@ -3,17 +3,23 @@ import { DocumentTextIcon, DocumentIcon } from "@heroicons/react/24/solid"
 import { filesize } from "filesize"
 import { FileExtensions } from "@/Base/FileExtensions"
 import InputError from "./InputError"
+import { useEffect, useState } from "react"
 
 export default function MultipleFileInput({files, error='', className='', ...props}){
     const acceptedFile = [FileExtensions.pdf, FileExtensions.doc]
+    const [color, setColor] = useState(files?.length == 0 ? 'file:bg-red-500 border-red-100' : 'file:bg-green-500 border-green-100')
+
+    useEffect(() => {
+        setColor(files?.length == 0 ? 'file:bg-red-500 border-red-100' : 'file:bg-green-500 border-green-100')
+    }, [files])
 
     return(
         <div className="flex flex-col">
             <input
-                className={"file:px-5 file:py-2 file:mr-5 \
-                    file:bg-red-500 hover:file:bg-red-300 file:rounded-md file:border-0 \
+                className={`file:px-5 file:py-2 file:mr-5 \
+                    hover:file:bg-red-300 file:rounded-md file:border-0 \
                     file:text-white file:font-semibold file:text-sm file:\ \
-                    border-2 rounded-md border-red-100 w-full"
+                    border-2 rounded-md ${color} w-full`
                     + " " +className}
                 type="file"
                 {...props}

@@ -1,8 +1,9 @@
 import AlertStatusFile from "./AlertStatusFile";
 import DisclosureFile from "./DisclosureFile";
 import FileCard from "./FileCard";
+import FileDropInput from "./FileDropInput";
 
-export default function FileCategory({files, title=null}){
+export default function FileCategory({contentName='', routeFile='', category_id='', files, title=null}){
     return(
         <div className="mb-5 border-b-2 pb-5 border-gray-500">
             {
@@ -22,6 +23,9 @@ export default function FileCategory({files, title=null}){
                         )) :
                         <AlertStatusFile title={title + " Belum Ada/Diupload"} status="danger" />
                     }
+                    <div className="mt-10">
+                        <FileDropInput category_id={category_id} route={routeFile} name={contentName}/>
+                    </div>
                 </DisclosureFile>
                 :
                 <>

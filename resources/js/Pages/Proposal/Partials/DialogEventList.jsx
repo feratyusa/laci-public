@@ -69,7 +69,7 @@ export default function DialogEventList({proposal, events}){
         <>
             <Button className="flex items-center gap-3" size="sm" color="blue" onClick={() => setOpen(!open)}>
                 <EyeIcon className="w-5"/>
-                Tampilkan
+                Tampilkan Event
             </Button>
             <Dialog
                 open={open}

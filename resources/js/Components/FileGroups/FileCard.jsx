@@ -18,7 +18,7 @@ export default function FileCard({file, ...props}){
             <div className="col-span-1 w-6">
                 <DocumentIcon className="w-full" color={mimeTypeColor(file.mime_type)}/>
             </div>
-            <div className="col-span-4 grid grid-rows-2 gap-2 items-center w-full text-xs">     
+            <div className="col-span-5 grid grid-rows-2 gap-2 items-center w-full text-xs">     
                 <div className="w-full truncate">
                     <p className="font-bold uppercase truncate">{file.name}</p>
                 </div>
@@ -36,8 +36,8 @@ export default function FileCard({file, ...props}){
                     <p className="font-bold text-white">{file.category.name}</p>
                 </div>
             </div>
-            <div className="col-span-3 grid grid-cols-3 items-center">
-                <div className="w-full">
+            <div className="col-span-2 flex justify-center gap-5">
+                <div className="">
                     <Tooltip content="Lihat File">
                         <IconButton variant="text" color="blue" size="sm">
                             <a href={route('file.show', [file.id])} target="__blank">
@@ -46,10 +46,10 @@ export default function FileCard({file, ...props}){
                         </IconButton>
                     </Tooltip>
                 </div>
-                <div className="w-full ">
+                <div className=" ">
                     <DialogInfoFile file={file}/>
                 </div>
-                <div className="w-full max-w-52">
+                <div className="max-w-52">
                     <DialogDelete
                         content={'file'}
                         title={"Hapus File"}

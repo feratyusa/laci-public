@@ -30,9 +30,10 @@ class FileUploadRequest extends FormRequest
                 'required',
                 Rule::in(Category::pluck('id')->toArray())
             ],
-            'file' => [
+            'files' => ['required', 'array'],
+            'files.*' => [
                 'required', 
-                File::types(['pdf', 'jpg', 'png'])
+                File::types(['pdf'])
                     ->max('100mb')
             ],
         ];

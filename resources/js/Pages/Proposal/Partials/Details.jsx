@@ -8,13 +8,13 @@ import ProposalPriceDetail from "./ProposalPriceDetail";
 
 function TableRow({name, value=null, color="red", option=null, proposal=null, events=null, ...props}){    
     return(
-        <div className="grid grid-cols-6 items-center border-b-2">
-            <div className={"col-span-2 max-w-60"}>
+        <div className="grid grid-cols-6 border-b-2 mr-10">
+            <div className={"col-span-2 flex items-center max-w-60"}>
                 <Typography variant="h6">
                     {name}
                 </Typography>
             </div>
-            <div className={"col-span-4 p-4 bg-gray-50"}>
+            <div className={"col-span-4 flex items-center p-4 bg-gray-50"}>
                 {
                     option == 'prices' ?
                     <ProposalPriceDetail proposal={proposal} details={proposal.prices}/>
@@ -30,7 +30,7 @@ function TableRow({name, value=null, color="red", option=null, proposal=null, ev
                         <Link href={route('event.create')} method="get" data={{proposal_id: proposal.id}}>
                             <Button className="flex items-center gap-2" color="green" size="sm">
                                 <PlusIcon className="w-5"/>
-                                Event
+                                Tambah Event
                             </Button>
                         </Link>
                         <DialogEventList events={events} proposal={proposal}/>
@@ -56,35 +56,37 @@ export default function ProposalDetails({proposal, color, events, categories}){
 
     return(
         <div className="">
-            <TableRow name={"ID Usulan"} value={proposal.id} />
-            <TableRow name={"Nama Usulan"} value={proposal.name}  />
-            <TableRow name={"Kategori"} value={proposal.event_category}  />
-            <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
-            <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
-            <TableRow name={"Anggaran Awal"} option={'prices'} proposal={proposal} />
-            <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
-            <TableRow name={"Assign Kepada"} value={proposal.assign_to} />
-            <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
-            <TableRow name={"Tanggal Diupdate"} value={new Date(proposal.updated_at).toLocaleTimeString('id', dateoptions)} color={color} />
-            <TableRow name={"Event(s)"} option={'event'} proposal={proposal} events={events} />
-            <div className="grid grid-cols-6 items-center border-b-2">
-                <div className={"col-span-2 w-60"}>
-                    <Typography variant="h6">
-                        Options
-                    </Typography>
-                </div>
-                <div className={"col-span-4 p-4 bg-gray-50"}>
-                    <div className="flex flex-row gap-5">
-                        <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
-                            <Cog8ToothIcon className="w-5"/>
-                        </OptionButton>
-                        <DialogDelete
-                            key={proposal.id}
-                            content="Proposal"
-                            title={"Hapus Proposal?"}
-                            message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
-                            route={route('proposal.destroy', [proposal.id])}
-                        /> 
+            <div className="grid grid-rows-8 grid-flow-col">                
+                <TableRow name={"ID Usulan"} value={proposal.id} />
+                <TableRow name={"Nama Usulan"} value={proposal.name}  />
+                <TableRow name={"Kategori"} value={proposal.event_category}  />
+                <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
+                <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
+                <TableRow name={"Anggaran Awal"} option={'prices'} proposal={proposal} />
+                <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
+                <TableRow name={"Assign Kepada"} value={proposal.assign_to} />
+                <TableRow name={"Tanggal Dibuat"} value={new Date(proposal.created_at).toLocaleTimeString('id', dateoptions)} color={color} />
+                <TableRow name={"Tanggal Diupdate"} value={new Date(proposal.updated_at).toLocaleTimeString('id', dateoptions)} color={color} />
+                <TableRow name={"Event(s)"} option={'event'} proposal={proposal} events={events} />
+                <div className="grid grid-cols-6 items-center border-b-2 mr-10">
+                    <div className={"col-span-2 w-60"}>
+                        <Typography variant="h6">
+                            Options
+                        </Typography>
+                    </div>
+                    <div className={"col-span-4 p-4 bg-gray-50"}>
+                        <div className="flex flex-row gap-5">
+                            <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
+                                <Cog8ToothIcon className="w-5"/>
+                            </OptionButton>
+                            <DialogDelete
+                                key={proposal.id}
+                                content="Proposal"
+                                title={"Hapus Proposal?"}
+                                message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
+                                route={route('proposal.destroy', [proposal.id])}
+                                /> 
+                        </div>
                     </div>
                 </div>
             </div>

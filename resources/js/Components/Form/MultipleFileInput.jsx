@@ -1,12 +1,11 @@
 import { Chip, IconButton, Typography } from "@material-tailwind/react"
 import { DocumentTextIcon, DocumentIcon } from "@heroicons/react/24/solid"
 import { filesize } from "filesize"
+import { FileExtensions } from "@/Base/FileExtensions"
+import InputError from "./InputError"
 
 export default function MultipleFileInput({files, error='', className='', ...props}){
-    const acceptedFile = {
-        pdf: "application/pdf", // PDF
-        doc: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"  // Word Document
-    }
+    const acceptedFile = [FileExtensions.pdf, FileExtensions.doc]
 
     return(
         <div className="flex flex-col">
@@ -18,7 +17,7 @@ export default function MultipleFileInput({files, error='', className='', ...pro
                     + " " +className}
                 type="file"
                 {...props}
-                accept={[acceptedFile.pdf, acceptedFile.doc]}
+                accept={acceptedFile}
             >
             </input>
             <p className="text-sm text-gray-500 italic">
@@ -29,10 +28,13 @@ export default function MultipleFileInput({files, error='', className='', ...pro
                 files ?
                 Object.keys(files).map(key => {
                     const type = files[key].type
-                    const color = files[key].type === acceptedFile.pdf ? "red" : "blue"
+                    if(! acceptedFile.find(f => f == type))
+                        return(
+                            <InputError message={`invalid file type ${type}`}/>    
+                        )
+                    const color = "green"
                     return(
-                        <div className={type === acceptedFile.pdf ? "container border-2 mt-2 rounded border-red-500" 
-                                                                    : "container border-2 mt-2 rounded border-blue-500"}>
+                        <div className={"container border-2 mt-2 rounded border-green-500"}>
                             <div className="flex flex-row items-center">
                                 <IconButton
                                     variant="text"
@@ -40,7 +42,7 @@ export default function MultipleFileInput({files, error='', className='', ...pro
                                     color={color}                                
                                 >
                                     {
-                                        type === acceptedFile.pdf ?
+                                        type === acceptedFile[0] ?
                                         <DocumentIcon className="w-full"/> :
                                         <DocumentTextIcon className="w-full"/>
                                     }
@@ -52,7 +54,7 @@ export default function MultipleFileInput({files, error='', className='', ...pro
                                     </div>
                                     <div className="flex flex-row gap-2">
                                         <Typography color={color} variant="h6">Tipe: </Typography>
-                                        <Typography color={color} variant="paragraph">{type === acceptedFile.pdf ? "PDF" : "Word Document"}</Typography>
+                                        <Typography color={color} variant="paragraph">{type === acceptedFile[0] ? "PDF" : "Word Document"}</Typography>
                                     </div>
                                     <div className="flex flex-row gap-2">
                                         <Typography color={color} variant="h6">Ukuran: </Typography>

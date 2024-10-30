@@ -12,6 +12,7 @@ use App\Trait\FlashMessage;
 use Error;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class EventParticipantController extends Controller
 {
@@ -21,15 +22,16 @@ class EventParticipantController extends Controller
      */
     public function index(string $id)
     {
-        return EventParticipant::where('event_id', $id)->get();
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    
+    public function manage(string $id)
     {
-        // 
+        $event = Event::findOrFail($id);
+
+        return Inertia::render("Event/Participants", [
+            'event' => $event,
+            'kursus' => $event->proposal->kd_kursus
+        ]);
     }
 
     /**

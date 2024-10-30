@@ -1,7 +1,7 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { Card, CardBody, Alert, Button } from "@material-tailwind/react";
-import { DocumentIcon, DocumentMagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import { Head } from "@inertiajs/react";
+import { DocumentIcon, DocumentMagnifyingGlassIcon, UserGroupIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { Head, Link } from "@inertiajs/react";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import EventDetails from "./Partials/Details";
@@ -88,7 +88,13 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                     />
                                 </TabPanel>
                                 <TabPanel>
-                                    <div className="flex justify-between mb-5">
+                                    <div className="flex gap-5 mb-5">
+                                        <Link href={route('event.participant.manage', [event.id])}>
+                                            <Button className="flex gap-2" size="md" color="blue">
+                                                <UserGroupIcon className="w-5"/>
+                                                Manage Peserta
+                                            </Button>
+                                        </Link>
                                         <DialogAddParticipant 
                                             participants={participants}
                                             route={route('event.participant.store', [event.id])}

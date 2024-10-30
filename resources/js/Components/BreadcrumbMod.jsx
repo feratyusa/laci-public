@@ -1,6 +1,7 @@
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { Link } from "@inertiajs/react"
 import { Breadcrumbs, Typography } from "@material-tailwind/react"
+import { isArray } from "lodash"
 
 function CrumbLink({link, title='[Insert title here]'}){
     return(
@@ -21,7 +22,7 @@ function CrumbLink({link, title='[Insert title here]'}){
 
 export default function BreadcrumbMod({menu, title}){
     const urlNow = window.location.href
-    const splitted = urlNow.split('/')
+    const splitted = urlNow.split('/')    
     
     var combinelink = '/'
 
@@ -34,16 +35,16 @@ export default function BreadcrumbMod({menu, title}){
                     return(
                         <CrumbLink link={route('dashboard')} title="Home"/>
                     )
-                }
+                }                
                 else if(menu === 'proposals'){
                     combinelink += splitted[index] +  '/'
                     return(
-                        <CrumbLink link={combinelink} title={index === 3 ? 'Proposals' : title}/>
+                        <CrumbLink link={combinelink} title={index === 3 ? 'Proposals' : isArray(title) ? title[index-4] : title}/>
                     )              
                 }else if(menu === 'events'){
                     combinelink += splitted[index] + '/'
                     return(
-                        <CrumbLink link={combinelink} title={index === 3 ? 'Events' : title} />
+                        <CrumbLink link={combinelink} title={index === 3 ? 'Events' : isArray(title) ? title[index-4] : title} />
                     )
                 }else{
                     combinelink +=splitted[index] + '/'

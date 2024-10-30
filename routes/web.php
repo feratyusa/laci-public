@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\Utilities\NugieController;
+use App\Models\Event\EventParticipant;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -66,7 +67,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('', [EventController::class, 'destroy'])->name('event.destroy');
             Route::put('/change-number-type', [EventController::class, 'changeNumberType'])->name('event.number-type');
             Route::prefix('participants')->group(function (){
-                Route::get('', [EventParticipantController::class, 'index'])->name('event.participant.index');
+                Route::get('', [EventParticipantController::class, 'manage'])->name('event.participant.manage');
                 Route::post('', [EventParticipantController::class, 'store'])->name('event.participant.store');
                 Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
@@ -185,6 +186,10 @@ Route::prefix('api')->group(function (){
         Route::get('verbs', [InputController::class, 'getVerbOptions'])->name('input.verbs');
         Route::get('prefixes', [InputController::class, 'getPrefixOptions'])->name('input.prefixes');
         Route::get('categories', [InputController::class, 'getCategoryOptions'])->name('input.categories');
+        Route::get('departments', [InputController::class, 'getEmployeeDepartments'])->name('input.employeeDepartments');
+        Route::get('sections',  [InputController::class, 'getEmployeeSections'])->name('input.employeeSections');
+        Route::get('branches', [InputController::class, 'getEmployeeBranches'])->name('input.employeeBranches');
+        Route::get('jobs', [InputController::class, 'getEmployeeJobs'])->name('input.employeeJobs');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\EventCategory;
 use App\Enum\Prefixes;
 use App\Enum\Verbs;
+use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\Vendor;
 use App\Models\File\Category;
@@ -23,7 +24,7 @@ class InputController extends Controller
     public function getCoursesOptions()
     {
         return response()->json([
-            'courses' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap', false)
+            'courses' => $this->selectOptions(Kursus::all()->toArray(), 'sandi', 'lengkap')
         ]);
     }
 
@@ -103,6 +104,42 @@ class InputController extends Controller
     {
         return response()->json([
             'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false)
+        ]);
+    }
+
+    public function getEmployeeDepartments()
+    {
+        $department = Employee::select('jabatan')->groupBy('jabatan')->get()->toArray();
+
+        return response()->json([
+            'departments' => $this->selectOptions($department, 'jabatan', 'jabatan', false)
+        ]);
+    }
+
+    public function getEmployeeBranches()
+    {
+        $branches = Employee::select('cabang')->groupBy('cabang')->get()->toArray();
+
+        return response()->json([
+            'branches' => $this->selectOptions($branches, 'cabang', 'cabang', false)
+        ]);
+    }
+
+    public function getEmployeeSections()
+    {
+        $sections = Employee::select('seksi')->groupBy('seksi')->get()->toArray();
+
+        return response()->json([
+            'sections' => $this->selectOptions($sections, 'seksi', 'seksi',enableIdOnLabel:  false)
+        ]);
+    }
+
+    public function getEmployeeJobs()
+    {
+        $jobs = Employee::select('jobfam')->groupBy('jobfam')->get()->toArray();
+
+        return response()->json([
+            'jobs' => $this->selectOptions($jobs, 'jobfam', 'jobfam', false)
         ]);
     }
 }

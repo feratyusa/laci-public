@@ -206,5 +206,11 @@ Route::prefix('api')->group(function (){
         Route::get('/{id}/nugieData/{detail_id}', [NugieController::class, 'getNugieData'])->name('nugie.nugieData');
         Route::post('generateSQL', [NugieController::class, 'generateSQL'])->name('nugie.generateSQL');
     });
+    Route::prefix('event')->group(function() {
+        Route::prefix('participants')->group(function(){
+            Route::post('check-participants', [EventParticipantController::class, 'checkParticipants'])->name('event.participants.check');
+            Route::post('check-status', [EventParticipantController::class, 'checkStatuses'])->name('event.participant.status');
+        });
+    });
 })->middleware('auth');
 

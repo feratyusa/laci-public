@@ -46,7 +46,7 @@ class BudgetSeeder extends Seeder
         $years = [
             [
                 'year' => 2024,
-                'details' => [['type' => 0, 'value' => 500e6], ['type' => 1, 'value' => 400e6], ['type' => 2, 'value' => 500e6], ['type' => 3, 'value' => 300e6]]
+                'details' => [['type' => 0, 'value' => 6e9], ['type' => 1, 'value' => 7e6], ['type' => 2, 'value' => 10e9], ['type' => 3, 'value' => 5e9]]
             ],
             [
                 'year' => 2023,

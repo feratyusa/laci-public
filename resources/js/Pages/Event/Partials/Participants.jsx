@@ -58,12 +58,6 @@ export default function Participants({event, participants=[]}){
         }
     })
 
-    const headerClassName = 'bg-red-500 border-red-300 border-x-2 text-white p-2'
-    const headerNames = ['NIP', 'Nama', 'Jabatan', 'Cabang', 'Aksi']
-    const bodyClassName = 'text-black border-l-2 border-b-2 last:border-r-2 border-red-300 p-2'
-    useEffect(() => {
-
-    }, [participants])
     return(
         <>
             <input 

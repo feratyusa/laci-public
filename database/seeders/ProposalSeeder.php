@@ -14,6 +14,55 @@ use Illuminate\Database\Seeder;
 
 class ProposalSeeder extends Seeder
 {
+    private function createFakeProposal($course, $users)
+    {
+        $n = rand(1,100);
+
+        $proposal = Proposal::factory()
+            ->create([
+                'name' => "{$course->lengkap} {$n}",
+                'status' => ProposalStatus::ACCEPTED,
+                'event_category' => $course->kategori,
+                'entry_date' => fake()->dateTimeBetween('-7 months', '-2 days'),                    
+                'created_by' => fake()->randomElement($users),
+                'assign_to' => fake()->randomElement($users)
+            ]);
+        
+        $proposal->prices()->create([
+            'budget_type_id' => $proposal->kursus->kategori == EventCategory::IHT->value ? 1 : 2,
+            'price' => fake()->numberBetween(500e3, 1e6),
+        ]);
+
+        $c = rand(1,3);
+
+        switch ($c) {
+            case 1:
+                $proposal->prices()->createMany([
+                    [
+                        'budget_type_id' => 3,
+                        'price' => fake()->numberBetween(500e3, 1e6)
+                    ],
+                    [
+                        'budget_type_id' => 4,
+                        'price' => fake()->numberBetween(500e3, 1e6)
+                    ],
+                ]);     
+                break;
+            case 2:
+                $proposal->prices()->create([                        
+                    'budget_type_id' => 3,
+                    'price' => fake()->numberBetween(500e3, 1e6)
+                ]);
+                break;
+            
+            default:
+                $proposal->prices()->create([                        
+                    'budget_type_id' => 4,
+                    'price' => fake()->numberBetween(500e3, 1e6)
+                ]);
+                break;
+        }
+    }
     /**
      * Run the database seeds.
      */
@@ -21,56 +70,15 @@ class ProposalSeeder extends Seeder
     {        
         $users = User::pluck('username')->toArray();
         $kursus = Kursus::whereRaw('kategori not like ?', ['null'])->get();
+        
+        $determined_course = [90111, 90222, 90333];
+        foreach ($determined_course as $courseID) {
+            $this->createFakeProposal(Kursus::where('sandi', $courseID)->first(), $users);
+        }
+
         $proposalNum = 100;
-
-        for ($i=0; $i < $proposalNum; $i++) { 
-            $k = $kursus[rand(0,97)];
-            $n = rand(1,100);
-
-            $proposal = Proposal::factory()
-                ->create([
-                    'name' => "{$k->lengkap} {$n}",
-                    'status' => ProposalStatus::ACCEPTED,
-                    'event_category' => $k->kategori,
-                    'entry_date' => fake()->dateTimeBetween('-7 months', '-2 days'),                    
-                    'created_by' => fake()->randomElement($users),
-                    'assign_to' => fake()->randomElement($users)
-                ]);
-            
-            $proposal->prices()->create([
-                'budget_type_id' => $proposal->kursus->kategori == EventCategory::IHT->value ? 1 : 2,
-                'price' => fake()->numberBetween(500e3, 1e6),
-            ]);
-
-            $c = rand(1,3);
-
-            switch ($c) {
-                case 1:
-                    $proposal->prices()->createMany([
-                        [
-                            'budget_type_id' => 3,
-                            'price' => fake()->numberBetween(500e3, 1e6)
-                        ],
-                        [
-                            'budget_type_id' => 4,
-                            'price' => fake()->numberBetween(500e3, 1e6)
-                        ],
-                    ]);     
-                    break;
-                case 2:
-                    $proposal->prices()->create([                        
-                        'budget_type_id' => 3,
-                        'price' => fake()->numberBetween(500e3, 1e6)
-                    ]);
-                    break;
-                
-                default:
-                    $proposal->prices()->create([                        
-                        'budget_type_id' => 4,
-                        'price' => fake()->numberBetween(500e3, 1e6)
-                    ]);
-                    break;
-            }         
+        for ($i=0; $i < $proposalNum; $i++) {             
+            $this->createFakeProposal($kursus[rand(0,98)], $users);
         }
     }
 }

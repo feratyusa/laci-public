@@ -4,13 +4,19 @@ namespace App\Http\Controllers\Event;
 
 use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Event\CheckEventParticipantForm;
 use App\Http\Requests\Event\ParticipantFormRequest;
+use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
+use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
 use App\Trait\FlashMessage;
 use Error;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -28,9 +34,8 @@ class EventParticipantController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        return Inertia::render("Event/Participants", [
-            'event' => $event,
-            'kursus' => $event->proposal->kd_kursus
+        return Inertia::render("Event/Participants", [            
+            'kursus' => $event->proposal->kursus()->first(['sandi', 'lengkap'])
         ]);
     }
 
@@ -156,4 +161,103 @@ class EventParticipantController extends Controller
 
         return redirect()->back();   
     }
+    
+    private function checkParticipantStatuses(mixed $participants, string $courseID)
+    {
+        $events = Event::select('events.id', 'events.name', 'events.start_date', 'events.end_date')
+                            ->leftJoin('proposals', 'proposals.id', '=', 'events.proposal_id')
+                            ->where('proposals.kd_kursus', '=', $courseID)
+                            ->where('start_date', '>', date('Y-m-d', strtotime('now')))
+                            ->get();
+
+        foreach($participants as $index => $participant){
+            $participants[$index]['countIn'] = [];
+
+            foreach($events as $event){
+                if(! in_array($participant['nip'], $event->participants()->pluck('nip')->toArray())) continue;
+
+                $participants[$index]['countIn'][] = $event;
+            }
+        }
+
+        return $participants;
+    }
+
+    private function bulkParticipants(string $courseID, string $date, array $bulks)
+    {
+        $sqls = [];
+        $bind = [];
+        foreach ($bulks as $bulk) {            
+            $binder = array_fill(0, count($bulk['value']), '?');
+
+            $sqls[] = $bulk['column'] . ' in (' . implode(', ', $binder) . ')';
+
+            $bind = array_merge($bind, $bulk['value']);
+        }
+
+        $mergeSQL = implode(' AND ', $sqls);        
+
+        $diklat = Diklat::select('nip')
+                        ->whereRaw('kd_kursus like ? and tgl_mulai > ?', [$courseID, $date]);
+
+        $participants = Employee::select('nip', 'nama', 'cabang', 'jabatan', 'seksi', 'jobfam')
+                                ->whereRaw($mergeSQL, $bind)
+                                ->whereNotIn('nip', $diklat)
+                                ->get()->toArray();
+        
+        return $participants;
+    }
+
+    private function getParticipants(string $mode, array $validated)
+    {
+        $participants = null;
+        switch ($mode) {
+            case 'bulk':
+                $participants = $this->bulkParticipants($validated['kd_kursus'], $validated['start_date'], $validated['bulk']);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        $result = $this->checkParticipantStatuses($participants, $validated['kd_kursus']);
+
+        return $result;
+    }
+
+    public function checkParticipants(CheckEventParticipantForm $request)
+    {
+        $validated = $request->validated();
+
+        return response()->json([
+            'result' => $this->getParticipants($validated['mode'], $validated)    
+        ]);
+    }
+    public function checkStatuses(Request $request)
+    {
+        $validated = $request->validate([
+            'participants' => ['required', 'array'],
+            'kd_kursus' => ['required', 'numeric']  
+        ]);
+
+        $participants = $validated['participants'];        
+
+        $events = Event::select('events.id', 'events.name', 'events.start_date', 'events.end_date')
+                            ->leftJoin('proposals', 'proposals.id', '=', 'events.proposal_id')
+                            ->where('proposals.kd_kursus', '=', $validated['kd_kursus'])
+                            ->where('start_date', '>', date('Y-m-d', strtotime('now')))
+                            ->get();
+
+        foreach($validated['participants'] as $index => $participant){
+            foreach($events as $event){
+                if(! in_array($participant['nip'], $event->participants()->pluck('nip')->toArray())) continue;
+                $participants[$index]['countIn'][] = $event;
+            }
+        }
+
+        return response()->json([
+            'mess' => $participants
+        ]);
+    }    
 }

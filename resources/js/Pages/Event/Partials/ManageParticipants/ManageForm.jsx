@@ -1,15 +1,31 @@
-import { useForm } from "@inertiajs/react";
 import { Button } from "@material-tailwind/react";
 import axios from "axios";
 import ReactSelect from "react-select";
 import BulkForm from "./Bulkform";
 import NugieForm from "./NugieForm";
 import FileForm from "./FileForm";
+import { useRef, useState } from "react";
+import { isEmpty, keys } from "lodash";
+import InputError from "@/Components/Form/InputError";
+import { useForm } from "@inertiajs/react";
 
-export default function ParticipantForm({setParticipants, kursus}){
-    const {data, setData, reset, post, errors} = useForm({
+export default function ParticipantForm({
+    event_id='', 
+    event_start='', 
+    event_end='', 
+    setParticipants,
+    setDeletedParticipants,
+    kursus,
+}){
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState({})
+
+    const {data, setData} = useForm({
         kd_kursus: kursus.sandi,
         start_date: `${new Date().getFullYear()}-01-01`,
+        event_id: event_id,
+        event_start: event_start,
+        event_end: event_end,
         mode: 'bulk',
         bulk: [{column: '', value: []}],
         nugie: [{index: '', detail: ''}],
@@ -23,10 +39,25 @@ export default function ParticipantForm({setParticipants, kursus}){
     ]
 
     function handleCheckParticipants(){
+        setLoading(true)
         axios.post(route('event.participants.check'), data)
             .then((response) => {
                 setParticipants(response.data.result)
+                // console.log(response.data.result)
+                setDeletedParticipants([])
+                
+                setLoading(false)
+                setErrors({})
             })
+            .catch((response) => {                
+                setLoading(false)                
+                setErrors(response.response.data.errors)
+            })
+    }
+
+    function handleReset(){
+        setParticipants([])
+        setDeletedParticipants([])
     }
 
     return(
@@ -37,6 +68,7 @@ export default function ParticipantForm({setParticipants, kursus}){
                         Belum Mengikuti Kursus
                     </label>
                     <input
+                        className="bg-gray-300"
                         value={`(${kursus.sandi}) ${kursus.lengkap}`}
                         disabled
                     />  
@@ -66,6 +98,20 @@ export default function ParticipantForm({setParticipants, kursus}){
                 />
                 <div className="h-1 w-full bg-gray-500 my-5"></div>
             </div>
+            {
+                ! isEmpty(errors) && 
+                <div className="bg-red-100 border-2 border-red-500 p-3 my-3">
+                    <p className="text-red-500 font-bold text-lg mb-2">Rule Error</p>
+                    <div className="pl-5">
+                        {
+                            keys(errors).map((value) => (
+                                <InputError message={value}/>
+                            ))
+                        }
+                    </div>
+                </div>
+            }
+            <div></div>
             <div className="mb-5">
                 {
                     data.mode == 'bulk' ?
@@ -77,15 +123,12 @@ export default function ParticipantForm({setParticipants, kursus}){
                     <FileForm data={data} setData={setData}/>
                 }
             </div>
-            <div className="flex gap-3">
-                <Button color="green">
-                    Simpan
+            <div className="flex gap-3">                
+                <Button color="amber" onClick={handleCheckParticipants} loading={loading}>
+                    Ambil Peserta
                 </Button>
-                <Button color="amber" onClick={handleCheckParticipants}>
-                    Cek Peserta
-                </Button>
-                <Button color="red">
-                    Reset
+                <Button color="red" onClick={handleReset}>
+                    Reset Peserta
                 </Button>
             </div>       
         </div>

@@ -24,11 +24,14 @@ class CheckEventParticipantForm extends FormRequest
         return [
             'mode' => ['required', 'string'],
             'kd_kursus' => ['required', 'numeric'],
+            'event_id' => ['required', 'numeric'],
+            'event_start' => ['required', 'date'],
+            'event_end' => ['required', 'date'],
             'start_date' => ['required', 'date'],
-            'bulk' => ['nullable', 'array'],
-            'bulk.*.column' => ['nullable', 'string'],
-            'bulk.*.value' => ['nullable', 'array'],
-            'bulk.*.value.*' => ['nullable', 'string'],
+            'bulk' => ['required_if:mode,bulk', 'array'],
+            'bulk.*.column' => ['required_if:mode,bulk', 'string'],
+            'bulk.*.value' => ['required_if:mode,bulk', 'array'],
+            'bulk.*.value.*' => ['required_if:mode,bulk', 'string'],
         ];
     }
 }

@@ -45,6 +45,7 @@ function ValueSelections({selectedColumn, handleInputChange, rule, index}){
 
     return(
         <ReactSelect
+            placeholder="Pilih Nilai ..."
             classNamePrefix="select2-selection"
             value={columnValues.filter(c => rule.value.includes(c.value))}
             options={columnValues}
@@ -80,13 +81,17 @@ export default function BulkForm({data, setData, errors}){
     }
 
     return(
-        <div>
+        <div className="mb-10">
             <p className="text-red-500 font-bold mb-2">Masukkan Aturan (<i>Rule</i>) untuk Mengambil Peserta</p>
             {
                 data.bulk.map((rule, index) => (
-                    <div className="grid grid-cols-11 gap-3 mb-2">
+                    <div className="grid grid-cols-11 gap-3 mb-3">
                         <div className="col-span-5">
+                            <label>
+                                Kolom
+                            </label>
                             <ReactSelect
+                                placeholder="Pilih Kolom ..."
                                 classNamePrefix="select2-selection"
                                 value={columns.find(c => c.value == rule.column)}
                                 options={columns.filter(c => ! data.bulk.find(b => c.value == b.column))}
@@ -94,6 +99,9 @@ export default function BulkForm({data, setData, errors}){
                             />
                         </div>
                         <div className="col-span-5">
+                            <label>
+                                Value
+                            </label>
                             <ValueSelections 
                                 selectedColumn={rule.column} 
                                 rule={rule}                         
@@ -101,7 +109,7 @@ export default function BulkForm({data, setData, errors}){
                                 index={index}
                             />
                         </div>
-                        <div className="col-span-1 flex items-center justify-center">
+                        <div className="col-span-1 flex items-end justify-center">
                             <IconButton size="md" color="red" onClick={() => handleDeleteInput(index)}>
                                 <TrashIcon className="w-full"/>
                             </IconButton>

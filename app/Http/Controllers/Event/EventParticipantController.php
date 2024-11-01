@@ -8,13 +8,11 @@ use App\Http\Requests\Event\CheckEventParticipantForm;
 use App\Http\Requests\Event\ParticipantFormRequest;
 use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
-use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
 use App\Trait\FlashMessage;
 use Error;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +32,8 @@ class EventParticipantController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        return Inertia::render("Event/Participants", [            
+        return Inertia::render("Event/ManageParticipants", [
+            'event' => $event,            
             'kursus' => $event->proposal->kursus()->first(['sandi', 'lengkap'])
         ]);
     }
@@ -110,32 +109,37 @@ class EventParticipantController extends Controller
 
         $validated = $request->validated();
 
-        if($request->filled('file')){
+        DB::beginTransaction();
 
-        }
-        else{
-            $ids = $validated['nip'];
-
-            $delete = EventParticipant::where('event_id', $event->id)->delete();
-
-            foreach($ids as $id){
-                $employee = Employee::where('nip', $id)->firstOrFail();
-                $trashed = EventParticipant::withTrashed()->where('nip', $employee->nip)->first();
-                if($trashed) $trashed->restore();
-                else{
-                    EventParticipant::create([
-                        'nip' => $employee->nip,
-                        'nama' => $employee->nama,
-                        'jabatan' => $employee->jabatan,
-                        'cabang' => $employee->cabang,
-                        'event_id' => $event->id
-                    ]);
+        try{
+            if($request->filled('file')){
+    
+            }
+            else{
+                $ids = $validated['nip'];                
+                foreach($ids as $id){
+                    $employee = Employee::where('nip', $id)->firstOrFail();
+                    EventParticipant::withTrashed()->updateOrCreate(
+                        ['nip' => $employee->nip, 'event_id' => $event->id],
+                        [
+                            'nama' => $employee->nama,
+                            'cabang' => $employee->cabang,
+                            'jabatan' => $employee->jabatan,
+                            'deleted_at' => null
+                        ]
+                    );
                 }
+    
+                $event->update([
+                    'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+                ]);                
             }
 
-            $event->update([
-                'participant_number_type' => ParticipantNumberType::DYNAMIC->value
-            ]);
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
         }
         
         return redirect()->route('event.show', ['id' => $event->id]);
@@ -162,12 +166,12 @@ class EventParticipantController extends Controller
         return redirect()->back();   
     }
     
-    private function checkParticipantStatuses(mixed $participants, string $courseID)
+    private function checkParticipantStatuses(mixed $participants, string $eventID, string $start_date, string $end_date)
     {
-        $events = Event::select('events.id', 'events.name', 'events.start_date', 'events.end_date')
-                            ->leftJoin('proposals', 'proposals.id', '=', 'events.proposal_id')
-                            ->where('proposals.kd_kursus', '=', $courseID)
-                            ->where('start_date', '>', date('Y-m-d', strtotime('now')))
+        $events = Event::select('id', 'name', 'start_date', 'end_date')
+                            ->where('id', '!=', $eventID)
+                            ->whereRaw('((start_date >= ? AND start_date <= ?) or (start_date <= ? AND end_date >= ?))', 
+                                [$start_date, $end_date, $start_date, $start_date])
                             ->get();
 
         foreach($participants as $index => $participant){
@@ -180,6 +184,7 @@ class EventParticipantController extends Controller
             }
         }
 
+        // return $events;
         return $participants;
     }
 
@@ -221,7 +226,7 @@ class EventParticipantController extends Controller
                 break;
         }
 
-        $result = $this->checkParticipantStatuses($participants, $validated['kd_kursus']);
+        $result = $this->checkParticipantStatuses($participants, $validated['event_id'], $validated['event_start'], $validated['event_end']);
 
         return $result;
     }
@@ -234,30 +239,11 @@ class EventParticipantController extends Controller
             'result' => $this->getParticipants($validated['mode'], $validated)    
         ]);
     }
-    public function checkStatuses(Request $request)
+
+    public function updateReplace(ParticipantFormRequest $request, string $id)
     {
-        $validated = $request->validate([
-            'participants' => ['required', 'array'],
-            'kd_kursus' => ['required', 'numeric']  
-        ]);
+        $validated = $request->validated();
 
-        $participants = $validated['participants'];        
-
-        $events = Event::select('events.id', 'events.name', 'events.start_date', 'events.end_date')
-                            ->leftJoin('proposals', 'proposals.id', '=', 'events.proposal_id')
-                            ->where('proposals.kd_kursus', '=', $validated['kd_kursus'])
-                            ->where('start_date', '>', date('Y-m-d', strtotime('now')))
-                            ->get();
-
-        foreach($validated['participants'] as $index => $participant){
-            foreach($events as $event){
-                if(! in_array($participant['nip'], $event->participants()->pluck('nip')->toArray())) continue;
-                $participants[$index]['countIn'][] = $event;
-            }
-        }
-
-        return response()->json([
-            'mess' => $participants
-        ]);
-    }    
+        
+    }
 }

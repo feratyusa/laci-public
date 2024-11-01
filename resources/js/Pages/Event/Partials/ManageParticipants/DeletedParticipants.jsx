@@ -1,6 +1,6 @@
 import Checkbox from "@/Components/Checkbox";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
-import { Button } from "@material-tailwind/react";
+import { Button, Tooltip } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { cloneDeep, isEmpty, keys } from "lodash";
 import { useState } from "react";
@@ -14,8 +14,9 @@ function RowTable({row, column}){
     )
 }
 
-export default function ParticipantResult({participants=[], setParticipants, deletedParticipants, setDeletedParticipants, kursus}){
+export default function DeletedParticipantsResult({deletedParticipants=[], setDeletedParticipants, participants=[], setParticipants}){
     const [rowSelection, setRowSelection] = useState({})
+
     const columnHelpers = createColumnHelper()
 
     const columns = [
@@ -80,45 +81,43 @@ export default function ParticipantResult({participants=[], setParticipants, del
     ]
 
     const table = useReactTable({
-        data: participants,
+        data: deletedParticipants,
         columns: columns,
         getRowId: row => row.nip,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        onRowSelectionChange: setRowSelection,
-        globalFilterFn: 'includesString',  
         getFilteredRowModel: getFilteredRowModel(),
+        onRowSelectionChange: setRowSelection,
         state: {
             rowSelection
         },
+        globalFilterFn: 'includesString'
     })
 
-    function deleteSelectedParticipants(){
-        const removedNIP = keys(rowSelection)
-        
-        const newParticipants = cloneDeep(participants) 
-        const filteredParticipants = newParticipants.filter(p => ! removedNIP.includes(p.nip))
-        const dfilteredParticipants = newParticipants.filter(p => removedNIP.includes(p.nip))
+    function handleAddParticipants(){
+        const AddNIP = keys(rowSelection)
 
-        setParticipants(filteredParticipants)
-        setDeletedParticipants([...deletedParticipants, ...dfilteredParticipants])
+        const clonedDeleted = cloneDeep(deletedParticipants)
+        const newDeleted = clonedDeleted.filter(d => ! AddNIP.includes(d.nip))
+        const newParticipants = clonedDeleted.filter(d => AddNIP.includes(d.nip))
 
-        setRowSelection({})
-    }
-
-    function deleteAllParticipantsWithEvent(){
-        const newParticipants = cloneDeep(participants)
-        const filteredParticipants = newParticipants.filter(p => p.countIn.length == 0)
-        const dfilteredParticipants = newParticipants.filter(p => p.countIn.length != 0)
-
-        setParticipants(filteredParticipants)
-        setDeletedParticipants([...deletedParticipants, ...dfilteredParticipants])
+        setDeletedParticipants(newDeleted)
+        setParticipants([...participants, ...newParticipants])
 
         setRowSelection({})
     }
 
-    console.log(table.getState().globalFilter)
+    function handleAddAllParticipantsWithoutEvent(){
+        const clonedDeleted = cloneDeep(deletedParticipants)
+        const newDeleted = clonedDeleted.filter(d => d.countIn.length != 0)
+        const newParticipants = clonedDeleted.filter(d => d.countIn.length == 0)
+
+        setDeletedParticipants(newDeleted)
+        setParticipants([...participants, ...newParticipants])
+
+        setRowSelection({})
+    }
 
     return(
         <>
@@ -132,11 +131,11 @@ export default function ParticipantResult({participants=[], setParticipants, del
                     />
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button color="red" onClick={deleteSelectedParticipants} disabled={isEmpty(rowSelection)}>
-                        Hapus Peserta
+                    <Button color="green" onClick={handleAddParticipants} disabled={isEmpty(rowSelection)}>
+                        Tambahkan Peserta
                     </Button>
-                    <Button color="red" onClick={deleteAllParticipantsWithEvent}>
-                        Hapus Peserta dengan Event
+                    <Button color="green" onClick={handleAddAllParticipantsWithoutEvent}>
+                        Tambahkan Peserta tanpa Event
                     </Button>
                 </div>
             </div>

@@ -15,7 +15,7 @@ class BudgetSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
         $budgetTypes = [
             [
                 'coa' => 'Q.27700',
@@ -42,11 +42,11 @@ class BudgetSeeder extends Seeder
                 'name' => 'Akomodasi',
             ],
         ];
-        
+
         $years = [
             [
                 'year' => 2024,
-                'details' => [['type' => 0, 'value' => 6e9], ['type' => 1, 'value' => 7e6], ['type' => 2, 'value' => 10e9], ['type' => 3, 'value' => 5e9]]
+                'details' => [['type' => 0, 'value' => 6e9], ['type' => 1, 'value' => 7e9], ['type' => 2, 'value' => 10e9], ['type' => 3, 'value' => 5e9]]
             ],
             [
                 'year' => 2023,
@@ -59,17 +59,17 @@ class BudgetSeeder extends Seeder
             [
                 'year' => 2021,
                 'details' => [['type' => 0, 'value' => 800e6], ['type' => 1, 'value' => 600e6], ['type' => 2, 'value' => 1e9]]
-            ],            
-        ];        
+            ],
+        ];
 
         $types = [];
         foreach($budgetTypes as $type){
             $types[] = BudgetType::create($type);
         }
-        
+
         foreach($years as $year){
             $b = Budget::create(['year' => $year['year'], 'value' => 0]);
-            
+
             foreach($year['details'] as $detail){
                 $b->details()->create([
                     'budget_type_id' => $types[$detail['type']]->id,

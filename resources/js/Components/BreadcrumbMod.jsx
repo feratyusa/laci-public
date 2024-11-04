@@ -5,7 +5,7 @@ import { isArray } from "lodash"
 
 function CrumbLink({link, title='[Insert title here]'}){
     return(
-        <Link 
+        <Link
             href={link}
             className="opacity-80"
         >
@@ -22,8 +22,8 @@ function CrumbLink({link, title='[Insert title here]'}){
 
 export default function BreadcrumbMod({menu, title}){
     const urlNow = window.location.href
-    const splitted = urlNow.split('/')    
-    
+    const splitted = urlNow.split('/')
+
     var combinelink = '/'
 
     return(
@@ -35,12 +35,13 @@ export default function BreadcrumbMod({menu, title}){
                     return(
                         <CrumbLink link={route('dashboard')} title="Home"/>
                     )
-                }                
+                }
+                else if(index > 3 && isArray(title) && title[index-4] == null) return "";
                 else if(menu === 'proposals'){
                     combinelink += splitted[index] +  '/'
                     return(
                         <CrumbLink link={combinelink} title={index === 3 ? 'Proposals' : isArray(title) ? title[index-4] : title}/>
-                    )              
+                    )
                 }else if(menu === 'events'){
                     combinelink += splitted[index] + '/'
                     return(

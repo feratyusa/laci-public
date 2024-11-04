@@ -3,7 +3,6 @@ import { Card, CardBody, CardHeader, Chip, IconButton, Typography, Alert } from 
 import { DocumentTextIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { Head } from "@inertiajs/react";
-import Statuses from "@/Base/Statuses";
 import BreadcrumbMod from "@/Components/BreadcrumbMod";
 import HeaderTitle from "@/Components/HeaderTitle";
 import ProposalDetails from "./Partials/Details";
@@ -65,18 +64,18 @@ export default function Show({auth, code, status, proposal, events, categories, 
                                 </TabPanel>
                                 <TabPanel>
                                     <div className="mb-5">
-                                        <DialogAddFile 
-                                            content={"proposal"} 
-                                            content_id={proposal.id} 
-                                            content_name={proposal.name} 
-                                            categories={categories} 
+                                        <DialogAddFile
+                                            content={"proposal"}
+                                            content_id={proposal.id}
+                                            content_name={proposal.name}
+                                            categories={categories}
                                             as="text"
                                             route={route('file.store')}
                                         />
                                     </div>
-                                    <Files 
-                                        files={proposal.files} 
-                                        mandatoryFiles={mandatoryFiles} 
+                                    <Files
+                                        files={proposal.files}
+                                        mandatoryFiles={mandatoryFiles}
                                         routeFile={route('file.store.proposal', [proposal.id])}
                                         contentName={proposal.name}
                                     />

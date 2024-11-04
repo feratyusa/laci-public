@@ -16,14 +16,14 @@ function ValueSelections({selectedColumn, handleInputChange, rule, index}){
                         setColumnValues(response.data.departments)
                     })
                 break;
-            
+
             case 'cabang':
                 axios.get(route('input.employeeBranches'))
                     .then((response) => {
                         setColumnValues(response.data.branches)
                     })
                 break;
-            
+
             case 'seksi':
                 axios.get(route('input.employeeSections'))
                     .then((response) => {
@@ -40,7 +40,7 @@ function ValueSelections({selectedColumn, handleInputChange, rule, index}){
             default:
                 setColumnValues([])
                 break;
-        }                
+        }
     }, [selectedColumn])
 
     return(
@@ -62,8 +62,8 @@ export default function BulkForm({data, setData, errors}){
         {value: 'cabang', label: 'cabang'},
         {value: 'seksi', label: 'seksi'},
         {value: 'jobfam', label: 'jobfam'},
-    ]    
-    
+    ]
+
     function handleAddInput(){
         setData('bulk', [...data.bulk, {column: '', value: []}])
     }
@@ -102,15 +102,15 @@ export default function BulkForm({data, setData, errors}){
                             <label>
                                 Value
                             </label>
-                            <ValueSelections 
-                                selectedColumn={rule.column} 
-                                rule={rule}                         
+                            <ValueSelections
+                                selectedColumn={rule.column}
+                                rule={rule}
                                 handleInputChange={handleInputChange}
                                 index={index}
                             />
                         </div>
                         <div className="col-span-1 flex items-end justify-center">
-                            <IconButton size="md" color="red" onClick={() => handleDeleteInput(index)}>
+                            <IconButton size="md" color="red" onClick={() => handleDeleteInput(index)} disabled={data.bulk.length < 2}>
                                 <TrashIcon className="w-full"/>
                             </IconButton>
                         </div>

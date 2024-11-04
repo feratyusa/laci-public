@@ -11,12 +11,12 @@ import ManageResult from "./Partials/ManageParticipants/ManageResult";
 
 export default function ManageParticipants({
     auth,
-    event,    
+    event,
     kursus,
 }){
     const [participants, setParticipants] = useState([])
     const [deletedParticipants, setDeletedParticipants] = useState([])
-    const resultRef = useRef()    
+    const resultRef = useRef()
 
     useEffect(() => {
         resultRef.current.scrollIntoView({behavior: 'smooth'})
@@ -30,21 +30,21 @@ export default function ManageParticipants({
             <Head title={get(event, 'name', 'Event')}/>
 
             <div className="m-5">
-                <BreadcrumbMod menu={'events'} title={[get(event, 'name', 'Event'), 'Manage Peserta']} />
-                
+                <BreadcrumbMod menu={'events'} title={[get(event, 'name', 'Event'), 'Manage Peserta', null]} />
+
                 <Card className="mb-10">
-                    <CardBody>                                                    
+                    <CardBody>
                         <div className="flex items-center gap-5 text-red-500 mb-5">
                             <UserGroupIcon className="w-10"/>
                             <p className="text-2xl font-bold">Manage Peserta</p>
                         </div>
-                        <ParticipantForm 
-                            setParticipants={setParticipants} 
+                        <ParticipantForm
+                            setParticipants={setParticipants}
                             setDeletedParticipants={setDeletedParticipants}
-                            kursus={kursus} 
-                            event_start={event.start_date} 
+                            kursus={kursus}
+                            event_start={event.start_date}
                             event_end={event.end_date}
-                            event_id={event.id}                            
+                            event_id={event.id}
                         />
                     </CardBody>
                 </Card>
@@ -53,11 +53,11 @@ export default function ManageParticipants({
                     <CardBody ref={resultRef}>
                         <ManageResult
                             event_id={event.id}
-                            participants={participants} 
+                            participants={participants}
                             setParticipants={setParticipants}
                             deletedParticipants={deletedParticipants}
                             setDeletedParticipants={setDeletedParticipants}
-                            kursus={kursus} 
+                            kursus={kursus}
                         />
                     </CardBody>
                 </Card>

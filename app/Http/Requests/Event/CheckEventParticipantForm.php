@@ -23,11 +23,11 @@ class CheckEventParticipantForm extends FormRequest
     {
         return [
             'mode' => ['required', 'string'],
-            'kd_kursus' => ['required', 'numeric'],
+            'kd_kursus' => ['required_unless:mode,default', 'numeric'],
             'event_id' => ['required', 'numeric'],
             'event_start' => ['required', 'date'],
             'event_end' => ['required', 'date'],
-            'start_date' => ['required', 'date'],
+            'start_date' => ['required_unless:mode,default', 'date'],
             'bulk' => ['required_if:mode,bulk', 'array'],
             'bulk.*.column' => ['required_if:mode,bulk', 'string'],
             'bulk.*.value' => ['required_if:mode,bulk', 'array'],

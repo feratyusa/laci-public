@@ -20,12 +20,14 @@ export default function ManageResult({
     function handleSave(){
         console.log(participants.map(p => p.nip))
         router.put(route('event.participant.update', [event_id]), {nip: participants.map(p => p.nip)}, {
-            preserveState: false            
+            preserveState: false
         })
     }
 
     function handleSaveAndReplace(){
-
+        router.put(route('event.participant.updateReplace', [event_id]), {nip: participants.map(p => p.nip)}, {
+            preserveState: false
+        })
     }
 
     return(
@@ -41,7 +43,7 @@ export default function ManageResult({
                     <Tab className={tabClass}>Hasil</Tab>
                     <Tab className={tabClass}>Terhapus</Tab>
                 </TabList>
-                <TabPanels>                    
+                <TabPanels>
                     <TabPanel>
                         <ParticipantResult participants={participants} setParticipants={setParticipants} setDeletedParticipants={setDeletedParticipants} deletedParticipants={deletedParticipants}/>
                     </TabPanel>
@@ -51,15 +53,15 @@ export default function ManageResult({
                 </TabPanels>
             </TabGroup>
             <div className="flex items-center gap-5 mb-10">
-                <ConfirmationDialog 
-                    buttonText="Simpan Peserta" 
+                <ConfirmationDialog
+                    buttonText="Simpan Peserta"
                     handleConfirmation={() => handleSave()}
                     title="Simpan Peserta"
                     message="Peserta di atas akan ditambahkan menjadi peserta event. Peserta lama akan tetap ada."
                 />
-                <ConfirmationDialog 
-                    buttonColor="blue" 
-                    buttonText="Simpan dan Gantikan Peserta" 
+                <ConfirmationDialog
+                    buttonColor="blue"
+                    buttonText="Simpan dan Gantikan Peserta"
                     handleConfirmation={() => handleSaveAndReplace()}
                     title="Simpan dan Gantikan Peserta"
                     message="Peserta di atas akan menggantikan Peserta yang lama. Aksi ini tidak dapat dikembalikan."

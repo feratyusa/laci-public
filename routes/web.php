@@ -67,9 +67,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('', [EventController::class, 'destroy'])->name('event.destroy');
             Route::put('/change-number-type', [EventController::class, 'changeNumberType'])->name('event.number-type');
             Route::prefix('participants')->group(function (){
-                Route::get('', [EventParticipantController::class, 'manage'])->name('event.participant.manage');
                 Route::post('', [EventParticipantController::class, 'store'])->name('event.participant.store');
                 Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
+                Route::get('/manage', [EventParticipantController::class, 'manage'])->name('event.participant.manage');
+                Route::put('/updateAndReplace', [EventParticipantController::class,'updateAndReplace'])->name('event.participant.updateReplace');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');

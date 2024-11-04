@@ -27,13 +27,13 @@ class EventParticipantController extends Controller
     public function index(string $id)
     {
     }
-    
+
     public function manage(string $id)
     {
         $event = Event::findOrFail($id);
 
         return Inertia::render("Event/ManageParticipants", [
-            'event' => $event,            
+            'event' => $event,
             'kursus' => $event->proposal->kursus()->first(['sandi', 'lengkap'])
         ]);
     }
@@ -44,7 +44,7 @@ class EventParticipantController extends Controller
     public function store(ParticipantFormRequest $request, string $id): RedirectResponse
     {
         $event = Event::findOrFail($id);
-        
+
         $validated = $request->validated();
 
         if($request->filled('file')){
@@ -56,7 +56,7 @@ class EventParticipantController extends Controller
             DB::beginTransaction();
 
             try{
-                foreach ($ids as $id) {                    
+                foreach ($ids as $id) {
                     $employee = Employee::where('nip', $id)->firstOrFail();
                     $trashed = EventParticipant::withTrashed()->where('event_id', $event->id)->where('nip', $employee->nip)->first();
                     if($trashed) $trashed->restore();
@@ -113,10 +113,10 @@ class EventParticipantController extends Controller
 
         try{
             if($request->filled('file')){
-    
+
             }
             else{
-                $ids = $validated['nip'];                
+                $ids = $validated['nip'];
                 foreach($ids as $id){
                     $employee = Employee::where('nip', $id)->firstOrFail();
                     EventParticipant::withTrashed()->updateOrCreate(
@@ -127,12 +127,12 @@ class EventParticipantController extends Controller
                             'jabatan' => $employee->jabatan,
                             'deleted_at' => null
                         ]
-                    );
+                    )->restore();
                 }
-    
+
                 $event->update([
                     'participant_number_type' => ParticipantNumberType::DYNAMIC->value
-                ]);                
+                ]);
             }
 
             DB::commit();
@@ -141,7 +141,7 @@ class EventParticipantController extends Controller
             DB::rollBack();
             throw $e;
         }
-        
+
         return redirect()->route('event.show', ['id' => $event->id]);
     }
 
@@ -163,14 +163,14 @@ class EventParticipantController extends Controller
             'participant_number_type' => ParticipantNumberType::DYNAMIC->value
         ]);
 
-        return redirect()->back();   
+        return redirect()->back();
     }
-    
+
     private function checkParticipantStatuses(mixed $participants, string $eventID, string $start_date, string $end_date)
     {
         $events = Event::select('id', 'name', 'start_date', 'end_date')
                             ->where('id', '!=', $eventID)
-                            ->whereRaw('((start_date >= ? AND start_date <= ?) or (start_date <= ? AND end_date >= ?))', 
+                            ->whereRaw('((start_date >= ? AND start_date <= ?) or (start_date <= ? AND end_date >= ?))',
                                 [$start_date, $end_date, $start_date, $start_date])
                             ->get();
 
@@ -192,7 +192,7 @@ class EventParticipantController extends Controller
     {
         $sqls = [];
         $bind = [];
-        foreach ($bulks as $bulk) {            
+        foreach ($bulks as $bulk) {
             $binder = array_fill(0, count($bulk['value']), '?');
 
             $sqls[] = $bulk['column'] . ' in (' . implode(', ', $binder) . ')';
@@ -200,7 +200,7 @@ class EventParticipantController extends Controller
             $bind = array_merge($bind, $bulk['value']);
         }
 
-        $mergeSQL = implode(' AND ', $sqls);        
+        $mergeSQL = implode(' AND ', $sqls);
 
         $diklat = Diklat::select('nip')
                         ->whereRaw('kd_kursus like ? and tgl_mulai > ?', [$courseID, $date]);
@@ -209,8 +209,20 @@ class EventParticipantController extends Controller
                                 ->whereRaw($mergeSQL, $bind)
                                 ->whereNotIn('nip', $diklat)
                                 ->get()->toArray();
-        
+
         return $participants;
+    }
+
+    private function getEventParticipants(string $event_id)
+    {
+        $eventParticipants = EventParticipant::select('nip')
+                                                ->where('event_id', $event_id)
+                                                ->pluck('nip')
+                                                ->toArray();
+
+        return Employee::select('nip', 'nama', 'cabang', 'jabatan', 'seksi', 'jobfam')
+                                                ->whereIn('nip', $eventParticipants)
+                                                ->get()->toArray();
     }
 
     private function getParticipants(string $mode, array $validated)
@@ -220,9 +232,9 @@ class EventParticipantController extends Controller
             case 'bulk':
                 $participants = $this->bulkParticipants($validated['kd_kursus'], $validated['start_date'], $validated['bulk']);
                 break;
-            
+
             default:
-                # code...
+                $participants = $this->getEventParticipants($validated['event_id']);
                 break;
         }
 
@@ -236,14 +248,43 @@ class EventParticipantController extends Controller
         $validated = $request->validated();
 
         return response()->json([
-            'result' => $this->getParticipants($validated['mode'], $validated)    
+            'result' => $this->getParticipants($validated['mode'], $validated)
         ]);
     }
 
-    public function updateReplace(ParticipantFormRequest $request, string $id)
+    public function updateAndReplace(ParticipantFormRequest $request, string $id)
     {
         $validated = $request->validated();
 
-        
+        $event = Event::findOrFail($id);
+
+        DB::beginTransaction();
+
+        $nips = $validated['nip'];
+
+        try{
+            $event->participants()->delete();
+
+            foreach($nips as $nip){
+                $employee = Employee::where('nip', $nip)->firstOrFail();
+
+                EventParticipant::withTrashed()->updateOrCreate(
+                    ['nip' => $employee->nip, 'event_id' => $event->id],
+                    [
+                        'nama' => $employee->nama,
+                        'cabang' => $employee->cabang,
+                        'jabatan' => $employee->jabatan,
+                    ]
+                )->restore();
+            }
+
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        return redirect()->route('event.show', $event->id);
     }
 }

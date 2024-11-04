@@ -8,6 +8,8 @@ use App\Enum\Verbs;
 use App\Models\EHC\Employee;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\Vendor;
+use App\Models\Event\Event;
+use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
 use App\Models\Master\Budget;
 use App\Models\Master\BudgetType;
@@ -15,6 +17,7 @@ use App\Models\Master\Location;
 use App\Models\User;
 use App\Trait\InputHelpers;
 use App\Trait\TableColumnsHelper;
+use Illuminate\Http\Request;
 
 class InputController extends Controller
 {
@@ -140,6 +143,25 @@ class InputController extends Controller
 
         return response()->json([
             'jobs' => $this->selectOptions($jobs, 'jobfam', 'jobfam', false)
+        ]);
+    }
+
+    public function getAvailableEmployees(Request $request)
+    {
+        $validated = $request->validate([
+            ['event_id' => ['required', 'numeric']]
+        ]);
+
+        $eventParticipants = EventParticipant::select('nip')
+                                                ->where('event_id', $validated['event_id'])
+                                                ->get();
+
+        $availables = Employee::whereNotIn('nip', $eventParticipants)
+                                ->get()
+                                ->toArray();
+
+        return response()->json([
+            'availableEmployees' => $this->selectOptions($availables, 'nip', 'nama')
         ]);
     }
 }

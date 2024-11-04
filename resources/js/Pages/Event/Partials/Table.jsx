@@ -306,15 +306,15 @@ export default function TableEvent(){
 
     return(
         <div>
-            <div className="px-5 mb-5">
-                <Button className="flex gap-3" size="md" color={openFilter ? "amber" : "blue"} onClick={() => setOpenFilter(!openFilter)}>                    
-                    <ChevronDownIcon className={`w-5 transition duration-300 ease-in-out ${openFilter ? 'rotate-180' : ''}`}/>
-                    Tampilkan Filter
-                </Button>
-            </div>
             {
                 events ? 
                 <>
+                    <div className="px-5 mb-5">
+                        <Button className="flex gap-3" size="md" color={openFilter ? "amber" : "blue"} onClick={() => setOpenFilter(!openFilter)}>                    
+                            <ChevronDownIcon className={`w-5 transition duration-300 ease-in-out ${openFilter ? 'rotate-180' : ''}`}/>
+                            Tampilkan Filter
+                        </Button>
+                    </div>
                     <div className={`transition-all ease-in-out duration-300 ${openFilter == false ? '-translate-y-10 opacity-0' : ''}`}>
                         {openFilter && <FiltersTable table={table}/> }
                     </div>

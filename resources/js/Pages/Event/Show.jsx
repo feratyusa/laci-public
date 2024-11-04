@@ -99,10 +99,12 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             participants={participants}
                                             route={route('event.participant.store', [event.id])}
                                         />
-                                        <Button className="flex gap-2 h-fit w-fit items-center" color="green">
-                                            <ClipboardDocumentListIcon className="w-5"/>
-                                            Undangan
-                                        </Button>
+                                        <a href={route('event.exportEventParticipants', [event.id])} target="_ blank">
+                                            <Button className="flex gap-2 h-fit w-fit items-center" color="green">
+                                                <ClipboardDocumentListIcon className="w-5"/>
+                                                Undangan
+                                            </Button>
+                                        </a>
                                     </div>
                                     <Participants participants={event.participants} event={event}/>
                                 </TabPanel>

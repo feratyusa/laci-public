@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Event;
 use App\Enum\EventCategory;
 use App\Enum\FileCategory;
 use App\Enum\ParticipantNumberType;
+use App\Exports\EventParticipantsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
 use App\Http\Requests\Event\EventPriceFormRequest;
@@ -24,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EventController extends Controller
 {
@@ -294,5 +296,15 @@ class EventController extends Controller
         ]);
 
         return redirect()->route('event.show', ['id' => $event->id]);
+    }
+
+    public function exportEventParticipants(string $id)
+    {
+        $event = Event::findOrFail($id);
+        $eventCount = EventParticipant::select('nip')->where('event_id', $event->id)->get()->count();
+        $fileName = "Peserta {$event->name} [ID{$event->id}].xlsx";
+
+        return Excel::download(new EventParticipantsExport($id, $eventCount), $fileName);        
+        
     }
 }

@@ -92,7 +92,7 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
             <div className={"col-span-4 flex items-center pl-5 bg-gray-50"}>
                 {
                     option == 'budgetStatus' ? 
-                    <div className="flex gap-5">
+                    <div className="flex gap-2">
                         <BudgetStatus defaultPrices={value?.defaultPrices}/>                        
                         <ChangeDefaultPriceDialog route={route('event.changeDefaultPrices', [value.id])} />
                     </div>

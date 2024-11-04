@@ -23,6 +23,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/test-dev', [DashboardController::class, 'test']);
+Route::get('/phpinfo', function(){
+    phpinfo();
+});
+Route::get('/le', function() {
+    print_r(get_loaded_extensions());
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -73,6 +79,7 @@ Route::middleware('auth')->group(function () {
                 Route::put('/updateAndReplace', [EventParticipantController::class,'updateAndReplace'])->name('event.participant.updateReplace');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
+            Route::get('exportParticipants', [EventController::class, 'exportEventParticipants'])->name('event.exportEventParticipants');
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
             Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');

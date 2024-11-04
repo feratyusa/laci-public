@@ -1,6 +1,6 @@
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import { Link } from "@inertiajs/react";
-import { CheckIcon, Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, ChevronDownIcon, Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { DropdownMenuOption } from "@/Components/DropdownOptions";
 import { MenuItem } from "@headlessui/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
@@ -13,12 +13,12 @@ import ReactSelect from "react-select";
 import { ArchiveBoxIcon, ArchiveBoxXMarkIcon, DocumentCheckIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ProposalStatus from "@/Base/ProposalStatus";
 import LoadingCircle from "@/Components/Loading/LoadingCircle";
-import statuses from "@/Base/Statuses";
 
 function FiltersTable({table=useReactTable({})}){
     const [courses, setCourses] = useState([])
     const [eventCategories, setEventCategories] = useState([])
     const [users, setUsers] = useState([])
+    const pStatuses = ProposalStatus.filter(p => ! [4, -4].includes(p.value))    
 
     useEffect(() => {
         axios.get('/api/input/courses').then((response) => {
@@ -33,8 +33,9 @@ function FiltersTable({table=useReactTable({})}){
             setUsers(response.data.users)
         })
     }, [])
+
     return(
-        <div className="w-full">
+        <div className="w-full border-2 border-gray-500 px-5 py-3 rounded-lg ">
             <p className="font-bold text-lg mb-1">Filter Usulan</p>
             <div className="grid grid-cols-4 items-center gap-5 mb-3">
                 <div className="flex">
@@ -63,6 +64,7 @@ function FiltersTable({table=useReactTable({})}){
                         className="w-full"
                         isSearchable
                         isClearable
+                        value={table.getColumn('event_category').getFilterValue()}
                         onChange={(e) => table.getColumn('event_category').setFilterValue(e?.label)}
                     />
                 </div>
@@ -75,7 +77,7 @@ function FiltersTable({table=useReactTable({})}){
                         type="date"
                         placeholder="Tanggal Masuk"
                         className="rounded-md w-full"
-                        value={table.getColumn('entry_date').getFilterValue()}
+                        value={table.getColumn('entry_date').getFilterValue()?.start}
                         onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), start: e.target.value})}
                     />
                 </div>
@@ -84,11 +86,12 @@ function FiltersTable({table=useReactTable({})}){
                     <input
                         type="date"
                         className="rounded-md w-full"
+                        value={table.getColumn('entry_date').getFilterValue()?.end}
                         onChange={(e) => table.getColumn('entry_date').setFilterValue({...table.getColumn('entry_date').getFilterValue(), end: e.target.value})}
                     />
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 mb-5">
                 <div className="flex flex-col">
                     <ReactSelect
                         options={courses}
@@ -102,13 +105,13 @@ function FiltersTable({table=useReactTable({})}){
                 </div>
                 <div>
                     <ReactSelect
-                        options={ProposalStatus}
+                        options={pStatuses}
                         placeholder="Status"
                         classNamePrefix="select2-selection"
-                        className="z-10"
                         isSearchable
+                        isClearable
                         isMulti
-                        value={statuses.filter(s => table.getColumn('status').getFilterValue()?.includes(s.value))}
+                        value={pStatuses.filter(s => table.getColumn('status').getFilterValue()?.includes(s.value))}
                         onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
@@ -120,12 +123,12 @@ function FiltersTable({table=useReactTable({})}){
                         isSearchable
                         isClearable
                         isMulti
-
-                        onChange={(e) => table.getColumn('action').setFilterValue(e.map(item => item.value))}
+                        value={users.filter(u => table.getColumn('assign_to').getFilterValue()?.includes(u.value))}
+                        onChange={(e) => table.getColumn('assign_to').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
             </div>
-            <Button onClick={() => table.resetColumnFilters(true)}>
+            <Button onClick={() => table.resetColumnFilters(true)} color="blue" size="sm">
                 Reset Filter
             </Button>
         </div>
@@ -207,6 +210,7 @@ function CompleteStatus({isComplete, haveEvents, isEventsComplete}){
 }
 
 export default function TableProposal(){
+    const [openFilter, setOpenFilter] = useState(false)    
     const [proposals, setProposals] = useState(false)
 
     const [columnFilters, setColumnFilters] = useState([])
@@ -241,17 +245,17 @@ export default function TableProposal(){
             cell: info => changeToIndonesiaDateTime(info.getValue(), true),
             filterFn: 'DateCustomFilter'
         }),
-        columnHelper.accessor(row => row, {
-            id: 'status',
+        columnHelper.accessor('status', {
             header: <span>Status</span>,
-            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} haveEvents={info.getValue().haveEvents} isEventsComplete={info.getValue().isEventsComplete}/>,
-            filterFn: 'StatusFilter'
+            cell: info => <CompleteStatus isComplete={info.getValue().includes(1)} haveEvents={info.getValue().includes(2)} isEventsComplete={info.getValue().includes(3)}/>,
+            filterFn: 'arrIncludesAll'
         }),
-        columnHelper.accessor(row => row, {
-            id: 'action',
+        columnHelper.accessor('assign_to', {            
             header: <span>Opsi</span>,
-            cell: info => <OptionButtons proposal_id={info.getValue().id} proposal_name={info.getValue().name}/>,
-            filterFn: 'UserFilter'
+            cell: ({row}) => (
+                <OptionButtons proposal_id={row.original.id} proposal_name={row.original.name}/>  
+            ),
+            filterFn: 'FilterUser'
         }),
     ]
 
@@ -274,29 +278,11 @@ export default function TableProposal(){
                 else if(start) return filterValue.start <= row.original.entry_date
                 else return filterValue.end <= row.original.entry_date
             },
-            StatusFilter: (row, columnID, filterValue) => {
-                if(filterValue?.length == 0 || filterValue == "") return true
-                var status = []
-                if(row.original.isComplete) status.push(0)
-                else status.push(1)
-                if(row.original.haveEvents) status.push(2)
-                else status.push(3)
-                if(row.original.isEventsComplete) status.push(4)
-                else status.push(5)
-                var flag = true
-                filterValue.forEach(value => {
-                    if( ! status.includes(value) ){
-                        flag = false
-                    }
-                })
-                return flag
-            },
-            UserFilter: (row, columnID, filterValue) => {
+            FilterUser: (row, columnID, filterValue) => {
                 if(filterValue.length == 0) return true
                 return filterValue.includes(row.original.assign_to)
             },
-            FilterCourse: (row, columnID, filterValue) => {
-                console.log(row.original.kursus.sandi)
+            FilterCourse: (row, columnID, filterValue) => {                
                 if(filterValue.length == 0) return true
                 return filterValue.includes(row.original.kursus.sandi)
             }
@@ -311,11 +297,17 @@ export default function TableProposal(){
 
     return(
         <>
+            <div className="px-5 mb-5">
+                <Button className="flex gap-3" size="md" color={openFilter ? "amber" : "blue"} onClick={() => setOpenFilter(!openFilter)}>                    
+                    <ChevronDownIcon className={`w-5 transition duration-300 ease-in-out ${openFilter ? 'rotate-180' : ''}`}/>
+                    Tampilkan Filter
+                </Button>
+            </div>
             {
                 proposals ?
                 <>
-                    <div className="m-3">
-                        <FiltersTable table={table}/>
+                    <div className={`m-5 transition-all ease-in-out duration-300 ${openFilter == false ? '-translate-y-10 opacity-0' : ''}`}>
+                        {openFilter && <FiltersTable table={table}/> }
                     </div>
                     <TanstackTable table={table} alignTable="table-auto" className="text-sm" nowraps={['entry_date']}/>
                 </>

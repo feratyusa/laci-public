@@ -137,9 +137,17 @@ class ProposalController extends Controller
     {
         $proposals = Proposal::orderByDesc('id')->get();
         foreach($proposals as $key => $proposal){
-            $proposal->setAttribute('isComplete', $proposal->isMissingCategories());
-            $proposal->setAttribute('haveEvents', $proposal->events()->count() > 0);
-            $proposal->setAttribute('isEventsComplete', $proposal->isEventsComplete());
+            $status = [];
+            if($proposal->isMissingCategories()) $status[] = 1;
+            else $status[] = -1;
+
+            if($proposal->events()->count() > 0) $status[] = 2;
+            else $status[] = -2;
+
+            if($proposal->isEventsComplete()) $status[] = 3;
+            else $status[] = -3;
+
+            $proposal->setAttribute('status', $status);
         }
 
         return response()->json([

@@ -20,18 +20,19 @@ export default function Index({ auth }) {
             header={<HeaderTitle title={'usulan'}/>}
         >
             <Head title="Usulan"/>
+            
             <div className="container min-h-screen min-w-full p-5">
                 <BreadcrumbMod menu="proposals" />
+                
+                <Link href={route('proposal.create')}>
+                    <Button className="flex items-center gap-3" color="green" variant="filled">
+                        <PlusIcon className="h-4 w-4"/>
+                        Usulan
+                    </Button>                            
+                </Link>
+                
                 <Card className="h-max mt-5">
                     <CardBody className="px-0">
-                        <div className="w-max px-5 mb-5">
-                            <Link href={route('proposal.create')}>
-                                <Button className="flex items-center gap-3" color="green" variant="filled">
-                                    <PlusIcon className="h-4 w-4"/>
-                                    Usulan
-                                </Button>                            
-                            </Link>
-                        </div>
                         <TableProposal />
                     </CardBody>                    
                 </Card>

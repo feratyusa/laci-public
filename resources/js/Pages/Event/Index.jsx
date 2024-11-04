@@ -18,19 +18,18 @@ export default function Index({
 
             <div className="container min-h-screen min-w-full p-5">
                 <BreadcrumbMod menu={"events"}/>
+                
+                <div className="mb-5">
+                    <Link href={route('event.create')}>
+                        <Button className="flex items-center gap-3" color="green" variant="filled">
+                            <PlusIcon className="h-4 w-4"/>
+                            Event
+                        </Button>                            
+                    </Link>
+                </div>
 
                 <Card>
-                    <CardBody className="overflow-scroll px-0">
-                        <div className="flex justify-between mx-5 mb-5">
-                            <div className="w-max">
-                                <Link href={route('event.create')}>
-                                    <Button className="flex items-center gap-3" color="green" variant="filled">
-                                        <PlusIcon className="h-4 w-4"/>
-                                        Event
-                                    </Button>                            
-                                </Link>
-                            </div>
-                        </div>
+                    <CardBody className="px-0">                        
                         <TableEvent />
                     </CardBody>                    
                 </Card>

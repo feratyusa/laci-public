@@ -5,10 +5,10 @@ import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { MenuItem } from "@headlessui/react";
-import { BanknotesIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { BanknotesIcon, CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChevronUpIcon, Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
-import { IconButton, Tooltip } from "@material-tailwind/react";
+import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import ReactSelect from "react-select";
@@ -17,6 +17,7 @@ function FiltersTable({table=useReactTable({})}){
     const [courses, setCourses] = useState([])
     const [eventCategories, setEventCategories] = useState([])
     const [users, setUsers] = useState([])
+    const eStatuses = ProposalStatus.filter(p => ! [2,-2,3,-3].includes(p.value))
 
     useEffect(() => {
         axios.get('/api/input/courses').then((response) => {
@@ -34,8 +35,10 @@ function FiltersTable({table=useReactTable({})}){
         })
     }, [])
 
+    console.log(table.getColumn('id').getFilterValue())
+
     return(
-        <div className="m-5">
+        <div className="m-5 px-5 py-3 border-2 border-gray-500 rounded-lg">
             <p className="font-bold text-lg mb-1">Filter Event</p>
             <div className="grid grid-cols-4 items-center gap-5 mb-3">
                 <div className="flex">                    
@@ -43,6 +46,7 @@ function FiltersTable({table=useReactTable({})}){
                         className="rounded-md w-full"
                         id="id-event" 
                         placeholder="ID Event"
+                        value={table.getColumn('id').getFilterValue() ?? ""}
                         onChange={(e) => table.getColumn('id').setFilterValue(String(e.target.value))}                     
                     />
                 </div>
@@ -51,6 +55,7 @@ function FiltersTable({table=useReactTable({})}){
                         className="rounded-md w-full"
                         id="name" 
                         placeholder="Nama Event"
+                        value={table.getColumn('name').getFilterValue() ?? ""}
                         onChange={(e) => table.getColumn('name').setFilterValue(e.target.value)}                     
                     />
                 </div>
@@ -62,6 +67,7 @@ function FiltersTable({table=useReactTable({})}){
                         className="w-full"
                         isSearchable
                         isClearable
+                        value={eventCategories.find(e => e.value == table.getColumn('event_category').getFilterValue()) ?? ""}
                         onChange={(e) => table.getColumn('event_category').setFilterValue(e?.label)}
                     />
                 </div>               
@@ -74,6 +80,7 @@ function FiltersTable({table=useReactTable({})}){
                         type="date"
                         placeholder="Tanggal Masuk"
                         className="rounded-md w-full"
+                        value={table.getColumn('start_date').getFilterValue()?.start ?? ""}
                         onChange={(e) => table.getColumn('start_date').setFilterValue({...table.getColumn('start_date').getFilterValue(), start: e.target.value})}
                     />
                 </div>
@@ -82,28 +89,33 @@ function FiltersTable({table=useReactTable({})}){
                     <input 
                         type="date"
                         className="rounded-md w-full"
+                        value={table.getColumn('start_date').getFilterValue()?.end ?? ""}
                         onChange={(e) => table.getColumn('start_date').setFilterValue({...table.getColumn('start_date').getFilterValue(), end: e.target.value})}
                     />
                 </div>
             </div>            
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 mb-5">
                 <div className="flex flex-col">
                     <ReactSelect 
                         options={courses}
                         placeholder="Kursus"
                         classNamePrefix="select2-selection"
+                        isClearable
                         isSearchable
                         isMulti
-                        onChange={(e) => table.getColumn('course').setFilterValue(e.map(item => item.label))}
+                        value={courses.filter(c => table.getColumn('course').getFilterValue()?.includes(c.value))}
+                        onChange={(e) => table.getColumn('course').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
                 <div>
                     <ReactSelect 
-                        options={ProposalStatus.filter(p => p.value == 0 || p.value == 1 || p.value == 6 || p.value == 7)}
+                        options={eStatuses}
                         placeholder="Status"
                         classNamePrefix="select2-selection"
+                        isClearable
                         isSearchable
                         isMulti
+                        value={eStatuses.filter(e => table.getColumn('status').getFilterValue()?.includes(e.value))}
                         onChange={(e) => table.getColumn('status').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
@@ -112,13 +124,17 @@ function FiltersTable({table=useReactTable({})}){
                         options={users}
                         placeholder="Assign To"
                         classNamePrefix="select2-selection"
-                        isSearchable      
-                        isClearable                  
+                        isSearchable 
+                        isClearable
                         isMulti
-                        onChange={(e) => table.getColumn('action').setFilterValue(e.map(item => item.value))}
+                        value={users.filter(u => table.getColumn('assign_to').getFilterValue()?.includes(u.value))}
+                        onChange={(e) => table.getColumn('assign_to').setFilterValue(e.map(item => item.value))}
                     />
                 </div>
             </div>
+            <Button size="sm" onClick={() => table.resetColumnFilters()} color="blue">
+                Reset Filter
+            </Button>
         </div>
     )
 }
@@ -160,7 +176,7 @@ function CompleteStatus({isComplete, defaultPrices}){
             </Tooltip>
             :
             <Tooltip content="Berkas Belum Lengkap">
-                <IconButton color="amber" size="sm">
+                <IconButton color="amber" size="sm" className="cursor-default">
                     <XMarkIcon className="w-full"/>
                 </IconButton>
             </Tooltip>
@@ -184,6 +200,8 @@ function CompleteStatus({isComplete, defaultPrices}){
 }
 
 export default function TableEvent(){
+    const [openFilter, setOpenFilter] = useState(false)
+    
     const [events, setEvents] = useState(false)
     const [columnFilters, setColumnFilters] = useState([])
 
@@ -206,11 +224,13 @@ export default function TableEvent(){
             cell: info => info.getValue(),
             filterFn: 'equalsString',
         }),
-        columnHelper.accessor(row => row.proposal.kursus.lengkap, {
+        columnHelper.accessor(row => row.proposal.kursus.sandi, {
             id: 'course',
             header: <span>Kursus</span>,
-            cell: info => info.getValue(),
-            filterFn: 'arrIncludesSome'
+            cell: ({row}) => (
+                row.original.proposal.kursus.lengkap
+            ),
+            filterFn: 'FilterCourse'
         }),
         columnHelper.accessor(row => row.start_date, {            
             id:'end_date',
@@ -230,17 +250,20 @@ export default function TableEvent(){
             cell: info => info.getValue().participant_number_type == 'DYNAMIC' ? info.getValue().participants.length : info.getValue().participant_number,
             filterFn: 'includesString'
         }),
-        columnHelper.accessor(row => row, {            
+        columnHelper.accessor('status', {            
             id: 'status',
             header: <span>Status</span>,
-            cell: info => <CompleteStatus isComplete={info.getValue().isComplete} defaultPrices={info.getValue().defaultPrices}/>,
-            filterFn: 'StatusFilter'
+            cell: ({row}) => (
+                <CompleteStatus isComplete={row.original.status?.includes(1)} defaultPrices={row.original.defaultPrices}/>
+            ),
+            filterFn: 'arrIncludesAll'
         }),
-        columnHelper.accessor(row => row, {
-            id: 'action',
+        columnHelper.accessor('assign_to', {
             header: <span>Opsi</span>,
-            cell: info => <OptionButtons id={info.getValue().id} name={info.getValue().name}/>,
-            filterFn: 'UserFilter'
+            cell: ({row}) => (
+                <OptionButtons id={row.original.id} name={row.original.name}/>
+            ),
+            filterFn: 'FilterUser'
         }),
     ]
 
@@ -264,24 +287,11 @@ export default function TableEvent(){
                 else if(end) return end >= row.original.start_date                
                 else return true
             },
-            StatusFilter: (row, columnID, filterValue) => {
-                if(filterValue?.length == 0 || filterValue == "") return true 
-                var status = []
-                if(row.original.isComplete) status.push(0)
-                else status.push(1)
-                if(row.original.defaultPrices) status.push(6)
-                else status.push(7)
-
-                var flag = true
-                filterValue.forEach(value => {
-                    if( ! status.includes(value) ){
-                        flag = false
-                    }
-                })
-
-                return flag
+            FilterCourse: (row, columnID, filterValue) => {                
+                if(filterValue.length == 0) return true
+                return filterValue.includes(row.original.proposal.kursus.sandi)
             },
-            UserFilter: (row, columnID, filterValue) => {
+            FilterUser: (row, columnID, filterValue) => {
                 if(filterValue.length == 0) return true
                 return filterValue.includes(row.original.assign_to)
             }
@@ -296,10 +306,18 @@ export default function TableEvent(){
 
     return(
         <div>
+            <div className="px-5 mb-5">
+                <Button className="flex gap-3" size="md" color={openFilter ? "amber" : "blue"} onClick={() => setOpenFilter(!openFilter)}>                    
+                    <ChevronDownIcon className={`w-5 transition duration-300 ease-in-out ${openFilter ? 'rotate-180' : ''}`}/>
+                    Tampilkan Filter
+                </Button>
+            </div>
             {
                 events ? 
                 <>
-                    <FiltersTable table={table}/>
+                    <div className={`transition-all ease-in-out duration-300 ${openFilter == false ? '-translate-y-10 opacity-0' : ''}`}>
+                        {openFilter && <FiltersTable table={table}/> }
+                    </div>
                     <TanstackTable table={table} alignTable="table-auto" className="text-sm"/>
                 </>
                 :

@@ -184,9 +184,18 @@ class EventController extends Controller
 
     public function get()
     {
-        $events = Event::with('proposal')->orderByDesc('id')->get();
+        $events = Event::whereHas('proposal')->with('proposal')->orderByDesc('id')->get();
+
         foreach ($events as $event) {
-            $event->setAttribute('isComplete', $event->isMissingCategories());
+            $status = [];
+            
+            if($event->isMissingCategories()) $status[] = 1;
+            else $status[] = -1;
+            
+            if($event->defaultPrices == 0) $status[] = 4;
+            else $status[] = -4;
+
+            $event->setAttribute('status', $status);
         }
         
         return response()->json([

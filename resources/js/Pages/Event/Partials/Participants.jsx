@@ -36,15 +36,13 @@ export default function Participants({reload, setReload, event, participants}){
             header: <span>Cabang</span>,
             cell: info => info.getValue(),
         }),
-        columnHelper.accessor('countIn', {
+        columnHelper.accessor(row => row.countIn.length, {
             header: 'Event Bersamaan',
-            cell: info => <CheckEvent loaded={reload} events={info.getValue()}/>,
-            enableSorting: false,
+            cell: ({row}) => <CheckEvent loaded={reload} events={row.original.countIn}/>,            
         }),
-        columnHelper.accessor('diklatIn', {
+        columnHelper.accessor(row => row.diklatIn.length, {
             header: 'Sudah Diklat',
-            cell: info => <CheckDiklat loaded={reload} events={info.getValue()}/>,
-            enableSorting: false,
+            cell: ({row}) => <CheckDiklat loaded={reload} events={row.original.diklatIn}/>,             
         }),
         columnHelper.accessor(row => row.nip, {
             id: 'action',

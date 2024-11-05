@@ -3,7 +3,7 @@ import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
 import { IconButton } from "@material-tailwind/react";
-import { createColumnHelper, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { Tooltip } from "chart.js";
 
 function OptionButtons({nugie}){
@@ -47,6 +47,8 @@ export default function NugieTable({
             id: 'actions',
             header: <span>Aksi</span>,
             cell: info => <OptionButtons nugie={info.getValue()}/>,
+            enableGlobalFilter: false,
+            enableSorting: false,
         })
     ]
 
@@ -55,9 +57,17 @@ export default function NugieTable({
         columns: columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),        
     })
 
     return(
-        <TanstackTable table={table} alignTable="table-auto"/>
+        <>
+            <input
+                className="mb-3 rounded-lg"
+                placeholder="Search Nugie..."
+                onChange={(e) => table.setGlobalFilter(e.target.value)}
+            />
+            <TanstackTable table={table} alignTable="table-auto"/>
+        </>
     )
 }

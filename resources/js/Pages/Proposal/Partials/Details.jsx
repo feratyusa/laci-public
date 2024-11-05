@@ -14,7 +14,7 @@ function TableRow({name, value=null, color="red", option=null, proposal=null, ev
                     {name}
                 </Typography>
             </div>
-            <div className={"col-span-4 flex items-center p-4 bg-gray-50"}>
+            <div className={"col-span-4 flex items-center px-3 bg-gray-50"}>
                 {
                     option == 'prices' ?
                     <ProposalPriceDetail proposal={proposal} details={proposal.prices}/>
@@ -74,19 +74,17 @@ export default function ProposalDetails({proposal, color, events, categories}){
                             Options
                         </Typography>
                     </div>
-                    <div className={"col-span-4 p-4 bg-gray-50"}>
-                        <div className="flex flex-row gap-5">
-                            <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
-                                <Cog8ToothIcon className="w-5"/>
-                            </OptionButton>
-                            <DialogDelete
-                                key={proposal.id}
-                                content="Proposal"
-                                title={"Hapus Proposal?"}
-                                message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
-                                route={route('proposal.destroy', [proposal.id])}
-                                /> 
-                        </div>
+                    <div className={"col-span-4 h-full flex items-center px-3 gap-5 bg-gray-50"}>                        
+                        <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
+                            <Cog8ToothIcon className="w-5"/>
+                        </OptionButton>
+                        <DialogDelete
+                            key={proposal.id}
+                            content="Proposal"
+                            title={"Hapus Proposal?"}
+                            message={"Proposal "+proposal.name+" akan dihapus. Proposal yang telah dihapus tidak dapat dikembalikan."}
+                            route={route('proposal.destroy', [proposal.id])}
+                            />                         
                     </div>
                 </div>
             </div>

@@ -22,7 +22,7 @@ class NugieDetailFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:20'],
             'nugie_id' => ['required', 'integer'],
             'course_rules' => ['required', 'array'],
             'course_rules.*.type' => ['required', 'string'],

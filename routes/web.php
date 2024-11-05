@@ -165,6 +165,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}', [NugieController::class, 'show'])->name('nugie.show');
             Route::put('/{id}', [NugieController::class, 'update'])->name('nugie.update');
             Route::delete('/{id}', [NugieController::class, 'destroy'])->name('nugie.destroy');
+            Route::get('/{id}/export', [NugieController::class, 'export'])->name('nugie.export');
             Route::post('/{id}/details', [NugieController::class, 'storeDetails'])->name('nugie.store.details');
             Route::put("/{id}/details/{detail_id}", [NugieController::class, 'updateDetails'])->name('nugie.update.details');
             Route::delete("/{id}/details/{detail_id}", [NugieController::class, 'destroyDetails'])->name('nugie.destroy.details');

@@ -147,8 +147,13 @@ export default function NugieDetails({
 }){
     return(
         <div>
-            <div className="mb-5">
+            <div className="flex items-center gap-3 mb-5">
                 <AddNugieDetailDisclosure nugie={nugie}/>
+                <a href={route('nugie.export', [nugie.id])} target="__blank">
+                    <Button color="amber">
+                        Export Nugie
+                    </Button>
+                </a>
             </div>
             <ReportTable nugie={nugie} details={details} setEmployees={setEmployees}/>
         </div>

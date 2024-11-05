@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Utilities;
 
+use App\Exports\NugieExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Nugie\NugieDetailFormRequest;
 use App\Http\Requests\Nugie\NugieFormRequest;
@@ -265,7 +266,7 @@ class NugieController extends Controller
         $diklatSQL = $this->queryBuilder($validated['course_rules']);
         $employeeSQL = $this->queryBuilder($validated['emp_rules']);
 
-        $diklat = Diklat::whereRaw($diklatSQL['sql'], $diklatSQL['bind']);
+        $diklat = Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind']);
 
         return response()->json([
             'sql' => Employee::whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
@@ -273,4 +274,41 @@ class NugieController extends Controller
                                 ->toRawSql()
         ]);
     }
+
+    public function getNugieResultsForSheet(string $detail_id, bool $in){
+        $nugieDetail = NugieDetail::findOrFail($detail_id);
+
+        $diklatSQL = $this->queryBuilder($nugieDetail->rules()->where('type', 'course')->get()->toArray());
+        $employeeSQL = $this->queryBuilder($nugieDetail->rules()->where('type', 'employee')->get()->toArray());
+
+        $diklat = Diklat::select('nip')->whereRaw($diklatSQL['sql'], $diklatSQL['bind']);
+
+        if($in) return Employee::select('nip', 'nama', 'jabatan', 'cabang', 'seksi', 'eselon', 'jobfam')
+                                ->whereIn('nip', $diklat)
+                                ->whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                                ->get();
+        else return Employee::select('nip', 'nama', 'jabatan', 'cabang', 'seksi', 'eselon', 'jobfam')
+                                ->whereNotIn('nip', $diklat)
+                                ->whereRaw($employeeSQL['sql'], $employeeSQL['bind'])
+                                ->get();
+    }
+
+    public function export(string $id)
+    {
+        $nugie = Nugie::findOrFail($id);
+        $date = date('Y-m-d');
+
+        return (new NugieExport($id))->download("{$nugie->name}-{$date}.xlsx");
+    }
+
+    // public function duplicates(Request $request, string $id)
+    // {        
+    //     $nugie = Nugie::findOrFail($id);
+
+    //     $validated = $request->validate([
+    //         'name' => ['required']
+    //     ]);
+
+    //     $duplicate = Nugie::create();
+    // }
 }

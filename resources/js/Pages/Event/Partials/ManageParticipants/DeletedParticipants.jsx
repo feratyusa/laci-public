@@ -134,9 +134,11 @@ export default function DeletedParticipantsResult({deletedParticipants=[], setDe
                     <Button color="green" onClick={handleAddParticipants} disabled={isEmpty(rowSelection)}>
                         Tambahkan Peserta
                     </Button>
-                    <Button color="green" onClick={handleAddAllParticipantsWithoutEvent}>
-                        Tambahkan Peserta tanpa Event
-                    </Button>
+                    <Tooltip content="Tambah peserta yang tidak memiliki event mendatang">
+                        <Button color="green" onClick={handleAddAllParticipantsWithoutEvent}>
+                            Tambahkan Peserta tanpa Event
+                        </Button>
+                    </Tooltip>
                 </div>
             </div>
             <TanstackTable table={table} alignTable="table-auto"/>

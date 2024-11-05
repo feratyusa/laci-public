@@ -69,10 +69,11 @@ class ProposalSeeder extends Seeder
     public function run(): void
     {        
         $users = User::pluck('username')->toArray();
-        $kursus = Kursus::whereRaw('kategori not like ?', ['null'])->get();
+        $kursus = Kursus::whereRaw('kategori not like ? and lengkap is not NULL', ['null'])->get();
         
         $determined_course = [90111, 90222, 90333];
         foreach ($determined_course as $courseID) {
+            if(! Kursus::where('sandi', $courseID)->first()) continue;
             $this->createFakeProposal(Kursus::where('sandi', $courseID)->first(), $users);
         }
 

@@ -15,6 +15,7 @@ export default function Index({
     const [startDate, setStartDate] = useState(`${year}-01-01`)
     const [endDate, setEndDate] = useState(`${year}-12-31`)
     const [events, setEvents] = useState(null)
+    const [loaded, setLoaded] = useState(false)
 
     const [filter, setFilter] = useState('')
     const [eventsFiltered, setEventsFiltered] = useState(events ? [...events] : [])
@@ -33,9 +34,7 @@ export default function Index({
 
     useEffect(() => {
         setEventsFiltered(events ? [...events] : [])
-    }, [events])
-
-    console.log(events)
+    }, [events])    
 
     return(
         <Authenticated
@@ -62,6 +61,8 @@ export default function Index({
                         setEvents={setEvents}
                         apiURL={'/api/calendar/changeEvents'}
                         params={{start: startDate, end: endDate}}
+                        loaded={loaded}
+                        setLoaded={setLoaded}
                     />
                 </div>            
                 {

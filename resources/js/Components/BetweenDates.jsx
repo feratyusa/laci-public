@@ -16,19 +16,26 @@ export default function BetweenDates({
     setEvents,
     apiURL,
     params,
+    setLoaded,
+    loaded,
 })
 {
     function handleReset(){
         setStart('')
         setEnd('')
+    }    
+
+    function handleEventsChange(){
+        setLoaded(false)
     }
 
     useEffect(() => {
         axios.get(apiURL, {params: params})
             .then((response) => {
                 setEvents(response.data.events)
-            })
-    }, [start, end, mode])
+                setLoaded(true)
+        })
+    }, [loaded])
 
     return(
         <>
@@ -62,6 +69,9 @@ export default function BetweenDates({
                     />
                 </div>
                 <div className="flex w-fit h-fit gap-2">
+                    <Button color="blue" onClick={() => handleEventsChange()} loading={loaded == false}>
+                        Cari
+                    </Button>
                     <Button color="amber" onClick={() => handleReset()}>
                         Reset
                     </Button>

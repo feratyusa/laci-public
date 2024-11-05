@@ -85,7 +85,7 @@ function BudgetTable({budget, budgetTypePrices}){
     )
 }
 
-function BudgetSelection({budgetID, setBudgetID}){
+function BudgetSelection({budgetID, setBudgetID, setLoaded}){
     const [budgetSelections, setBudgetSelections] = useState([])
 
     useEffect(() => {
@@ -101,12 +101,15 @@ function BudgetSelection({budgetID, setBudgetID}){
             classNamePrefix="select2-selection"
             options={budgetSelections}                
             value={budgetSelections.find(b => b.value == budgetID)}
-            onChange={(option) => setBudgetID(option.value)}
+            onChange={(option) => {
+                setLoaded(false)
+                setBudgetID(option.value)
+            }}
         />
     )
 }
 
-function ModeSelection({mode, setMode}){
+function ModeSelection({mode, setMode, setLoaded}){
     const modes = [
         {value: 0, label: 'Anggaran Realisasi'},
         {value: 1, label: 'Anggaran Realisasi dan Awal'},
@@ -117,7 +120,10 @@ function ModeSelection({mode, setMode}){
             classNamePrefix="select2-selection"
             options={modes}                
             value={modes.find(b => b.value == mode)}
-            onChange={(option) => setMode(option.value)}
+            onChange={(option) => {
+                setLoaded(false)
+                setMode(option.value)
+            }}
         />
     )
 }
@@ -129,6 +135,8 @@ export default function BudgetReport({
     setBudgetID,
     mode,
     setMode,
+    loaded,
+    setLoaded,
 }){
     const [data, setData] = useState(null)
 
@@ -137,7 +145,7 @@ export default function BudgetReport({
             .then((response) => {
                 setData(response.data.data)
             })
-    }, [budgetID, mode])
+    }, [loaded])
 
     return(
         <>
@@ -149,7 +157,7 @@ export default function BudgetReport({
                         </label>
                     </div>
                     <div className="col-span-11">
-                        <BudgetSelection budgetID={budgetID} setBudgetID={setBudgetID}/>
+                        <BudgetSelection budgetID={budgetID} setBudgetID={setBudgetID} setLoaded={setLoaded}/>
                     </div>
                 </div>
                 <div className="col-span-6 grid grid-cols-12 items-center">
@@ -159,11 +167,18 @@ export default function BudgetReport({
                         </label>
                     </div>
                     <div className="col-span-11">
-                        <ModeSelection mode={mode} setMode={setMode}/>
+                        <ModeSelection mode={mode} setMode={setMode} setLoaded={setLoaded}/>
                     </div>
                 </div>
             </div>
-            {
+            {                
+                loaded == false ?
+                <div className="flex justify-center">
+                    <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
+                        <p className="uppercase font-bold text-white animate-pulse">Loading...</p>
+                    </div>
+                </div>
+                :
                 data == null ? 
                 <div className="flex justify-center">
                     <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">

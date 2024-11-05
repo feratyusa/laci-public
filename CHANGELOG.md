@@ -1,3 +1,8 @@
+# Todo
+- Import excel to input participant
+- Participant checks sudah ikut diklat
+- Logging
+
 # v0.70 (TBD)
 
 #### New Features
@@ -6,13 +11,16 @@
     1. Dapat menyimpan report yang telah dibuat sehingga dapat ditinjau kembali. 
     2. Berbasis Query Builder sehingga lebih fleksibel dalam mengatur kriteria report yang dibuat.
     3. Dapat melihat SQL berdasarkan kriteria yang telah dibuat.
+- Peserta Event dapat diinput secara bulk menggunakan menu **Manage Peserta** pada event bagian peserta.
+- Peserta Event sekarang yang akan atau sdh diinput dapat dilihat apakah sudah mengikuti diklat dengan kode kursus yang sama dan apakah mengikuti di event yang tanggalnya bertabrakan dengan event yang diikuti sekarang.
+- **Fungsi Export** untuk peserta event dan hasil dari Nugie.
+- **Panduan Pengguna** untuk semua fitur yang ada.
 
-#### Todo
-- Drop file to input
-- Import excel to input participant
-- Participant checks sudah ikut diklat
-- Undangan maker
-- Logging
+#### Fixes
+
+- Filter Event dan Usulan
+- UI untuk bagian Kalkulator dan Kalender
+- Performance issue saat first loading halaman detail Event
 
 # v0.50 (10 Oktober 2024)
 

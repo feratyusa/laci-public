@@ -87,7 +87,7 @@ function BudgetStatus({defaultPrices}){
 function TableRow({name, value=null, color="red", option=null, link=null}){        
     return(
         <div className="grid grid-cols-6 border-b-2 mr-10">
-            <div className={"col-span-2 flex items-center py-3 max-w-60"}>
+            <div className={"col-span-2 flex items-center py-3 px-2 max-w-60"}>
                 <p className="font-bold">{name}</p>
             </div>
             <div className={"col-span-4 flex items-center pl-5 bg-gray-50"}>
@@ -166,6 +166,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Lokasi"} value={event?.location?.name ?? 'NULL'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
+                <TableRow name={"Sudah Migrasi"} value={get(event, 'is_migrated', 0) == 0 ? 'Belum' : 'Sudah'} />
                 <div className="grid grid-cols-6 border-b-2 mr-10">
                     <div className={"col-span-2 flex items-center py-4"}>
                         <Typography variant="h6">

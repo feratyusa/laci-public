@@ -14,6 +14,8 @@ import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import ImportFromAttendence from "./Partials/ImportFromAttendence";
+import MigrateToDiklatDialog from "./Partials/MigrateToDiklatDialog";
+import { get } from "lodash";
 
 function TabButton({name}){
     return(
@@ -121,6 +123,12 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             message={'Aksi ini tidak dapat dikembalikan'}
                                         />
                                         <ImportFromAttendence event_id={event.id}/>
+                                        <MigrateToDiklatDialog 
+                                            participants={event.participants} 
+                                            event_id={event.id} 
+                                            event_name={event.name}
+                                            active={get(event, 'is_migrated', 0)}
+                                        />
                                     </div>
                                     <Participants reload={reload} setReload={setReload} event={event} participants={event.participants}/>
                                 </TabPanel>

@@ -4,6 +4,7 @@ use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ChangeLogController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EHC\DiklatController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
@@ -84,7 +85,8 @@ Route::middleware('auth')->group(function () {
             Route::get('exportParticipants', [EventController::class, 'exportEventParticipants'])->name('event.exportEventParticipants');
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
-            Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');            
+            Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');
+            Route::post('migrateToDiklat', [DiklatController::class, 'storeDiklat'])->name('event.migrateToDiklat');
         });
 
     });

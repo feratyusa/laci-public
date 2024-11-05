@@ -4,7 +4,18 @@ import { useForm } from "@inertiajs/react"
 import { Typography, Button, IconButton, Tooltip } from "@material-tailwind/react"
 import { useState } from "react"
 
-export default function DialogDelete({mode='icon', content, title, message, route, buttonSize="md", variant="filled", statePreserve=false, ...props}){
+export default function DialogDelete({
+        mode='icon', 
+        content, 
+        title, 
+        message, 
+        route, 
+        buttonText="Hapus Event",
+        buttonSize="md", 
+        variant="filled", 
+        statePreserve=false, 
+        ...props
+    }){
     const {delete: destroy, processing} = useForm()
     const [open, setOpen] = useState(false)
 
@@ -29,13 +40,14 @@ export default function DialogDelete({mode='icon', content, title, message, rout
                 <div className="block p-2 cursor-pointer hover:bg-red-100" onClick={() => setOpen(true)}>
                     <div className="flex items-center gap-2 text-red-500">
                         <TrashIcon className="w-5"/>
-                        Hapus Event
+                        {buttonText}
                     </div>
                 </div>                 
                 :
                 mode == 'button' ?
-                <Button onClick={() => setOpen(true)} color="red" size={buttonSize}>
-                    Hapus
+                <Button onClick={() => setOpen(true)} color="red" size={buttonSize} className="flex items-center gap-3">
+                    <TrashIcon className="w-5"/>
+                    {buttonText}
                 </Button>
                 :
                 <Tooltip content={"Hapus "+content}>

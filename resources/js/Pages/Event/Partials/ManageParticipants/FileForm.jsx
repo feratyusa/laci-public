@@ -1,7 +1,10 @@
-export default function FileForm({}){
+export default function FileForm({data, setData, errors}){
     return(
         <div>
-            File
+            <input 
+                type="file"
+                onChange={(e) => setData('file', e.target.files[0])}
+            />
         </div>
     )
 }

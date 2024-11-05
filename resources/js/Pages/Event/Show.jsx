@@ -12,6 +12,7 @@ import DialogAddParticipant from "@/Components/Dialogs/DialogAddParticipant";
 import Participants from "./Partials/Participants";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import DialogDelete from "@/Components/Dialogs/DialogDelete";
 
 function TabButton({name}){
     return(
@@ -99,16 +100,25 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             </Button>
                                         </Link>
                                         <DialogAddParticipant 
+                                            reload={reload}
                                             setReload={setReload}
-                                            participants={participants}
+                                            event_id={event.id}
                                             route={route('event.participant.store', [event.id])}
                                         />
                                         <a href={route('event.exportEventParticipants', [event.id])} target="_ blank">
                                             <Button className="flex gap-2 h-fit w-fit items-center" color="green">
                                                 <ClipboardDocumentListIcon className="w-5"/>
-                                                Undangan
+                                                Buat Undangan
                                             </Button>
                                         </a>
+                                        <DialogDelete
+                                            buttonText="Hapus Semua Peserta"
+                                            mode="button"
+                                            content={'Peserta Event'}
+                                            route={route('event.participant.destroyAll', [event.id])}
+                                            title={'Hapus Semua Peserta Event'}
+                                            message={'Aksi ini tidak dapat dikembalikan'}
+                                        />
                                     </div>
                                     <Participants reload={reload} setReload={setReload} event={event} participants={event.participants}/>
                                 </TabPanel>

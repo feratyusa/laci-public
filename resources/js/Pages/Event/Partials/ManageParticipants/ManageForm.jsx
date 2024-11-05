@@ -34,7 +34,7 @@ export default function ParticipantForm({
 
     const modeOptions = [
         {value: 'bulk', label: 'Secara Bulk'},
-        {value: 'nugie', label: 'Dengan Nugie'},
+        // {value: 'nugie', label: 'Dengan Nugie'},
         {value: 'file', label: 'Dengan File'},
     ]
 
@@ -43,7 +43,6 @@ export default function ParticipantForm({
         axios.post(route('event.participants.check'), data)
             .then((response) => {
                 setParticipants(response.data.result)
-                // console.log(response.data.result)
                 setDeletedParticipants([])
                 
                 setLoading(false)
@@ -60,6 +59,8 @@ export default function ParticipantForm({
         setDeletedParticipants([])
     }
 
+    console.log(data)
+    
     return(
         <div>
             <div className="grid grid-cols-2 gap-5 mb-2">

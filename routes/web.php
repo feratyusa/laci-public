@@ -77,12 +77,13 @@ Route::middleware('auth')->group(function () {
                 Route::put('', [EventParticipantController::class, 'update'])->name('event.participant.update');
                 Route::get('/manage', [EventParticipantController::class, 'manage'])->name('event.participant.manage');
                 Route::put('/updateAndReplace', [EventParticipantController::class,'updateAndReplace'])->name('event.participant.updateReplace');
+                Route::delete('/destroyAll', [EventParticipantController::class, 'destroyAll'])->name('event.participant.destroyAll');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
             Route::get('exportParticipants', [EventController::class, 'exportEventParticipants'])->name('event.exportEventParticipants');
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
-            Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');
+            Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');            
         });
 
     });
@@ -199,6 +200,7 @@ Route::prefix('api')->group(function (){
         Route::get('sections',  [InputController::class, 'getEmployeeSections'])->name('input.employeeSections');
         Route::get('branches', [InputController::class, 'getEmployeeBranches'])->name('input.employeeBranches');
         Route::get('jobs', [InputController::class, 'getEmployeeJobs'])->name('input.employeeJobs');
+        Route::get('availableEmployees', [InputController::class, 'getAvailableEmployees'])->name('input.availableEmployees');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

@@ -4,7 +4,7 @@ import { Button } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useState } from "react"
 
-export default function CheckDiklat({loaded=false, events=[]}){
+export default function CheckDiklat({loaded=true, events=[]}){
     const [open, setOpen] = useState(false)
     const color = events.length == 0 ? 'green' : 'red'
     

@@ -301,4 +301,21 @@ class EventParticipantController extends Controller
 
         return redirect()->route('event.show', $event->id);
     }
+
+    public function destroyAll(string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        DB::beginTransaction();
+
+        try{
+            $event->participants()->delete();
+
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }

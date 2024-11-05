@@ -6,7 +6,7 @@ import { Button, IconButton } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useState } from "react"
 
-export default function CheckEvent({loaded=false, events=[]}){
+export default function CheckEvent({loaded=true, events=[]}){
     const [open, setOpen] = useState(false)
     const color = events.length == 0 ? 'green' : 'red'
     

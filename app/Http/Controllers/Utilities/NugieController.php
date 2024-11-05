@@ -15,6 +15,8 @@ use App\Models\Utilities\Nugie\NugieRule;
 use App\Trait\NugieVerbHelper;
 use App\Trait\TableColumnsHelper;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -301,14 +303,83 @@ class NugieController extends Controller
         return (new NugieExport($id))->download("{$nugie->name}-{$date}.xlsx");
     }
 
-    // public function duplicates(Request $request, string $id)
-    // {        
-    //     $nugie = Nugie::findOrFail($id);
+    public function duplicateNugie(string $id)
+    {        
+        $nugie = Nugie::findOrFail($id);
 
-    //     $validated = $request->validate([
-    //         'name' => ['required']
-    //     ]);
+        $dateString = date('Y-m-d H:i:s');
 
-    //     $duplicate = Nugie::create();
-    // }
+        DB::beginTransaction();
+
+        try{
+            $duplicate = Nugie::create([
+                'name' => $nugie->name . " (Copy {$dateString})",
+                'description' => $nugie->description,
+                'created_by' => Auth::user()->username
+            ]);
+
+            foreach($nugie->details as $detail){
+                $nugieDetail = NugieDetail::create([
+                    'name' => $detail->name,
+                    'nugie_id' => $duplicate->id
+                ]);
+                
+                foreach($detail->rules as $rule){
+                    $nugieDetail->rules()->create([
+                        'type' => $rule->type,
+                        'index' => $rule->index,
+                        'child' => $rule->child,
+                        'prefix' => $rule->prefix,
+                        'column' => $rule->column,
+                        'verb' => $rule->verb,
+                        'parameter' => $rule->parameter
+                    ]);
+                }
+            }
+
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+        
+        return redirect()->route('nugie.show', ['id' => $duplicate->id]);
+    }
+
+    public function duplicateNugieRules(string $id, string $detail_id)
+    {
+        $nugie = Nugie::findOrFail($id);
+
+        $nugieDetail = $nugie->details()->findOrFail($detail_id);        
+
+        DB::beginTransaction();
+
+        try{
+            $newDetail = $nugie->details()->create([
+                'name' => $nugieDetail->name,
+                'nugie_id' => $nugie->id
+            ]);
+
+            foreach($nugieDetail->rules as $rule){
+                $newDetail->rules()->create([
+                    'type' => $rule->type,
+                    'index' => $rule->index,
+                    'child' => $rule->child,
+                    'prefix' => $rule->prefix,
+                    'column' => $rule->column,
+                    'verb' => $rule->verb,
+                    'parameter' => $rule->parameter
+                ]);
+            }
+            
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        return to_route('nugie.show', ['id' => $nugie->id]);
+    }
 }

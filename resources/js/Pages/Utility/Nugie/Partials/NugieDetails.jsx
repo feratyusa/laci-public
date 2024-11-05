@@ -1,5 +1,5 @@
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Button, IconButton } from "@material-tailwind/react"
+import { Button, IconButton, Tooltip } from "@material-tailwind/react"
 import NugieDetailForm from "./NugieDetailForm"
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
 import { useState } from "react"
@@ -8,6 +8,7 @@ import DialogDelete from "@/Components/Dialogs/DialogDelete"
 import { useEffect } from "react"
 import axios from "axios"
 import LoadingCircle from "@/Components/Loading/LoadingCircle"
+import DuplicateNugieDialog from "./DuplicateNugieDialog"
 
 function DetailRow({nugie, detail, setEmployees}){
     const [emps, setEmps] = useState(null)
@@ -64,7 +65,12 @@ function DetailRow({nugie, detail, setEmployees}){
                                 :
                                 <XMarkIcon className="w-full"/>
                             }
-                        </IconButton>
+                        </IconButton>                        
+                        <DuplicateNugieDialog 
+                            name={"Rules " + detail.name} 
+                            route={route('nugie.duplicate.rule', [nugie.id, detail.id])} 
+                            title={'Duplikasi Nugie Detail Rules'}
+                        />                        
                         <DialogDelete 
                             content={'Nugie Detail'}
                             title={`Hapus ${detail.name}`}
@@ -150,12 +156,12 @@ export default function NugieDetails({
             <div className="mb-5">                
                 <AddNugieDetailDisclosure nugie={nugie}/>                                
             </div>
-            <div className="mb-5">
+            <div className="flex gap-3 mb-5">
                 <a href={route('nugie.export', [nugie.id])} target="__blank">
                     <Button color="amber">
                         Export Nugie
                     </Button>
-                </a>
+                </a>                
             </div>
             <ReportTable nugie={nugie} details={details} setEmployees={setEmployees}/>
         </div>

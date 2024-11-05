@@ -2,25 +2,34 @@ import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
-import { IconButton } from "@material-tailwind/react";
+import { IconButton, Tooltip } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
-import { Tooltip } from "chart.js";
+import DuplicateNugieDialog from "./DuplicateNugieDialog";
 
 function OptionButtons({nugie}){
     return(
         <div className="flex justify-center gap-5">
-            <Link href={route('nugie.show', [nugie.id])}>
-                <IconButton size="sm" color="blue">
-                    <EyeIcon className="w-full"/>
-                </IconButton>
-            </Link>
+            <Tooltip content="Lihat Nugie">
+                <Link href={route('nugie.show', [nugie.id])}>
+                    <IconButton size="sm" color="blue">
+                        <EyeIcon className="w-full"/>
+                    </IconButton>
+                </Link>
+            </Tooltip>
+            <Tooltip content="Duplikasi Nugie">
+                <DuplicateNugieDialog 
+                    name={"Nugie " + nugie.name} 
+                    route={route('nugie.duplicate', [nugie.id])}
+                    title={'Duplikasi Nugie'}
+                />
+            </Tooltip>
             <DialogDelete
                 content={'Nugie'}
                 title={`Hapus ${nugie.name}`}
                 message={"Aksi tidak dapat dikembalikan"}
                 buttonSize="sm"
                 route={route('nugie.destroy', [nugie.id])}
-            />    
+            />
         </div>
     )
 }

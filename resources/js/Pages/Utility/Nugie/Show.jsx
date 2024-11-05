@@ -1,5 +1,6 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import {
+    Button,
   Card,    
   CardBody,
   IconButton,
@@ -51,7 +52,7 @@ export default function Index({
                             </div>
                         </div>
                         <div>
-                            <FormNugieDialog mode="edit" nugie={nugie} route={route('nugie.update', [nugie.id])} user={auth.user}/>
+                            <FormNugieDialog mode="edit" nugie={nugie} route={route('nugie.update', [nugie.id])} user={auth.user}/>                            
                         </div>
                     </div>
                     <CardBody className="p-5">

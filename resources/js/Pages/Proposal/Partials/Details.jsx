@@ -5,6 +5,7 @@ import OptionButton from "@/Components/OptionButton";
 import DialogEventList from "./DialogEventList";
 import { Link } from "@inertiajs/react";
 import ProposalPriceDetail from "./ProposalPriceDetail";
+import { get } from "lodash";
 
 function TableRow({name, value=null, color="red", option=null, proposal=null, events=null, ...props}){    
     return(
@@ -54,13 +55,16 @@ export default function ProposalDetails({proposal, color, events, categories}){
         day: 'numeric',
     }    
 
+    console.log(proposal)
+
     return(
         <div className="">
             <div className="grid grid-rows-8 grid-flow-col">                
                 <TableRow name={"ID Usulan"} value={proposal.id} />
                 <TableRow name={"Nama Usulan"} value={proposal.name}  />
                 <TableRow name={"Kategori"} value={proposal.event_category}  />
-                <TableRow name={"Kursus"} value={`(${proposal.kd_kursus}) ${proposal.kursus.lengkap}`}  />
+                <TableRow name={"Kursus"} value={`(${get(proposal, 'kd_kursus', '0')}) ${get(proposal, 'kursus.lengkap', 'Kursus')}`}  />
+                <TableRow name={"Lembaga"} value={`(${get(proposal, 'kd_lembaga', '0')}) ${get(proposal, 'vendor.lengkap', 'Vendor')}`}  />
                 <TableRow name={"Tanggal Masuk Usulan"} value={new Date(proposal.entry_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Anggaran Awal"} option={'prices'} proposal={proposal} />
                 <TableRow name={"Dibuat Oleh"} value={proposal.created_by} />
@@ -74,7 +78,7 @@ export default function ProposalDetails({proposal, color, events, categories}){
                             Options
                         </Typography>
                     </div>
-                    <div className={"col-span-4 h-full flex items-center px-3 gap-5 bg-gray-50"}>                        
+                    <div className={"col-span-4 h-full flex items-center px-3 py-2 gap-5 bg-gray-50"}>                        
                         <OptionButton tip="Edit Proposal" link={route('proposal.edit', [proposal.id])} color="amber" variant="filled">
                             <Cog8ToothIcon className="w-5"/>
                         </OptionButton>

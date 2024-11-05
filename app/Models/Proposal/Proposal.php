@@ -4,6 +4,7 @@ namespace App\Models\Proposal;
 
 use App\Enum\MandatoryCategoryLink;
 use App\Models\EHC\Kursus;
+use App\Models\EHC\Vendor;
 use App\Models\Event\Event;
 use App\Models\File\File;
 use App\Models\File\MandatoryFileCategory;
@@ -37,13 +38,14 @@ class Proposal extends Model
         'kd_kursus',
         'status',
         'created_by',
-        'assign_to'
+        'assign_to',
+        'kd_lembaga',
     ];
 
     /**
      * Eager Load
      */
-    protected $with = ['kursus', 'files', 'prices'];
+    protected $with = ['kursus', 'vendor', 'files', 'prices'];
 
     /**
      * Relationships
@@ -70,6 +72,11 @@ class Proposal extends Model
     public function prices(): HasMany
     {
         return $this->hasMany(ProposalPrice::class, 'proposal_id', 'id');
+    }
+
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class, 'kd_lembaga', 'sandi');
     }
 
     /**

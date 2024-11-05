@@ -85,6 +85,46 @@ function CourseInput({courses, data, setData, errors, openSelect, handleInputCha
     )
 }
 
+function VendorInput({data, setData, errors}){
+    const [vendors, setVendors] = useState([])
+    const [loaded, setLoaded] = useState(false)
+
+    useEffect(() => {
+        axios.get(route('input.vendors'))
+            .then((response) => {
+                setVendors(response.data.vendors)
+                setLoaded(true)
+            })
+    }, [])
+
+    return(
+        <>
+            <div className="table-cell pb-8 w-44">
+                <InputLabel value="Vendor" htmlFor="kd-lembaga" 
+                    className="font-bold text-lg" />
+            </div>
+            <div className="table-cell pb-8">                    
+                <>
+                    <ReactSelect
+                        id="kd-lembaga"
+                        name="kd-lembaga"
+                        classNamePrefix="select2-selection"
+                        className="max-w-2xl focus:border-red-500"
+                        value={vendors.find(k => k.value == data.kd_lembaga) ?? ''}
+                        options={vendors}                            
+                        onChange={(e) => setData('kd_lembaga', String(e?.value) ?? "")}                                                        
+                        isSearchable
+                        isClearable
+                        isLoading={loaded == false}
+                    />                    
+    
+                    <InputError message={errors.kd_lembaga} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
+                </>                    
+            </div>
+        </>
+    )
+}
+
 export default function ProposalForm({auth, method, proposal=null, kursus: courses=[]}){
     const date = proposal ? new Date(proposal.entry_date) : new Date()
     const date_string = `${date.getFullYear()}-${('0'+(date.getMonth() + 1)).slice(-2)}-${('0'+(date.getDate())).slice(-2)}`    
@@ -94,11 +134,12 @@ export default function ProposalForm({auth, method, proposal=null, kursus: cours
         event_category: proposal ? proposal.event_category : event_category[0].value,
         entry_date: date_string,
         kd_kursus: proposal ? proposal.kd_kursus : '',
+        kd_lembaga: proposal ? proposal?.kd_lembaga : '',
         status: proposal ? proposal.status : statuses[0].value,
         assign_to: proposal ? proposal.assign_to : auth.user.username
     });
-    console.log(errors)
-    const [openSelect, setOpenSelect] = useState(false) 
+
+    const [openSelect, setOpenSelect] = useState(false)    
 
     function setEventCategory(kd_kursus){      
         setData('event_category', courses.find(k => k.value == kd_kursus)?.kategori ?? '')
@@ -176,6 +217,9 @@ export default function ProposalForm({auth, method, proposal=null, kursus: cours
                     </div>
                     <div className="table-row">
                         <CourseInput data={data} setData={setData} errors={errors} courses={courses} openSelect={openSelect} handleInputChange={handleInputChange}/>
+                    </div>
+                    <div className="table-row">
+                        <VendorInput data={data} setData={setData} errors={errors}/>
                     </div>
                     <div className="table-row">
                         <div className="table-cell pb-8 w-44">

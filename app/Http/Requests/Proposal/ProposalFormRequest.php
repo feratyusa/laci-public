@@ -51,6 +51,10 @@ class ProposalFormRequest extends FormRequest
                 'required',
                 'string'
             ],
+            'kd_lembaga' => [
+                'required',
+                'string'
+            ]
         ];
     }
 }

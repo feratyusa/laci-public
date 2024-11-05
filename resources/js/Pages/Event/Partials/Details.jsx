@@ -6,6 +6,7 @@ import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import EventPriceDetail from "./EventPriceDetail";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { get } from "lodash";
 
 function ChangeDefaultPriceDialog({route}){
     const {put, processing} = useForm()
@@ -151,7 +152,8 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Nama Event"} value={event.name} />
                 <TableRow name={"Proposal"} option={'link'} link={proposalRoute} value={event.proposal} />
                 <TableRow name={"Kategori"} value={event.proposal.event_category} />
-                <TableRow name={"Kode Kursus"} value={`(${event.proposal.kd_kursus}) ${event.proposal.kursus.lengkap}`}  />
+                <TableRow name={"Kursus"} value={`(${get(event, 'proposal.kd_kursus', '0')}) ${get(event, 'proposal.kursus.lengkap', 'Kursus')}`}  />
+                <TableRow name={"Lembaga"} value={`(${get(event, 'proposal.kd_lembaga', '0')}) ${get(event, 'proposal.vendor.lengkap', 'Vendor')}`}  />
                 <TableRow name={"Tanggal Mulai"} value={new Date(event.start_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tanggal Selesai"} value={new Date(event.end_date).toLocaleDateString('id', dateoptions)}  />
                 <TableRow name={"Tipe Jumlah Partisipan"} value={event.participant_number_type} option={'number_type'} color={color} link={route('event.number-type', [event.id])}/>

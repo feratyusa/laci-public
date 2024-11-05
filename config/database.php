@@ -149,6 +149,21 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'ehc_write' => [
+            'driver' => 'sqlsrv',
+            'url' => env('EHC_WRITE_URL'),
+            'host' => env('EHC_WRITE_HOST', 'localhost'),
+            'port' => env('EHC_WRITE_PORT', '1433'),
+            'database' => env('EHC_WRITE_DATABASE', 'laravel'),
+            'username' => env('EHC_WRITE_USERNAME', 'root'),
+            'password' => env('EHC_WRITE_PASSWORD', ''),
+            'charset' => env('EHC_WRITE_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
     ],
 
     /*

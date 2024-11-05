@@ -7,6 +7,7 @@ use App\Exports\EventParticipantsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
 use App\Http\Requests\Event\EventPriceFormRequest;
+use App\Models\EHC\AbsenDiklat;
 use App\Models\EHC\Employee;
 use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
@@ -298,7 +299,51 @@ class EventController extends Controller
         $eventCount = EventParticipant::select('nip')->where('event_id', $event->id)->get()->count();
         $fileName = "Peserta {$event->name} [ID{$event->id}].xlsx";
 
-        return Excel::download(new EventParticipantsExport($id, $eventCount), $fileName);        
-        
+        return Excel::download(new EventParticipantsExport($id, $eventCount), $fileName);       
+    }
+
+    public function importFromAbsenDiklat(Request $request, string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $validated = $request->validate([
+            'quiz_id' => ['required', 'numeric']
+        ]);
+
+        $absen = AbsenDiklat::select('nip')
+                                ->where('quiz_id', $validated['quiz_id'])
+                                ->distinct()
+                                ->get()
+                                ->toArray();
+
+        DB::beginTransaction();
+
+        try{
+            $event->participants()->delete();
+
+            $employees = Employee::select('nip', 'nama', 'jabatan', 'cabang')
+                                    ->whereIn('nip', $absen)
+                                    ->get();
+
+            foreach($employees as $employee){
+                EventParticipant::withTrashed()->updateOrCreate(
+                    ['nip' => $employee->nip, 'event_id' => $event->id],
+                    [
+                        'nama' => $employee->nama,
+                        'cabang' => $employee->cabang,
+                        'jabatan' => $employee->jabatan,
+                        'deleted_at' => null
+                    ]
+                )->restore();
+            }
+            
+            DB::commit();
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+
+        return redirect()->route('event.show', ['id' => $event->id]);
     }
 }

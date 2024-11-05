@@ -13,6 +13,7 @@ import Participants from "./Partials/Participants";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
+import ImportFromAttendence from "./Partials/ImportFromAttendence";
 
 function TabButton({name}){
     return(
@@ -119,6 +120,7 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             title={'Hapus Semua Peserta Event'}
                                             message={'Aksi ini tidak dapat dikembalikan'}
                                         />
+                                        <ImportFromAttendence event_id={event.id}/>
                                     </div>
                                     <Participants reload={reload} setReload={setReload} event={event} participants={event.participants}/>
                                 </TabPanel>

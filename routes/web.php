@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/destroyAll', [EventParticipantController::class, 'destroyAll'])->name('event.participant.destroyAll');
                 Route::delete('/{nip}', [EventParticipantController::class, 'destroy'])->name('event.participant.destroy');
             });
+            Route::post('importParticipantsAttendece', [EventController::class, 'importFromAbsenDiklat'])->name('event.importParticpantsAttendence');
             Route::get('exportParticipants', [EventController::class, 'exportEventParticipants'])->name('event.exportEventParticipants');
             Route::put('changeDefaultPrices', [EventController::class, 'changedefaultPrices'])->name('event.changeDefaultPrices');
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');

@@ -1,5 +1,8 @@
 const MainMenu = [
         {name: 'Dashboard', link: 'dashboard', url: 'home'},
+        {name: 'Report Pendidikan', link: [
+            {name: 'Nugie', link: 'nugie.index', url: 'utilities/nugies'},
+        ], url: 'utilities'},
         {name: 'Usulan', link: 'proposal.index', url: 'proposals'},
         {name: 'Event', link: 'event.index', url: 'events'},
         {name: 'Kalkulator', link: 'calculator.index', url: 'calculator'},
@@ -11,9 +14,6 @@ const MainMenu = [
             {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
             {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
         ], url: 'master'},
-        {name: 'Utility', link: [
-            {name: 'Nugie', link: 'nugie.index', url: 'utilities/nugies'},
-        ], url: 'utilities'},
         {name: 'Change Log', link: 'changeLog.index', url: 'changelog'},
         {name: 'Tutorial', link: 'tutorial.index', url: 'tutorial'},
     ]

@@ -5,9 +5,11 @@ import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPagination
 import axios from "axios"
 import { useState } from "react"
 import { useEffect } from "react"
+import CheckEvent from "./ManageParticipants/CheckEvents"
+import CheckDiklat from "./ManageParticipants/CheckDiklat"
 
-export default function Participants({event}){
-    const [participants, setParticipants] = useState(null)
+export default function Participants({reload, setReload, event, participants}){
+    const [tableData, setTableData] = useState(participants)
 
     const [globalFilter, setGlobalFilter] = useState()
 
@@ -34,6 +36,16 @@ export default function Participants({event}){
             header: <span>Cabang</span>,
             cell: info => info.getValue(),
         }),
+        columnHelper.accessor('countIn', {
+            header: 'Event Bersamaan',
+            cell: info => <CheckEvent loaded={reload} events={info.getValue()}/>,
+            enableSorting: false,
+        }),
+        columnHelper.accessor('diklatIn', {
+            header: 'Sudah Diklat',
+            cell: info => <CheckDiklat loaded={reload} events={info.getValue()}/>,
+            enableSorting: false,
+        }),
         columnHelper.accessor(row => row.nip, {
             id: 'action',
             header: <span>Aksi</span>,
@@ -50,7 +62,7 @@ export default function Participants({event}){
     ]
 
     const table = useReactTable({
-        data: participants,
+        data: tableData,
         columns: column,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -63,14 +75,29 @@ export default function Participants({event}){
     })
 
     useEffect(() => {
-        axios.post(route('event.participants.check'), {mode: 'default', event_id: event.id, event_start: event.start_date, event_end: event.end_date})
-            .then((response) => {
-                setParticipants(response.data.result)
-            })
-            .catch((response) => {
-                console.log(response.response)
-            })
-    }, [])
+        const controller = new AbortController()
+
+        setTableData(participants)
+        setReload(false)
+
+        axios.post(route('event.participants.check'), {
+            signal: controller.signal,
+            mode: 'default', 
+            kd_kursus: event.proposal.kursus.sandi, 
+            event_id: event.id, 
+            event_start: event.start_date, 
+            event_end:event.end_date
+        }).then((response) => {
+            setTableData(response.data.result)
+            setReload(true)
+        }).catch(error => {
+            console.log(error)
+        })
+        
+        return() => {
+            controller.abort()
+        }
+    }, [participants])
 
     return(
         <>

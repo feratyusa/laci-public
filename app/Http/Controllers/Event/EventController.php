@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Event;
 
-use App\Enum\EventCategory;
-use App\Enum\FileCategory;
 use App\Enum\ParticipantNumberType;
 use App\Exports\EventParticipantsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventFormRequest;
 use App\Http\Requests\Event\EventPriceFormRequest;
-use App\Http\Requests\NumberTypeRequest;
 use App\Models\EHC\Employee;
-use App\Models\EHC\Kursus;
 use App\Models\Event\Event;
 use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
@@ -19,8 +15,6 @@ use App\Models\File\MandatoryFileCategory;
 use App\Models\Proposal\Proposal;
 use App\Trait\InputHelpers;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -96,9 +90,9 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::with('proposal')->findOrFail($id);
 
-        $event_participants = EventParticipant::where('event_id', $event->id)->pluck('nip')->toArray();
+        // $event_participants = EventParticipant::where('event_id', $event->id)->pluck('nip')->toArray();
 
         $files = $event->files()->get();
 
@@ -115,7 +109,7 @@ class EventController extends Controller
             'mandatoryFiles' => $this->mandatoriesOptions(MandatoryFileCategory::where(['mandatory_type' => $event->proposal->event_category])->get()->toArray()),
             'proposalRoute' => route('proposal.show', ['id' => $event->proposal->id]),
             'categories' => $this->selectOptions(Category::all()->toArray(), 'id', 'name', false),
-            'participants' => $this->selectOptions(Employee::whereNotIn('nip', $event_participants)->get()->toArray(), 'nip', 'nama')
+            // 'participants' => $this->selectOptions(Employee::whereNotIn('nip', $event_participants)->get()->toArray(), 'nip', 'nama')
         ]);
     }
 

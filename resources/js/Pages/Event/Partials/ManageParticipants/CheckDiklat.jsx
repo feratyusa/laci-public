@@ -1,38 +1,31 @@
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
-import { LinkIcon  } from "@heroicons/react/24/solid";
-import { Link } from "@inertiajs/react";
-import { Button, IconButton } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useState } from "react"
 
-export default function CheckEvent({loaded=false, events=[]}){
+export default function CheckDiklat({loaded=false, events=[]}){
     const [open, setOpen] = useState(false)
     const color = events.length == 0 ? 'green' : 'red'
     
     const columnHelpers = createColumnHelper()
     const columns = [
-        columnHelpers.accessor('id', {
-            header: 'ID',
+        columnHelpers.accessor('kd_kursus', {
+            header: 'Sandi',
             cell: info => info.getValue()
         }),
-        columnHelpers.accessor('name', {
+        columnHelpers.accessor('pelatihan', {
             header: 'Nama',
             cell: info => info.getValue()
         }),
-        columnHelpers.accessor('start_date', {
+        columnHelpers.accessor('tgl_mulai', {
             header: 'Tanggal Mulai',
-            cell: info => info.getValue()
+            cell: info => String(info.getValue()).split(' ')[0] ?? 'NULL'
         }),
-        columnHelpers.accessor('end_date', {
+        columnHelpers.accessor('tgl_selesai', {
             header: 'Tanggal Selesai',
-            cell: info => info.getValue()
-        }),
-        columnHelpers.accessor(row => row.id, {
-            id: 'link',
-            header: 'Link',
-            cell: info => <LinkButton id={info.getValue()}/>
-        }),
+            cell: info => String(info.getValue()).split(' ')[0] ?? 'NULL'
+        }),        
     ]
 
     const table = useReactTable({
@@ -43,16 +36,6 @@ export default function CheckEvent({loaded=false, events=[]}){
         getPaginationRowModel: getPaginationRowModel()
     })
 
-    function LinkButton({id}){
-        return(
-            <Link href={route('event.show', [id])}>
-                <IconButton size="sm" color="blue">
-                    <LinkIcon className="w-full"/>
-                </IconButton>
-            </Link>
-        )
-    }
-
     return(
         <>
             {
@@ -60,7 +43,7 @@ export default function CheckEvent({loaded=false, events=[]}){
                 <p className="text-red-500 animate-pulse">Loading...</p>
                 :
                 <Button onClick={() => setOpen(true)} color={color} disabled={events.length == 0} size="sm">
-                    {events.length + ' Event`'}
+                    {events.length + ' Diklat`'}
                 </Button>
             }
             <Dialog open={open} onClose={() => setOpen(false)} className="relative z-50">
@@ -68,7 +51,7 @@ export default function CheckEvent({loaded=false, events=[]}){
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
                 <DialogPanel className="space-y-4 border bg-white p-12">
                     <DialogTitle className="text-center text-red-500 font-bold uppercase">
-                        Event yang Sudah Diikuti
+                        Diklat yang Sudah Diikuti
                     </DialogTitle>
                     <TanstackTable table={table} alignTable="table-auto"/>
                 </DialogPanel>

@@ -172,7 +172,8 @@ class EventParticipantController extends Controller
                             ->where('id', '!=', $eventID)
                             ->whereRaw('((start_date >= ? AND start_date <= ?) or (start_date <= ? AND end_date >= ?))',
                                 [$start_date, $end_date, $start_date, $start_date])
-                            ->get();
+                            ->get()
+                            ->toArray();        
 
         foreach($participants as $index => $participant){
             $participants[$index]['countIn'] = [];
@@ -184,7 +185,7 @@ class EventParticipantController extends Controller
             }
         }
 
-        // return $events;
+        // return $mergeEvent;
         return $participants;
     }
 
@@ -213,16 +214,29 @@ class EventParticipantController extends Controller
         return $participants;
     }
 
-    private function getEventParticipants(string $event_id)
+    private function getEventParticipants(string $courseID, string $event_id)
     {
-        $eventParticipants = EventParticipant::select('nip')
-                                                ->where('event_id', $event_id)
-                                                ->pluck('nip')
-                                                ->toArray();
+        $participants = EventParticipant::withoutTrashed()
+                                            ->select('nip')
+                                            ->where('event_id', $event_id)
+                                            ->pluck('nip')
+                                            ->toArray();
 
-        return Employee::select('nip', 'nama', 'cabang', 'jabatan', 'seksi', 'jobfam')
-                                                ->whereIn('nip', $eventParticipants)
+        $employees = Employee::select('nip', 'nama', 'cabang', 'jabatan', 'seksi', 'jobfam')
+                                                ->whereIn('nip', $participants)
                                                 ->get()->toArray();
+
+        foreach($employees as $index => $employee){
+            $diklat = Diklat::select('kd_kursus', 'pelatihan', 'tgl_mulai', 'tgl_selesai')
+                                ->where('nip', $employee)
+                                ->where('kd_kursus', $courseID)
+                                ->get()
+                                ->toArray();
+
+            $employees[$index]['diklatIn'] = $diklat;
+        }
+
+        return $employees;
     }
 
     private function getParticipants(string $mode, array $validated)
@@ -234,13 +248,13 @@ class EventParticipantController extends Controller
                 break;
 
             default:
-                $participants = $this->getEventParticipants($validated['event_id']);
+                $participants = $this->getEventParticipants($validated['kd_kursus'], $validated['event_id']);
                 break;
         }
 
-        $result = $this->checkParticipantStatuses($participants, $validated['event_id'], $validated['event_start'], $validated['event_end']);
-
-        return $result;
+        // $result = $this->checkParticipantStatuses($participants, $validated['event_id'], $validated['event_start'], $validated['event_end']);
+        return $participants;
+        // return $result;
     }
 
     public function checkParticipants(CheckEventParticipantForm $request)

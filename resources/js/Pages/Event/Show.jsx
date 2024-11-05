@@ -11,6 +11,7 @@ import DialogAddFile from "@/Components/Dialogs/DialogAddFile";
 import DialogAddParticipant from "@/Components/Dialogs/DialogAddParticipant";
 import Participants from "./Partials/Participants";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 function TabButton({name}){
     return(
@@ -26,6 +27,8 @@ function TabButton({name}){
 }
 
 export default function Show({auth, code, status, event, categories, proposalRoute, participants=[], mandatoryFiles=[]}){
+    const [reload, setReload] = useState(true)
+
     const tabListClass = "p-3 flex gap-2 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 focus:ring-0"
 
     return(
@@ -96,6 +99,7 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             </Button>
                                         </Link>
                                         <DialogAddParticipant 
+                                            setReload={setReload}
                                             participants={participants}
                                             route={route('event.participant.store', [event.id])}
                                         />
@@ -106,7 +110,7 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                             </Button>
                                         </a>
                                     </div>
-                                    <Participants participants={event.participants} event={event}/>
+                                    <Participants reload={reload} setReload={setReload} event={event} participants={event.participants}/>
                                 </TabPanel>
                             </TabPanels>
                         </TabGroup>

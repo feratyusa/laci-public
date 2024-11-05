@@ -24,6 +24,7 @@ function ParticipantForm({participants, data, handleSelectChange}){
 export default function DialogAddParticipant({
     route, 
     participants=[],
+    setReload,
     ...props
 }){
     const {data, setData, reset, post, processing} = useForm({
@@ -50,7 +51,10 @@ export default function DialogAddParticipant({
     }
     function handleAdd(){
         post(route, {
-            onSuccess: handleClose()
+            onSuccess: () => {
+                handleClose()
+                setReload(true)
+            }
         })
     }
 

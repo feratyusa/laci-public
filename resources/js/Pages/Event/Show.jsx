@@ -96,39 +96,41 @@ export default function Show({auth, code, status, event, categories, proposalRou
                                 </TabPanel>
                                 <TabPanel>
                                     <div className="flex gap-5 mb-5">
-                                        <Link href={route('event.participant.manage', [event.id])}>
-                                            <Button className="flex gap-2" size="md" color="blue">
-                                                <UserGroupIcon className="w-5"/>
-                                                Manage Peserta
-                                            </Button>
-                                        </Link>
-                                        <DialogAddParticipant 
-                                            reload={reload}
-                                            setReload={setReload}
-                                            event_id={event.id}
-                                            route={route('event.participant.store', [event.id])}
-                                        />
-                                        <a href={route('event.exportEventParticipants', [event.id])} target="_ blank">
-                                            <Button className="flex gap-2 h-fit w-fit items-center" color="green">
-                                                <ClipboardDocumentListIcon className="w-5"/>
-                                                Buat Undangan
-                                            </Button>
-                                        </a>
-                                        <DialogDelete
-                                            buttonText="Hapus Semua Peserta"
-                                            mode="button"
-                                            content={'Peserta Event'}
-                                            route={route('event.participant.destroyAll', [event.id])}
-                                            title={'Hapus Semua Peserta Event'}
-                                            message={'Aksi ini tidak dapat dikembalikan'}
-                                        />
-                                        <ImportFromAttendence event_id={event.id}/>
-                                        <MigrateToDiklatDialog 
-                                            participants={event.participants} 
-                                            event_id={event.id} 
-                                            event_name={event.name}
-                                            active={get(event, 'is_migrated', 0)}
-                                        />
+                                        <div className="grid grid-rows-2 grid-flow-col gap-3">
+                                            <Link href={route('event.participant.manage', [event.id])}>
+                                                <Button className="flex gap-2" size="md" color="blue">
+                                                    <UserGroupIcon className="w-5"/>
+                                                    Manage Peserta
+                                                </Button>
+                                            </Link>
+                                            <DialogAddParticipant 
+                                                reload={reload}
+                                                setReload={setReload}
+                                                event_id={event.id}
+                                                route={route('event.participant.store', [event.id])}
+                                            />                                                                                
+                                            <a href={route('event.exportEventParticipants', [event.id])} target="_ blank">
+                                                <Button className="flex gap-3 w-full items-center" color="blue">
+                                                    <ClipboardDocumentListIcon className="w-5"/>
+                                                    Buat Undangan
+                                                </Button>
+                                            </a>
+                                            <DialogDelete
+                                                buttonText="Hapus Semua Peserta"
+                                                mode="button"
+                                                content={'Peserta Event'}
+                                                route={route('event.participant.destroyAll', [event.id])}
+                                                title={'Hapus Semua Peserta Event'}
+                                                message={'Aksi ini tidak dapat dikembalikan'}
+                                            />                                                                              
+                                            <ImportFromAttendence event_id={event.id}/>
+                                            <MigrateToDiklatDialog 
+                                                participants={event.participants} 
+                                                event_id={event.id} 
+                                                event_name={event.name}
+                                                active={get(event, 'is_migrated', 0)}
+                                            />
+                                        </div>
                                     </div>
                                     <Participants reload={reload} setReload={setReload} event={event} participants={event.participants}/>
                                 </TabPanel>

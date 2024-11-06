@@ -57,7 +57,7 @@ function ValueSelections({selectedColumn, handleInputChange, rule, index}){
 
 export default function BulkForm({data, setData, errors}){
 
-    const columns = [
+    const columns = [        
         {value: 'jabatan', label: 'jabatan'},
         {value: 'cabang', label: 'cabang'},
         {value: 'seksi', label: 'seksi'},

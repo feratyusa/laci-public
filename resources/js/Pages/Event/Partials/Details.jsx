@@ -7,6 +7,7 @@ import { useState } from "react";
 import EventPriceDetail from "./EventPriceDetail";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { get } from "lodash";
+import ResetMigrationDialog from "./ResetMigrationDialog";
 
 function ChangeDefaultPriceDialog({route}){
     const {put, processing} = useForm()
@@ -84,7 +85,7 @@ function BudgetStatus({defaultPrices}){
     )
 }
 
-function TableRow({name, value=null, color="red", option=null, link=null}){        
+function TableRow({name, value=null, color="red", option=null, link=null, event=[]}){        
     return(
         <div className="grid grid-cols-6 border-b-2 mr-10">
             <div className={"col-span-2 flex items-center py-3 px-2 max-w-60"}>
@@ -92,6 +93,16 @@ function TableRow({name, value=null, color="red", option=null, link=null}){
             </div>
             <div className={"col-span-4 flex items-center pl-5 bg-gray-50"}>
                 {
+                    option == 'migration' ?
+                    <div className="flex items-center gap-3">
+                        <p>{value}</p>
+                        <ResetMigrationDialog
+                            event_id={event.id}
+                            event_name={event.name}
+                            active={get(event, 'is_migrated', '0')}
+                        />
+                    </div>
+                    :
                     option == 'budgetStatus' ? 
                     <div className="flex gap-2">
                         <BudgetStatus defaultPrices={value?.defaultPrices}/>                        
@@ -166,7 +177,7 @@ export default function EventDetails({event, categories, proposalRoute}){
                 <TableRow name={"Lokasi"} value={event?.location?.name ?? 'NULL'} />
                 <TableRow name={"Tanggal Dibuat"} value={new Date(event.created_at).toLocaleTimeString('id', dateoptions)} />
                 <TableRow name={"Tanggal Diupdate"} value={new Date(event.updated_at).toLocaleTimeString('id', dateoptions)}/>
-                <TableRow name={"Sudah Migrasi"} value={get(event, 'is_migrated', 0) == 0 ? 'Belum' : 'Sudah'} />
+                <TableRow name={"Sudah Migrasi"} value={get(event, 'is_migrated', 0) == 0 ? 'Belum' : 'Sudah'} option={'migration'} event={event}/>
                 <div className="grid grid-cols-6 border-b-2 mr-10">
                     <div className={"col-span-2 flex items-center py-4"}>
                         <Typography variant="h6">

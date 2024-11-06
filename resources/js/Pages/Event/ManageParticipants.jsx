@@ -18,10 +18,6 @@ export default function ManageParticipants({
     const [deletedParticipants, setDeletedParticipants] = useState([])
     const resultRef = useRef()
 
-    // useEffect(() => {
-    //     resultRef.current.scrollIntoView({behavior: 'smooth'})
-    // }, [participants])
-
     return(
         <Authenticated
             user={auth.user}

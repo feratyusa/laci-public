@@ -44,7 +44,7 @@ class DiklatController extends Controller
             }
 
             $event->updateOrFail([
-                'is_migrated' => 1
+                'is_migrated' => true
             ]);
 
             DB::commit();

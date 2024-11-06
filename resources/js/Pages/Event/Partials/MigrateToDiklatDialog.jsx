@@ -18,8 +18,7 @@ export default function MigrateToDiklatDialog({
 
     function handleSubmit(){
         post(route('event.migrateToDiklat', [event_id]), {
-            onSuccess: () => {
-                reset()
+            onSuccess: () => {                  
                 setOpen(false)
             }
         })
@@ -36,7 +35,7 @@ export default function MigrateToDiklatDialog({
         <>
         <Button onClick={() => setOpen(true)} color="purple" className="flex items-center gap-3" disabled={active == 1}>
             <ArrowDownOnSquareIcon className="w-5"/>
-            Migrasi Peserta ke Diklat
+            {active == 0 ? 'Migrasi Peserta ke Diklat' : 'Sudah Migrasi'}
         </Button>
         <Dialog open={open} onClose={() => setOpen(false)} className="relative z-50">
           {/* The backdrop, rendered as a fixed sibling to the panel container */}

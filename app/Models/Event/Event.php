@@ -42,6 +42,7 @@ class Event extends Model
         'created_by',
         'assign_to',
         'defaultPrices',
+        'is_migrated',
     ];
 
     /**

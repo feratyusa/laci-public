@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('events')->group(function () {
         Route::get('', [EventController::class, 'index'])->name('event.index');
         Route::get('/create', [EventController::class, 'create'])->name('event.create');
+        Route::get('/templateParticipantsDownload', [EventController::class, 'getTemplateInputParticipantsFile'])->name('event.download.templateFileParticipants');
         Route::post('', [EventController::class, 'store'])->name('event.store');
         Route::prefix('{id}')->group(function (){
             Route::get('', [EventController::class, 'show'])->name('event.show');
@@ -87,6 +88,7 @@ Route::middleware('auth')->group(function () {
             Route::put('setPrices', [EventController::class, 'setPrices'])->name('event.setPrices');
             Route::delete('resetPrices', [EventController::class, 'resetPrices'])->name('event.resetPrices');
             Route::post('migrateToDiklat', [DiklatController::class, 'storeDiklat'])->name('event.migrateToDiklat');
+            Route::get('changeMigrationStatus', [EventController::class, 'changeMigrateStatus'])->name('event.changeMigrateStatus');
         });
 
     });

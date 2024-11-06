@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -192,6 +193,9 @@ class EventController extends Controller
             if($event->defaultPrices == 0) $status[] = 4;
             else $status[] = -4;
 
+            if($event->is_migrated == 1) $status[] = 5;
+            else $status[] = -5;
+
             $event->setAttribute('status', $status);
         }
         
@@ -345,5 +349,21 @@ class EventController extends Controller
         }
 
         return redirect()->route('event.show', ['id' => $event->id]);
+    }
+
+    public function getTemplateInputParticipantsFile()
+    {
+        return Storage::download('public\TEMPLATE_INPUT_PESERTA.xlsx');
+    }
+
+    public function changeMigrateStatus(string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $event->updateOrFail([
+            'is_migrated' => ! $event->is_migrated
+        ]);
+
+        return redirect()->route('event.show', $event->id);
     }
 }

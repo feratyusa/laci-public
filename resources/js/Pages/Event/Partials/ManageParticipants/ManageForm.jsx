@@ -4,8 +4,8 @@ import ReactSelect from "react-select";
 import BulkForm from "./Bulkform";
 import NugieForm from "./NugieForm";
 import FileForm from "./FileForm";
-import { useRef, useState } from "react";
-import { isEmpty, keys } from "lodash";
+import { useState } from "react";
+import { get, isEmpty, keys } from "lodash";
 import InputError from "@/Components/Form/InputError";
 import { useForm } from "@inertiajs/react";
 
@@ -27,10 +27,9 @@ export default function ParticipantForm({
         event_start: event_start,
         event_end: event_end,
         mode: 'bulk',
-        bulk: [{column: '', value: []}],
-        nugie: [{index: '', detail: ''}],
-        file: ''
+        bulk: [{column: '', value: []}],        
     })
+    const [file, setFile] = useState()
 
     const modeOptions = [
         {value: 'bulk', label: 'Secara Bulk'},
@@ -38,20 +37,40 @@ export default function ParticipantForm({
         {value: 'file', label: 'Dengan File'},
     ]
 
-    function handleCheckParticipants(){
-        setLoading(true)
-        axios.post(route('event.participants.check'), data)
+    function postData(data, config){
+        axios.post(route('event.participants.check'), data, config)
             .then((response) => {
-                setParticipants(response.data.result)
-                setDeletedParticipants([])
+                const result = response.data.result
+                console.log(result)                
+                setParticipants(result.filter(r => get(r, 'inDiklat', false) == false))
+                setDeletedParticipants(result.filter(r => get(r, 'inDiklat', false) == true))
                 
                 setLoading(false)
                 setErrors({})
             })
             .catch((response) => {                
                 setLoading(false)                
-                setErrors(response.response.data.errors)
+                setErrors(response)
             })
+    }
+
+    function handleCheckParticipants(){
+        setLoading(true)
+        handleReset()
+        if(data.mode == 'file'){
+            const formData = new FormData()
+            formData.append('kd_kursus', data.kd_kursus)
+            formData.append('start_date', data.start_date)
+            formData.append('event_id', data.event_id)
+            formData.append('event_start', data.event_start)
+            formData.append('event_end', data.event_end)
+            formData.append('mode', data.mode)             
+            formData.append('file', file)            
+            postData(formData, {headers: {'content-type': 'multipart/form-data'}})
+        }
+        else{
+            postData(data, {})
+        }
     }
 
     function handleReset(){
@@ -106,7 +125,7 @@ export default function ParticipantForm({
                     <div className="pl-5">
                         {
                             keys(errors).map((value) => (
-                                <InputError message={value}/>
+                                <InputError message={errors[value]}/>
                             ))
                         }
                     </div>
@@ -121,7 +140,7 @@ export default function ParticipantForm({
                     data.mode == 'nugie' ?
                     <NugieForm data={data} setData={setData}/>
                     :
-                    <FileForm data={data} setData={setData}/>
+                    <FileForm data={data} setData={setData} setFile={setFile}/>
                 }
             </div>
             <div className="flex gap-3">                

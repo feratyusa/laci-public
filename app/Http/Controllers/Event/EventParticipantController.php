@@ -6,6 +6,7 @@ use App\Enum\ParticipantNumberType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\CheckEventParticipantForm;
 use App\Http\Requests\Event\ParticipantFormRequest;
+use App\Imports\EventParticipantsImport;
 use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
 use App\Models\Event\Event;
@@ -16,7 +17,9 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EventParticipantController extends Controller
 {
@@ -82,22 +85,6 @@ class EventParticipantController extends Controller
         }
 
         return redirect()->route('event.show', ['id' => $event->id]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -172,8 +159,7 @@ class EventParticipantController extends Controller
                             ->where('id', '!=', $eventID)
                             ->whereRaw('((start_date >= ? AND start_date <= ?) or (start_date <= ? AND end_date >= ?))',
                                 [$start_date, $end_date, $start_date, $start_date])
-                            ->get()
-                            ->toArray();        
+                            ->get();                             
 
         foreach($participants as $index => $participant){
             $participants[$index]['countIn'] = [];
@@ -214,6 +200,29 @@ class EventParticipantController extends Controller
         return $participants;
     }
 
+    private function fileParticipants($request, string $courseID, string $date)
+    {
+        $import = new EventParticipantsImport;
+
+        Excel::import($import, $request->file('file'));
+        
+        $participants = Employee::select('nip', 'nama', 'cabang', 'jabatan', 'seksi', 'jobfam')
+                                    ->whereIn('nip', $import->getResult())
+                                    ->get()
+                                    ->toArray();
+
+        $diklat = Diklat::select('nip')
+                            ->whereRaw('kd_kursus like ? and tgl_mulai > ?', [$courseID, $date])
+                            ->pluck('nip')->toArray();
+        
+        foreach($participants as $index => $participant){
+            $participants[$index]['inDiklat'] = false;
+            if(in_array($participant['nip'], $diklat)) $participants[$index]['inDiklat'] = true;
+        }
+
+        return $participants;
+    }
+
     private function getEventParticipants(string $courseID, string $event_id)
     {
         $participants = EventParticipant::withoutTrashed()
@@ -239,12 +248,15 @@ class EventParticipantController extends Controller
         return $employees;
     }
 
-    private function getParticipants(string $mode, array $validated)
+    private function getParticipants(string $mode, array $validated, $request)
     {
         $participants = null;
         switch ($mode) {
             case 'bulk':
                 $participants = $this->bulkParticipants($validated['kd_kursus'], $validated['start_date'], $validated['bulk']);
+                break;
+            case 'file':
+                $participants = $this->fileParticipants($request, $validated['kd_kursus'], $validated['start_date']);
                 break;
 
             default:
@@ -252,17 +264,17 @@ class EventParticipantController extends Controller
                 break;
         }
 
-        // $result = $this->checkParticipantStatuses($participants, $validated['event_id'], $validated['event_start'], $validated['event_end']);
-        return $participants;
-        // return $result;
+        $result = $this->checkParticipantStatuses($participants, $validated['event_id'], $validated['event_start'], $validated['event_end']);
+        // return $participants;
+        return $result;
     }
 
     public function checkParticipants(CheckEventParticipantForm $request)
     {
-        $validated = $request->validated();
+        $validated = $request->validated();        
 
         return response()->json([
-            'result' => $this->getParticipants($validated['mode'], $validated)
+            'result' => $this->getParticipants($validated['mode'], $validated, $request)
         ]);
     }
 

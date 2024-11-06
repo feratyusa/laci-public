@@ -81,7 +81,7 @@ export default function DialogAddParticipant({
                     onClick={handleOpen}
                     color="blue"
                     size="md"
-                    className="flex items-center h-fit w-fit gap-3"
+                    className="flex items-center gap-3"
                 >
                     <UserPlusIcon className="w-5" />
                     <div>Peserta</div>

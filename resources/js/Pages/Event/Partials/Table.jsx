@@ -5,8 +5,8 @@ import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { changeToIndonesiaDateTime } from "@/helpers/IndoesiaDate";
 import { MenuItem } from "@headlessui/react";
-import { BanknotesIcon, CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ChevronUpIcon, Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { BanknotesIcon, CheckIcon, ChevronDownIcon, XMarkIcon, ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
+import { Cog8ToothIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "@inertiajs/react";
 import { Button, IconButton, Tooltip } from "@material-tailwind/react";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
@@ -164,7 +164,7 @@ function OptionButtons({id, name}){
     )
 }
 
-function CompleteStatus({isComplete, defaultPrices}){
+function CompleteStatus({isComplete, defaultPrices, isMigrated}){
     return(
         <div className="flex justify-center items-center gap-2">
         {
@@ -192,6 +192,20 @@ function CompleteStatus({isComplete, defaultPrices}){
             <Tooltip content="Anggaran Realisasi">
                 <IconButton color="green" size="sm" className="cursor-default">
                     <BanknotesIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+        }
+        {
+            isMigrated ? 
+            <Tooltip content="Sudah Migrasi">
+                <IconButton color="green" size="sm" className="cursor-default">
+                    <ArrowUpOnSquareIcon className="w-full"/>
+                </IconButton>
+            </Tooltip>
+            :
+            <Tooltip content="Belum Migrasi">
+                <IconButton color="red" size="sm" className="cursor-default">
+                    <ArrowUpOnSquareIcon className="w-full"/>
                 </IconButton>
             </Tooltip>
         }
@@ -254,7 +268,7 @@ export default function TableEvent(){
             id: 'status',
             header: <span>Status</span>,
             cell: ({row}) => (
-                <CompleteStatus isComplete={row.original.status?.includes(1)} defaultPrices={row.original.defaultPrices}/>
+                <CompleteStatus isComplete={row.original.status?.includes(1)} defaultPrices={row.original.defaultPrices} isMigrated={row.original.is_migrated}/>
             ),
             filterFn: 'arrIncludesAll'
         }),

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Event;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class CheckEventParticipantForm extends FormRequest
 {
@@ -29,9 +30,14 @@ class CheckEventParticipantForm extends FormRequest
             'event_end' => ['required', 'date'],
             'start_date' => ['required_unless:mode,default', 'date'],
             'bulk' => ['required_if:mode,bulk', 'array'],
-            'bulk.*.column' => ['required_if:mode,bulk', 'string'],
+            'bulk.*.column' => ['required_if:mode,bulk', 'nullable', 'string'],
             'bulk.*.value' => ['required_if:mode,bulk', 'array'],
             'bulk.*.value.*' => ['required_if:mode,bulk', 'string'],
+            'file' => [
+                'required_if:mode,file',
+                File::types(['xlsx'])
+                    ->max('100mb')
+            ]
         ];
     }
 }

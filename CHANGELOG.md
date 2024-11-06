@@ -1,6 +1,4 @@
 # Todo
-- Import excel to input participant
-- Participant checks sudah ikut diklat
 - Logging
 
 # v0.70 (TBD)

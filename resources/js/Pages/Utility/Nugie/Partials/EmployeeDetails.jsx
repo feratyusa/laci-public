@@ -52,8 +52,7 @@ export default function EmployeeDetails({empIn=[], empOut=[]}){
         getSortedRowModel: getSortedRowModel(),
     })
 
-    const tabClass = "p-3 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"
-    console.log(empOut)
+    const tabClass = "p-3 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"    
 
     return(
         <TabGroup>

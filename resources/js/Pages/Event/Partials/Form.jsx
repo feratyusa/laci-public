@@ -140,6 +140,8 @@ export default function EventForm({
         handleProposalChange(data.proposal_id)
     }, [data.proposal_id])
 
+    console.log(data)
+
     return(
         <form onSubmit={handleSubmit} 
             action="post" 

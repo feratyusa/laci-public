@@ -4,6 +4,7 @@ import { PlusIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
 import axios from "axios";
+import { get } from "lodash";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -35,7 +36,7 @@ function DetailRuleForm({rule, rule_type, index, columns, verbs, prefixes, handl
                 <Selection 
                     id="prefix"
                     options={prefixes}
-                    value={rule.prefix ? rule.prefix : 'null'}
+                    value={get(rule, 'prefix', null)}
                     onChange={(e) => handleDataChange(rule_type, e.target.value, 'prefix', index)}
                     className="w-full"
                 />
@@ -230,7 +231,7 @@ export default function NugieDetailForm({
 
         if(data.course_rules.length == 0) flag.push(generateError('diklat', null, "rule :table harus lebih dari 0"))
         data.course_rules.forEach((rule, index) => {
-            prefix = rule.prefix == 'null' ? null : rule.prefix
+            let prefix = rule.prefix == 'null' ? null : rule.prefix
             if(index == 0 && (rule.index != 1 || rule.child != 1)) flag.push(generateError('diklat', index, "nilai :index.index dan :index.child :table urutan pertama harus bernilai 1"))
             if(rule.index > data.course_rules.length || Number(rule.index) < 1) flag.push(generateError('diklat', index, 'nilai :index.index :table harus kurang dari jumlah rule dan tidak kurang dari 1'))
             if(rule.child > data.course_rules.filter(r => r.index == rule.index).length || rule.child < 1) flag.push(generateError('diklat', index, 'nilai :index.child :table harus kurang dari jumlah rule di index yang sama dan tidak kurang dari 1'))
@@ -242,7 +243,7 @@ export default function NugieDetailForm({
 
         if(data.emp_rules.length == 0) flag.push(generateError('pegawai', null, "rule :table harus lebih dari 0"))
         data.emp_rules.forEach((rule, index) => {
-            prefix = rule.prefix == 'null' ? null : rule.prefix
+            let prefix = rule.prefix == 'null' ? null : rule.prefix
             if(index == 0 && (rule.index != 1 || rule.child != 1)) flag.push(generateError('pegawai', index, "nilai :index.index dan :index.child :table urutan pertama harus bernilai 1"))
             if(rule.index > data.emp_rules.length || rule.index < 1) flag.push(generateError('pegawai', index, 'nilai :index.index :table harus kurang dari jumlah rule dan tidak kurang dari 1'))
             if(rule.child > data.emp_rules.filter(r => r.index == rule.index).length || rule.child < 1) flag.push(generateError('pegawai', index, 'nilai :index.child :table harus kurang dari jumlah rule di index yang sama dan tidak kurang dari 1'))

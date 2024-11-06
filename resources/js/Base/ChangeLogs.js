@@ -1,3 +1,25 @@
+const _11_07_2024 = {
+    title: 'v0.80 (11 November 2024)',
+    md: `
+#### New Features
+- Dynamic Utility for General Information on Education atau NUGIE. Fitur Report Maker untuk ,melihat ringkasan jumlah dan detail pegawai yang mengikuti pelatihan. ( basically Report Pendidikan v2.0 )
+    1. Dapat menyimpan report yang telah dibuat sehingga dapat ditinjau kembali. 
+    2. Berbasis Query Builder sehingga lebih fleksibel dalam mengatur kriteria report yang dibuat.
+    3. Dapat melihat SQL berdasarkan kriteria yang telah dibuat.
+    4. Duplikasi Nugie ataupun Rules Nugie yang telah dibuat.
+    5. Export hasil Nugie ke Excel.
+- Peserta Event dapat diinput secara bulk maupun file menggunakan menu **Manage Peserta** pada event bagian peserta.
+- Peserta Event sekarang yang akan atau sdh diinput dapat dilihat apakah sudah mengikuti diklat dengan kode kursus yang sama dan apakah mengikuti di event yang tanggalnya bertabrakan dengan event yang diikuti sekarang.
+- **Fungsi Export** untuk peserta event dan hasil dari Nugie.
+- **Panduan Pengguna** untuk semua fitur yang ada.
+#### Fixes
+- Filter Event dan Usulan
+- UI untuk bagian Kalkulator dan Kalender
+- Performance issue saat first loading halaman detail Event
+- Menu **Kalendar** untuk monitoring jadwal event pelatihan
+`
+}
+
 const _24_09_2024 = {
 title: 'v0.25 (24 September 2024)',
 md: `
@@ -34,6 +56,7 @@ md: `
 }
 
 const changes = [
+    _11_07_2024,
     _10_10_2024,
     _24_09_2024,
 ]

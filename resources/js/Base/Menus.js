@@ -15,7 +15,7 @@ const MainMenu = [
             {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
         ], url: 'master'},
         {name: 'Change Log', link: 'changeLog.index', url: 'changelog'},
-        {name: 'Tutorial', link: 'tutorial.index', url: 'tutorial'},
+        {name: 'Panduan', link: 'tutorial.index', url: 'tutorial'},
     ]
 
 const ProfileMenu = [

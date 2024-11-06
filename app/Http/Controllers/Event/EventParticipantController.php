@@ -303,6 +303,10 @@ class EventParticipantController extends Controller
                     ]
                 )->restore();
             }
+            
+            $event->update([
+                'participant_number_type' => ParticipantNumberType::DYNAMIC->value
+            ]);
 
             DB::commit();
         }

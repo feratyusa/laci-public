@@ -18,18 +18,15 @@ export default function DashboardGuide(){
                 <ol className="list-inside list-[lower-alpha] pl-5 mb-2">
                     <li id="documents-report" className="font-bold mb-2">Berkas Belum Lengkap</li>
                     <p className="pl-4 mb-2">
-                        Bagian ini menampilkan jumlah <LinkWord route={route('event.index')}>Event</LinkWord> untuk 
-                        In House Training dan Public Training, serta <LinkWord route={route('proposal.index')}>Usulan</LinkWord> yang
-                        <span className="italic"> di-assign</span> kepada <span className="capitalize font-bold">user terautentikasi</span> sekarang
-                        dimana berkasnya belum lengkap. Berkas yang wajib dipenuhi dilihat berdasarkan
-                        data <LinkWord route={route('mandatory-category.index')}>kategori wajib</LinkWord> yang 
-                        perlu dilengkapi.
+                        Bagian ini menampilkan jumlah Event untuk In House Training dan Public Training, serta Usulan yang
+                        di-assign kepada user terautentikasi sekarang dimana berkasnya belum lengkap. Berkas yang wajib dipenuhi 
+                        dilihat berdasarkan data KATEGORI WAJIB yang perlu dilengkapi.
                     </p>
 
                     <li id="budget-report" className="font-bold mb-2">Rekap Anggaran</li>
                     <p className="pl-4 mb-2">
                         Rekap anggaran yang ditampilkan berdasarkan rancangan anggaran yang telah dibuat 
-                        di <LinkWord route={route('budget.index')}>Anggaran</LinkWord>. Rekap ini dapat menampilkan 5 macam tampilan.
+                        di MASTER ANGGARAN. Rekap ini dapat menampilkan 5 macam tampilan.
                     </p>
                     <ul className="list-inside list-disc pl-10 mb-2">
                         <li>Bulan Ini</li>
@@ -39,11 +36,10 @@ export default function DashboardGuide(){
                         <li>Q4 / Tahun Ini(Januari - Desember)</li>
                     </ul>
                     <p className="pl-4 mb-2">
-                        Mode Rekap juga dapat diatur untuk menampilkan
-                        hanya <span className="font-bold">Realisasi Anggaran</span> yang telah dimasukkan 
-                        pada <LinkWord route={route('event.index')}>Event</LinkWord> atau ditambah
-                        dengan <span className="font-bold">Anggaran Awal (Harga Perkiraan Sendiri)</span> yang 
-                        telah dimasukkan pada <LinkWord route={route('proposal.index')}>Usulan</LinkWord>.
+                        Mode Rekap juga dapat diatur untuk menampilkan hanya Realisasi Anggaran 
+                        yang telah dimasukkan pada halaman Event atau Realisasi Anggaran ditambah
+                        dengan Anggaran Awal (Harga Perkiraan Sendiri) yang  elah dimasukkan pada 
+                        halaman Usulan.
                     </p>
                 </ol>
             </ol>

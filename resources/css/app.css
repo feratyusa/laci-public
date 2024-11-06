@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+    scroll-behavior: smooth;
+}
+
 /* This is a style to fix visible border while typing using react-select 
     combine with classNamePrefix on the component itself
 */

@@ -11,8 +11,8 @@ class Vendor extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlite';
-    protected $table = 'vendor';  
+    protected $connection = 'ehc';
+    protected $table = 'V_LACI_LEMBAGA';  
     
     protected $fillable = [
         'sandi',

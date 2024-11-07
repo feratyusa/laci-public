@@ -67,7 +67,7 @@ class NugieController extends Controller
                 foreach($value['parameters'] as $param) $bind[] = $param;
             }
         }
-        return ['sql' => trim($sql), 'bind' => $bind];
+        return ['sql' => trim("( " . $sql . " )"), 'bind' => $bind];
     }
 
     public function index()

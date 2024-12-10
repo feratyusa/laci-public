@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Proposal\ProposalController;
 use App\Http\Controllers\TutorialController;
+use App\Http\Controllers\Utilities\DashboardReloadController;
 use App\Http\Controllers\Utilities\NugieController;
 use App\Models\Event\EventParticipant;
 use Illuminate\Support\Facades\Route;
@@ -177,6 +178,10 @@ Route::middleware('auth')->group(function () {
             Route::put("/{id}/details/{detail_id}", [NugieController::class, 'updateDetails'])->name('nugie.update.details');
             Route::delete("/{id}/details/{detail_id}", [NugieController::class, 'destroyDetails'])->name('nugie.destroy.details');
             Route::get('/{id}/details/{detail_id}/duplicates', [NugieController::class, 'duplicateNugieRules'])->name('nugie.duplicate.rule');
+        });
+
+        Route::prefix('reportReload')->group(function() {
+            Route::get('', [DashboardReloadController::class, 'index'])->name('reportReload.index');
         });
     });
 

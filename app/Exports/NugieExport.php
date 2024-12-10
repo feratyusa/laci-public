@@ -12,7 +12,7 @@ class NugieExport implements WithMultipleSheets
 {
     use Exportable;
 
-    private string $nugie_id;    
+    private string $nugie_id;
 
     public function __construct(int $nugie_id)
     {

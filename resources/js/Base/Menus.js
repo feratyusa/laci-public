@@ -2,6 +2,7 @@ const MainMenu = [
         {name: 'Dashboard', link: 'dashboard', url: 'home'},
         {name: 'Report Pendidikan', link: [
             {name: 'Nugie', link: 'nugie.index', url: 'utilities/nugies'},
+            {name: 'Report Pendidikan Reload', link: 'reportReload.index', url: 'utilities/reportReload'},
         ], url: 'utilities'},
         {name: 'Usulan', link: 'proposal.index', url: 'proposals'},
         {name: 'Event', link: 'event.index', url: 'events'},

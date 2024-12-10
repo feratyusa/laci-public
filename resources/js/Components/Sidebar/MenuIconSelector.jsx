@@ -1,23 +1,24 @@
-import { 
-    AcademicCapIcon, 
-    ArrowLeftStartOnRectangleIcon, 
-    BanknotesIcon, 
-    BookOpenIcon, 
-    CalculatorIcon, 
-    CalendarDaysIcon, 
-    Cog8ToothIcon, 
-    ComputerDesktopIcon, 
-    ExclamationCircleIcon, 
-    HandThumbDownIcon, 
-    HomeIcon, 
-    LightBulbIcon, 
-    TagIcon, 
-    UserCircleIcon, 
+import {
+    AcademicCapIcon,
+    ArrowLeftStartOnRectangleIcon,
+    BanknotesIcon,
+    BookOpenIcon,
+    CalculatorIcon,
+    CalendarDaysIcon,
+    Cog8ToothIcon,
+    ComputerDesktopIcon,
+    ExclamationCircleIcon,
+    HandThumbDownIcon,
+    HomeIcon,
+    LightBulbIcon,
+    TagIcon,
+    UserCircleIcon,
     UserPlusIcon,
     SquaresPlusIcon,
     MapPinIcon,
     BeakerIcon,
-    BookmarkSquareIcon
+    BookmarkSquareIcon,
+    TableCellsIcon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -55,7 +56,7 @@ export default function MenuIconSelector({name=''}){
         name === 'master/user' ?
         <UserPlusIcon className="w-5"/>
         :
-        name === 'master/categories' ? 
+        name === 'master/categories' ?
         <TagIcon className="w-5"/>
         :
         name === 'master/mandatory-categories' ?
@@ -64,17 +65,20 @@ export default function MenuIconSelector({name=''}){
         name === 'master/budgets' ?
         <BanknotesIcon className="w-5"/>
         :
-        name === 'master/locations' ? 
+        name === 'master/locations' ?
         <MapPinIcon className="w-5"/>
         :
-        name === 'changelog' ? 
+        name === 'changelog' ?
         <SquaresPlusIcon className="w-5"/>
         :
         name === 'utilities' ?
         <BeakerIcon className="w-5"/>
         :
-        name === 'utilities/nugies' ? 
+        name === 'utilities/nugies' ?
         <BookmarkSquareIcon className="w-5"/>
+        :
+        name == 'utilities/reportReload' ?
+        <TableCellsIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

@@ -16,6 +16,8 @@ class DiklatSeeder extends Seeder
      */
     public function run(): void
     {
+        $keterangans = ['TIDAK HADIR', 'SAKIT'];
+
         if(env('EHC_ENV', 'sqlite') == 'sqlite'){
             $vendors = Vendor::all();
             $employees = Employee::all();
@@ -26,12 +28,12 @@ class DiklatSeeder extends Seeder
                 $vendor = $vendors[fake()->numberBetween(0,10)];
                 $course = Kursus::where('sandi', $key)->first();
                 $maxParticipants = fake()->numberBetween(50, 100);
-                $employeeStartIndex = fake()->numberBetween(0, count($employees) - 90);                
+                $employeeStartIndex = fake()->numberBetween(0, count($employees) - 90);
                 $start = fake()->dateTimeBetween('-5 months', '-1 month');
                 $end  = fake()->dateTimeInInterval($start, '+1 week');
-                for ($i=0; $i < $maxParticipants; $i++) { 
+                for ($i=0; $i < $maxParticipants; $i++) {
                     $employee = $employees[$i + $employeeStartIndex];
-                    $keterangan = fake()->numberBetween(0, 100) == 1 ? 'TIDAK HADIR' : '';
+                    $keterangan = fake()->numberBetween(0, 10) == 1 ? fake()->randomElement($keterangans) : null;
                     Diklat::create([
                         'nip' => $employee->nip,
                         'nama' => $employee->nama,
@@ -44,7 +46,7 @@ class DiklatSeeder extends Seeder
                         'tgl_mulai' => $start,
                         'tgl_selesai' => $end,
                         'keterangan' => $keterangan,
-                        'deskripsi' => '',
+                        'deskripsi' => $keterangan != null ? fake()->words(asText:true) : null,
                     ]);
                 }
             }
@@ -52,7 +54,7 @@ class DiklatSeeder extends Seeder
             $courses = Kursus::whereNotIn('sandi', [90111, 90222, 90333])->get();
 
             $indexes = [3, 7, 9, 10, 8];
-            
+
             foreach ($indexes as $index) {
                 $course = $courses[$index];
                 $vendor = $vendors[$index];
@@ -60,9 +62,9 @@ class DiklatSeeder extends Seeder
                 $employeeStartIndex = fake()->numberBetween(0, count($employees) - 90);
                 $start = fake()->dateTimeBetween('-5 months', '-1 month');
                 $end  = fake()->dateTimeInInterval($start, '+1 week');
-                for ($i=0; $i < $maxParticipants; $i++) { 
+                for ($i=0; $i < $maxParticipants; $i++) {
                     $employee = $employees[$i + $employeeStartIndex];
-                    $keterangan = fake()->numberBetween(0, 100) == 1 ? 'TIDAK HADIR' : '';
+                    $keterangan = fake()->numberBetween(0, 10) == 1 ? fake()->randomElement($keterangans) : null;
                     Diklat::create([
                         'nip' => $employee->nip,
                         'nama' => $employee->nama,
@@ -75,7 +77,7 @@ class DiklatSeeder extends Seeder
                         'tgl_mulai' => $start,
                         'tgl_selesai' => $end,
                         'keterangan' => $keterangan,
-                        'deskripsi' => '',
+                        'deskripsi' => $keterangan != null ? fake()->words(asText:true) : null,
                     ]);
                 }
             }

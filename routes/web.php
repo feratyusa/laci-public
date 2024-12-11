@@ -182,6 +182,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('reportReload')->group(function() {
             Route::get('', [DashboardReloadController::class, 'index'])->name('reportReload.index');
+            Route::get('get', [DashboardReloadController::class, 'getDiklat'])->name('reportReload.get');
         });
     });
 

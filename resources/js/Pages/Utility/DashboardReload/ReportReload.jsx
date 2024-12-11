@@ -1,5 +1,5 @@
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
-import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { forEach, get, groupBy, isEmpty, map, values } from "lodash"
 import { useEffect } from "react";
 import { useState } from "react"
@@ -84,9 +84,10 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
             id: 'pelatihan',
             header:<span>Pelatihan</span>,
             cell: ({row}) =><p>{row.original.prop}</p>,
+            enableSorting: false,
         }),
-        columnHelper.accessor(row => row.value, {
-            id: 'num',
+        columnHelper.accessor(row => row?.value['HADIR']?.length ?? 0, {
+            id: 'hadir',
             header:<span>Hadir</span>,
             cell: ({row}) =>
                     <p className="underline text-blue-500 cursor-pointer"
@@ -97,11 +98,11 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
                             }
                         }
                     >
-                        {row.original.value['HADIR']?.length ?? 0}
+                        {Number(row.original.value['HADIR']?.length ?? 0)}
                     </p>,
         }),
-        columnHelper.accessor(row => row.value, {
-            id: 'num',
+        columnHelper.accessor(row => row?.value['SAKIT']?.length ?? 0, {
+            id: 'sakit',
             header:<span>Sakit</span>,
             cell: ({row}) =>
                 <p className="underline text-blue-500 cursor-pointer"
@@ -115,8 +116,8 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
                     {row.original.value['SAKIT']?.length ?? 0}
                 </p>,
         }),
-        columnHelper.accessor(row => row.value, {
-            id: 'num',
+        columnHelper.accessor(row => row?.value['TIDAK']?.length ?? 0, {
+            id: 'tidak',
             header:<span>Ijin / Tidak Hadir</span>,
             cell: ({row}) =>
                 <p className="underline text-blue-500 cursor-pointer"
@@ -138,6 +139,8 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: 'includesString',
     })
 
     useEffect(() => {
@@ -145,7 +148,17 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
     }, [data])
 
     return(
-        <TanstackTable table={table} />
+        <>
+            <div className="mb-2">
+                <input
+                    className="rounded-md"
+                    value={table.getState().globalFilter}
+                    onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+                    placeholder="Search ..."
+                />
+            </div>
+            <TanstackTable table={table} />
+        </>
     )
 }
 
@@ -197,10 +210,22 @@ function ParticipantDetails({data, showDeskripsi=false}){
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: 'includesString',
     })
 
     return(
-        <TanstackTable table={table} alignTable="table-auto"/>
+        <>
+            <div className="mb-2">
+                <input
+                    className="rounded-md"
+                    value={table.getState().globalFilter}
+                    onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+                    placeholder="Search ..."
+                />
+            </div>
+            <TanstackTable table={table} alignTable="table-auto"/>
+        </>
     )
 }
 

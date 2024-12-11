@@ -16,6 +16,9 @@ return new class extends Migration
             $table->integer('sandi');
             $table->string('lengkap');
             $table->enum('kategori', array_column(EventCategory::cases(), 'value'))->nullable();
+            $table->string('lini');
+            $table->string('sektor');
+            $table->string('sertifikasi');
             $table->timestamps();
         });
     }

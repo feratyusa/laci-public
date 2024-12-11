@@ -121,10 +121,28 @@ class KursusFactory extends Factory
         // Kategori
         $category = array_column(EventCategory::cases(), 'value');
 
+        $lini = ['BUSINESS', 'SUPPORTING'];
+
+        $sektor = [
+            'LENDING',
+            'FUNDING',
+            'Marketing',
+            'Treasury',
+            'Teknologi Informasi'
+        ];
+
+        $sertifikasi = [
+            'non',
+            'sertifikasi'
+        ];
+
         return [
             'sandi' => fake()->unique()->numberBetween(90000, 99000),
             'lengkap' => fake()->unique()->randomElement($kursus),
             'kategori' => fake()->randomElement($category),
+            'lini' => fake()->randomElement($lini),
+            'sektor' => fake()->randomElement($sektor),
+            'sertifikasi' => fake()->randomElement($sertifikasi),
         ];
     }
 

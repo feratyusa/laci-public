@@ -8,7 +8,7 @@ import axios from "axios"
 
 export default function BetweenDates({
     title=null,
-    start, 
+    start,
     end,
     mode,
     setStart,
@@ -23,7 +23,7 @@ export default function BetweenDates({
     function handleReset(){
         setStart('')
         setEnd('')
-    }    
+    }
 
     function handleEventsChange(){
         setLoaded(false)
@@ -50,7 +50,7 @@ export default function BetweenDates({
                     <div className="mr-5">
                         <InputLabel value={"Dari"} htmlFor="start"/>
                     </div>
-                    <InputDate 
+                    <InputDate
                         id="start"
                         name="start"
                         value={start}

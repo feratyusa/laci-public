@@ -28,26 +28,15 @@ class DashboardReloadController extends Controller
                         ->whereBetween('diklat.tgl_mulai', [$validated['start_date'], $validated['end_date']])
                         ->get();
 
-        $withOut = $query->whereNull('keterangan');
-        $with = $query->whereNotNull('keterangan');
-
-        $withOutGet = [
-            'lini' => $withOut->groupBy('lini'),
-            'sektor' => $withOut->groupBy('sektor'),
-            'sertifikasi' => $withOut->groupBy('sertifikasi'),
-            'kategori' => $withOut->groupBy('kategori')
-        ];
-
-        $withGet = [
-            'lini' => $with->groupBy('lini'),
-            'sektor' => $with->groupBy('sektor'),
-            'sertifikasi' => $with->groupBy('sertifikasi'),
-            'kategori' => $with->groupBy('kategori')
+        $all = [
+            'lini' => $query->whereNotNull('lini')->groupBy('lini'),
+            'sektor' => $query->whereNotNull('sektor')->groupBy('sektor'),
+            'sertifikasi' => $query->whereNotNull('sertifikasi')->groupBy('sertifikasi'),
+            'kategori' => $query->whereNotNull('kategori')->groupBy('kategori')
         ];
 
         return response()->json([
-            'with' => $withGet,
-            'withOut' => $withOutGet,
+            'reports' => $all
         ]);
     }
 }

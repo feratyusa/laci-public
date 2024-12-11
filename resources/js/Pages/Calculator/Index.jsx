@@ -13,18 +13,18 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 export default function Index({
     auth,
     budget=null,
-    year=new Date().getFullYear(),    
-}){    
+    year=new Date().getFullYear(),
+}){
     const [startDate, setStartDate] = useState(`${year}-01-01`)
     const [endDate, setEndDate] = useState(`${year}-12-31`)
-    const [events, setEvents] = useState(null)    
+    const [events, setEvents] = useState(null)
     const [budgetID, setBudgetID] = useState(budget)
     const [mode, setMode] = useState(1)
     const [loaded, setLoaded] = useState(true)
 
-    const dateString = startDate && endDate ? ` (${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)})` : null    
+    const dateString = startDate && endDate ? ` (${changeToIndonesiaDateTime(new Date(startDate), true)} - ${changeToIndonesiaDateTime(new Date(endDate), true)})` : null
     const tabClass = "py-2 px-5 bg-red-100 uppercase font-bold text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"
-    
+
     return(
         <Authenticated
             user={auth.user}
@@ -42,7 +42,7 @@ export default function Index({
                     </div>
                 </div>
                 <div className="mb-10">
-                    <BetweenDates 
+                    <BetweenDates
                         title={null}
                         start={startDate}
                         end={endDate}
@@ -99,7 +99,7 @@ export default function Index({
                                         <p className="uppercase font-bold text-white">Pilih rentang tanggal mulai event terlebih dahulu!</p>
                                     </div>
                                 </div>
-                                : 
+                                :
                                 events.publics.length == 0 && events.inHouses.length == 0 ?
                                 <div className="flex justify-center">
                                     <div className="w-fit bg-yellow-900 py-3 px-5 rounded-lg shadow-lg">
@@ -110,7 +110,7 @@ export default function Index({
                                 <BudgetReport
                                     start={startDate}
                                     end={endDate}
-                                    budgetID={budgetID}                 
+                                    budgetID={budgetID}
                                     setBudgetID={setBudgetID}
                                     mode={mode}
                                     setMode={setMode}
@@ -124,7 +124,7 @@ export default function Index({
             </Card>
 
 
-            
+
         </Authenticated>
     )
 }

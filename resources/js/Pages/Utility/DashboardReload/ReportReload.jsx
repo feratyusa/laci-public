@@ -9,13 +9,16 @@ function ReportReloadTable({
     data={},
     setDetail,
     setDetailName,
+    setPelatihanName
 }){
     return(
         <table className="text-center">
             <thead>
                 <tr className="border-2 border-red-500 bg-red-500 text-white">
-                    <th className="py-2 px-10 capitalize">{name}</th>
-                    <th className="py-2 px-10">Jumlah</th>
+                    <th className="p-2 capitalize">{name}</th>
+                    <th className="p-2">Jumlah Peserta</th>
+                    <th className="p-2">Hadir</th>
+                    <th className="p-2">Tidak Hadir</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +50,7 @@ function ReportReloadTable({
                                             else{
                                                 setDetailName(`${name} ${key}`)
                                             }
+                                            setPelatihanName(null)
                                         }
                                     }>
                                     {key}
@@ -54,6 +58,12 @@ function ReportReloadTable({
                             </td>
                             <td>
                                 <p>{data[key].length}</p>
+                            </td>
+                            <td>
+                                <p>{data[key].filter(f => f.keterangan == null).length}</p>
+                            </td>
+                            <td>
+                                <p>{data[key].filter(f => f.keterangan != null).length}</p>
                             </td>
                         </tr>
                     ))
@@ -107,7 +117,7 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
         }),
         columnHelper.accessor(row => row.value, {
             id: 'num',
-            header:<span>Tidak Hadir</span>,
+            header:<span>Ijin / Tidak Hadir</span>,
             cell: ({row}) =>
                 <p className="underline text-blue-500 cursor-pointer"
                     onClick={() => {
@@ -207,17 +217,40 @@ export default function ReportReload({
         <div className="p-5">
             <div className="flex gap-10 justify-center">
                 <div className="mb-5">
-                    <ReportReloadTable name="sektor" data={get(reports, 'sektor')} setDetail={setDetail} setDetailName={setDetailName}/>
+                    <ReportReloadTable
+                        name="sektor"
+                        data={get(reports, 'sektor')}
+                        setDetail={setDetail}
+                        setDetailName={setDetailName}
+                        setPelatihanName={setPelatihanName}
+                    />
                 </div>
                 <div className="flex flex-col items-center mb-5">
                     <div className="mb-5">
-                        <ReportReloadTable name="kategori" data={get(reports, 'kategori')} setDetail={setDetail} setDetailName={setDetailName}/>
+                        <ReportReloadTable
+                            name="kategori"
+                            data={get(reports, 'kategori')}
+                            setDetail={setDetail}
+                            setDetailName={setDetailName}
+                            setPelatihanName={setPelatihanName}
+                        />
                     </div>
                     <div className="mb-5">
-                        <ReportReloadTable name="lini" data={get(reports, 'lini')} setDetail={setDetail} setDetailName={setDetailName}/>
+                        <ReportReloadTable
+                            name="lini" data={get(reports, 'lini')}
+                            setDetail={setDetail}
+                            setDetailName={setDetailName}
+                            setPelatihanName={setPelatihanName}
+                        />
                     </div>
                     <div className="mb-5">
-                        <ReportReloadTable name="sertifikasi" data={get(reports, 'sertifikasi')} setDetail={setDetail} setDetailName={setDetailName}/>
+                        <ReportReloadTable
+                            name="sertifikasi"
+                            data={get(reports, 'sertifikasi')}
+                            setDetail={setDetail}
+                            setDetailName={setDetailName}
+                            setPelatihanName={setPelatihanName}
+                        />
                     </div>
                 </div>
             </div>

@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Utilities;
 
 use App\Http\Controllers\Controller;
-use App\Models\EHC\Diklat;
-use App\Models\EHC\Employee;
-use App\Models\EHC\Kursus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -22,10 +19,13 @@ class DashboardReloadController extends Controller
             'end_date' => ['required', 'date'],
         ]);
 
+        $diklatTable = env('EHC_DIKLAT', 'diklat');
+        $courseTable = env('EHC_KURSUS', 'courses');
+
         $query = DB::connection(env('EHC_ENV', 'sqlite'))
-                        ->table('diklat')
-                        ->leftJoin('courses', 'courses.sandi', '=', 'diklat.kd_kursus')
-                        ->whereBetween('diklat.tgl_mulai', [$validated['start_date'], $validated['end_date']])
+                        ->table($diklatTable)
+                        ->leftJoin($courseTable, $courseTable.".sandi", '=', $diklatTable.'.kd_kursus')
+                        ->whereBetween('tgl_mulai', [$validated['start_date'], $validated['end_date']])
                         ->get();
 
         $all = [

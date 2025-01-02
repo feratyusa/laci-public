@@ -1,6 +1,4 @@
-# Sistem Administrasi Learning Center (in development)
-
-# LACI Development (v0.80)
+# Sistem Administrasi Learning Center v1.0.0
 
 ## Prerequisite
 
@@ -17,8 +15,7 @@ php artisan local:db-setup
 
 This setup will seed local databse with dummy data.
 
-If you want to migrate EHC Data to Local Database, first **delete all data** from local EHC table (do not delete the tables)
-and run below code:
+If you want to migrate EHC Data to Local Database, first **delete all data** from local EHC table (do not delete the tables). Make sure you are in intra network, and then run below code:
 
 ```bash
 php artisan local:ehc-migrate
@@ -31,7 +28,7 @@ npm run dev # first terminal
 php artisan serve # second separate terminal
 ```
 
-# Build
+## Build
 
 ```bash
 npm run build

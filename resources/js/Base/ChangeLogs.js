@@ -1,9 +1,20 @@
+const _01_03_2025 = {
+    title: 'v1.0.0 (03 Januari 2025)',
+    md: `
+#### New Features
+- Guidebook untuk penggunaan LACI (finally)
+- Search filter pada hasil filter pegawai di menu NUGIE
+#### Fixes
+- Fix tanggal input untuk Dashboard Reload
+`
+}
+
 const _11_07_2024 = {
-    title: 'v0.80 (11 November 2024)',
+    title: 'v0.8.0 (11 November 2024)',
     md: `
 #### New Features
 - Dynamic Utility for General Information on Education atau NUGIE. Fitur Report Maker untuk ,melihat ringkasan jumlah dan detail pegawai yang mengikuti pelatihan. ( basically Report Pendidikan v2.0 )
-    1. Dapat menyimpan report yang telah dibuat sehingga dapat ditinjau kembali. 
+    1. Dapat menyimpan report yang telah dibuat sehingga dapat ditinjau kembali.
     2. Berbasis Query Builder sehingga lebih fleksibel dalam mengatur kriteria report yang dibuat.
     3. Dapat melihat SQL berdasarkan kriteria yang telah dibuat.
     4. Duplikasi Nugie ataupun Rules Nugie yang telah dibuat.
@@ -21,7 +32,7 @@ const _11_07_2024 = {
 }
 
 const _24_09_2024 = {
-title: 'v0.25 (24 September 2024)',
+title: 'v0.2.5 (24 September 2024)',
 md: `
 #### Features
 - **Local server launched!**
@@ -35,7 +46,7 @@ md: `
 }
 
 const _10_10_2024 = {
-title: 'v0.50 (10 Oktober 2024)',
+title: 'v0.5.0 (10 Oktober 2024)',
 md: `
 #### New Features
 - Anggaran Awal Usulan dan Anggaran Realisasi event
@@ -56,6 +67,7 @@ md: `
 }
 
 const changes = [
+    _01_03_2025,
     _11_07_2024,
     _10_10_2024,
     _24_09_2024,

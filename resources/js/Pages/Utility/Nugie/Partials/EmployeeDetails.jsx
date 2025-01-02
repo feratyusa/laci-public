@@ -1,6 +1,19 @@
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { createColumnHelper, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+
+function SearchInput({
+    table=useReactTable()
+}){
+    return(
+        <input
+            className="rounded-md"
+            value={table.getState().globalFilter}
+            onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+            placeholder="Search ..."
+        />
+    )
+}
 
 export default function EmployeeDetails({empIn=[], empOut=[]}){
     const columnHelper = createColumnHelper()
@@ -42,6 +55,7 @@ export default function EmployeeDetails({empIn=[], empOut=[]}){
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
     })
 
     const empOutTable = useReactTable({
@@ -50,9 +64,10 @@ export default function EmployeeDetails({empIn=[], empOut=[]}){
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
     })
 
-    const tabClass = "p-3 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"    
+    const tabClass = "p-3 bg-red-100 uppercase font-bold rounded-lg text-red-500 data-[hover]:bg-red-300 data-[hover]:text-white data-[selected]:bg-red-500 data-[selected]:text-white border-0 ring-0"
 
     return(
         <TabGroup>
@@ -62,12 +77,18 @@ export default function EmployeeDetails({empIn=[], empOut=[]}){
             </TabList>
             <TabPanels>
                 <TabPanel>
+                    <div className="mb-5">
+                        <SearchInput table={empInTable} />
+                    </div>
                     <TanstackTable table={empInTable} alignTable="table-auto"/>
                 </TabPanel>
                 <TabPanel>
+                    <div className="mb-5">
+                        <SearchInput table={empOutTable} />
+                    </div>
                     <TanstackTable table={empOutTable} alignTable="table-auto"/>
                 </TabPanel>
             </TabPanels>
-        </TabGroup>        
+        </TabGroup>
     )
 }

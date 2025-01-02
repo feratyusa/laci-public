@@ -20,7 +20,7 @@ const MainMenu = [
     ]
 
 const ProfileMenu = [
-        {name: 'Profile', link: 'profile.edit', url:'profile'},
+        // {name: 'Profile', link: 'profile.edit', url:'profile'},
         {name: 'Logout', link: 'logout', url:'logout', method: 'post'}
     ]
 

@@ -16,4 +16,8 @@ function changeToInputDate(timestamp=0){
     return(`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
 }
 
-export {changeToIndonesiaDateTime, changeToInputDate}
+function changeToInputDateFromDate(date=new Date()){
+    return(`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
+}
+
+export {changeToIndonesiaDateTime, changeToInputDate, changeToInputDateFromDate}

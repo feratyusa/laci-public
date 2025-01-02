@@ -1,16 +1,18 @@
+import { changeToInputDate, changeToInputDateFromDate } from "@/helpers/IndoesiaDate";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect } from "react";
 
 export default function InputDateDashboard({
+    date,
     setReportData,
     setLoaded,
     loaded
 }){
     const {data, setData, reset} = useForm({
-        'start_date': '2024-01-01',
-        'end_date': '2024-12-31',
+        'start_date': changeToInputDate(Date.parse(`${new Date().getFullYear()}-01-01`)),
+        'end_date': changeToInputDateFromDate(new Date()),
     });
 
     function handleSearch(){
@@ -22,12 +24,11 @@ export default function InputDateDashboard({
             })
             .catch((error) => {
                 console.debug(error)
+                reset();
             })
             .finally(() => {
                 setLoaded(true)
             })
-
-        reset();
     }
 
     useEffect(() => {

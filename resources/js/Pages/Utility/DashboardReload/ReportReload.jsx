@@ -25,7 +25,7 @@ function ReportReloadTable({
                 {
                     isEmpty(data) ?
                     <tr className="border-2 border-red-500">
-                            <td className="p-2 bg-gray-200" colSpan={2}>
+                            <td className="p-2 bg-gray-200" colSpan={5}>
                                 <p className="uppercase font-bold">
                                     Kosong
                                 </p>

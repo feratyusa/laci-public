@@ -14,7 +14,7 @@ import { changeToIndonesiaDateTime } from '@/helpers/IndoesiaDate';
 
 function ReportCard({children}){
     return(
-        <div className='bg-white rounded-lg shadow-lg border-2 p-5 hover:shadow-red-500/30'>                    
+        <div className='bg-white rounded-lg shadow-lg border-2 p-5 hover:shadow-red-500/30'>
             {children}
         </div>
     )
@@ -54,7 +54,7 @@ function DocumentStatuses({user}){
             })
     }, [])
 
-    return(        
+    return(
         <div className='grid grid-cols-3 gap-5 m-5'>
             <ReportCard>
                 <TitleReportCard textSize='xl'>
@@ -91,8 +91,8 @@ function DocumentStatuses({user}){
                 <div className='flex flex-col items-center gap-2 font-bold mt-2'>
                     <DoucumentsCount count={unfinishedDocuments.inHouse}/>
                 </div>
-            </ReportCard>                             
-        </div> 
+            </ReportCard>
+        </div>
     )
 }
 
@@ -130,7 +130,7 @@ function RangeSelection({setRange, setBudgets}){
         )
     }
     return(
-        <div className='grid grid-cols-5 gap-2 mb-3'>            
+        <div className='grid grid-cols-5 gap-2 mb-3'>
             <RangeButton range={1}/>
             <RangeButton range={2}/>
             <RangeButton range={3}/>
@@ -207,7 +207,7 @@ function BudgetReportTable({budget, budgetTypePrices}){
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRecap)}</td>
                     <td className={`${bodyClass} ${colorAware}`}>{ToRupiah(totalRemainder)}</td>
                     <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalRecapPercentage}/></td>
-                    <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalRemainderPercentage}/></td>                    
+                    <td className={`${bodyClass} ${colorAware}`}><PercentageNumber number={totalRemainderPercentage}/></td>
                 </tr>
             </tbody>
         </table>
@@ -218,7 +218,7 @@ function ReportDetails({dateStrings={start: '', end: ''}, eventsCount=0}){
     return(
         <div className='grid grid-cols-2 text-red-500 mb-5'>
             <div className='text-right px-5 border-r-2 border-red-500'>
-                <p 
+                <p
                     className='font-bold text-lg'
                 >
                     {changeToIndonesiaDateTime(new Date(dateStrings.start), true)} - {changeToIndonesiaDateTime(new Date(dateStrings.end), true)}</p>
@@ -227,11 +227,11 @@ function ReportDetails({dateStrings={start: '', end: ''}, eventsCount=0}){
                 <p className='font-bold text-lg'>Jumlah Event: {eventsCount}</p>
             </div>
         </div>
-    )    
+    )
 }
 
 function ModeSelection({setMode}){
-    const [selected, setSelected] = useState(0)    
+    const [selected, setSelected] = useState(0)
 
     function handleModeChange(value){
         setMode(value)
@@ -247,40 +247,40 @@ function ModeSelection({setMode}){
     }
 
     return(
-        <div className='grid grid-cols-2 gap-2 mb-1'>            
+        <div className='grid grid-cols-2 gap-2 mb-1'>
             <ModeButton text="Anggaran Realisasi" value={0}/>
-            <ModeButton text="Anggaran Realisasi dan Awal" value={1}/>            
+            <ModeButton text="Anggaran Realisasi dan Awal" value={1}/>
         </div>
     )
 }
 
-function BudgetReportCard({year}){    
+function BudgetReportCard({year}){
     const [mode, setMode] = useState(0)
-    const [range, setRange] = useState(1)    
+    const [range, setRange] = useState(1)
     const [data, setData] = useState(false)
 
     useEffect(() => {
-        axios.get('/api/dashboard/budgetReport', {params: {year: "2024", range: range, mode: mode}})
+        axios.get('/api/dashboard/budgetReport', {params: {year: year, range: range, mode: mode}})
             .then((response) => {
                 setData(response.data.data)
             })
     }, [range, mode])
-    
+
     return(
         <div className='m-5 bg-white rounded-lg p-5 shadow-lg'>
             <div className='mb-5'>
                 <TitleReportCard textSize='xl'>
                     <BanknotesIcon className='w-8'/>
                     <div>
-                        <p className='font-bold'>Rekap Anggaran Tahun {new Date().getFullYear()}</p>                
+                        <p className='font-bold'>Rekap Anggaran Tahun {new Date().getFullYear()}</p>
                         <p className='text-sm'>untuk rekap lainnya dapat menggunakan menu <a href={route('calculator.index')} className='underline text-blue-500'>Kalkulator</a></p>
                     </div>
-                </TitleReportCard>             
+                </TitleReportCard>
             </div>
             <ModeSelection mode={mode} setMode={setMode}/>
             <RangeSelection range={range} setRange={setRange} setBudgets={setData}/>
             {
-                year == false ? 
+                year == false ?
                 <div className='text-center text-red-500'>
                     <p className='font-bold text-2xl'>Anggaran Tahun {new Date().getFullYear()} belum ada. </p>
                     <p className='font-bold text-lg'>Silahkan membuat terlebih dahulu di menu <a href={route('budget.index')} className='text-blue-500 underline'>Master Anggaran</a></p>
@@ -300,9 +300,9 @@ function BudgetReportCard({year}){
     )
 }
 
-export default function Dashboard({ 
-    auth,    
-}) {    
+export default function Dashboard({
+    auth,
+}) {
     const [budgets, setBudgets] = useState(false)
 
     useEffect(() => {
@@ -319,7 +319,7 @@ export default function Dashboard({
         >
             <Head title="Dashboard" />
 
-            <DocumentStatuses user={auth.user}/>  
+            <DocumentStatuses user={auth.user}/>
             {budgets && <BudgetReportCard year={budgets.find(b => b.label == new Date().getFullYear())?.label ?? false}/>}
         </AuthenticatedLayout>
     );

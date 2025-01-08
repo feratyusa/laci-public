@@ -24,7 +24,7 @@ class DashboardController extends Controller
         return Inertia::render('Utility/Testing/Test');
     }
 
-    public function dashboard(){                    
+    public function dashboard(){
         return Inertia::render('Dashboard');
     }
 
@@ -35,9 +35,9 @@ class DashboardController extends Controller
         $uncompleteCount['proposal'] = 0;
         $proposals = Proposal::where('assign_to', $user->username)->get();
         foreach($proposals as $proposal){
-            if($proposal->isMissingCategories() == false) $uncompleteCount['proposal'] += 1;            
+            if($proposal->isMissingCategories() == false) $uncompleteCount['proposal'] += 1;
         }
-        
+
         $uncompleteCount['public'] = 0;
         $publics = Event::whereHas('proposal', function(Builder $query) {
             $query->where('event_category', EventCategory::PT->value);
@@ -48,7 +48,7 @@ class DashboardController extends Controller
 
         $uncompleteCount['inHouse'] = 0;
         $inHouses = Event::whereHas('proposal', function(Builder $query) {
-            $query->where('event_category', EventCategory::PT->value);
+            $query->where('event_category', EventCategory::IHT->value);
         })->where('assign_to', $user->username)->get();
         foreach($inHouses as $event){
             if($event->isMissingCategories()  == false) $uncompleteCount['inHouse'] += 1;
@@ -70,10 +70,10 @@ class DashboardController extends Controller
         // Year Budget
         $budget = Budget::with('details')->where('year', $validated['year'])->first();
 
-        
+
         $budget['total_value'] = 0;
         foreach($budget->details as $detail){
-            $budgetTypePrices[$detail->budget_type_id] = 0;            
+            $budgetTypePrices[$detail->budget_type_id] = 0;
             $budget['total_value'] += intval($detail->value);
         }
 
@@ -102,13 +102,13 @@ class DashboardController extends Controller
                 $endString = 'last day of now';
                 break;
         };
-        
+
         $dateStrings = (object)[
             'start' => $budget->year."-".date('m-d', strtotime($startString)),
             'end' => $budget->year."-".date('m-d', strtotime($endString)),
-        ];        
+        ];
 
-        $events = Event::whereRaw('start_date between ? and ?', [$dateStrings->start, $dateStrings->end])->get();        
+        $events = Event::whereRaw('start_date between ? and ?', [$dateStrings->start, $dateStrings->end])->get();
 
         foreach($events as $event){
             if($validated['mode'] == 0 && $event->defaultPrices == 1) continue;

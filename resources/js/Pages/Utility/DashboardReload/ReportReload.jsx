@@ -1,16 +1,89 @@
+import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import TanstackTable from "@/Components/TanstackTable/TanstackTable";
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import axios from "axios";
 import { forEach, get, groupBy, isEmpty, map, values } from "lodash"
 import { useEffect } from "react";
 import { useState } from "react"
 
+function ReportReloadRow({
+    value,
+    column,
+    startDate,
+    endDate,
+    setDetail,
+    setDetailName,
+    setPelatihanName,
+}){
+    const [data, setData] = useState(null)
+
+    useEffect(() => {
+        setData(null)
+        axios.get(route('reportReload.get.ColumnValues'), {params: {start_date: startDate, end_date: endDate, column: column, value: value}})
+            .then((response) => {
+                setData(response.data.result)
+            })
+    }, [startDate, endDate])
+
+    return(
+        <tr className="border-2 border-red-500">
+            <td className="p-2">
+                <p className="uppercase cursor-pointer underline text-blue-500"
+                    onClick={() =>
+                        {
+                            var d = groupBy(data, ({pelatihan}) => pelatihan)
+                            var e = forEach(d, (value, key) => d[key] = groupBy(d[key], (item) => {
+                                return item.keterangan == null ? "HADIR" : item.keterangan == "TIDAK HADIR" ? "TIDAK" : item.keterangan
+                            }))
+
+                            setDetail(e)
+                            if (column == "sertifikasi") {
+                                setDetailName(`${value == "non" ? "non" : ""} ${column}`)
+                            }
+                            else{
+                                setDetailName(`${column} ${value}`)
+                            }
+                            setPelatihanName(null)
+                        }
+                    }
+                >
+                    {value}
+                </p>
+            </td>
+            {
+                data == null ?
+                <td colSpan={3}>
+                    <div className="flex items-center justify-center ">
+                        <LoadingCircle size="w-5 h-5"/>
+                    </div>
+                </td>
+                :
+                <>
+                    <td>
+                        <p>{data.length}</p>
+                    </td>
+                    <td>
+                        <p>{data.filter(f => f.keterangan == null).length}</p>
+                    </td>
+                    <td>
+                        <p>{data.filter(f => f.keterangan != null).length}</p>
+                    </td>
+                </>
+            }
+        </tr>
+    )
+}
+
 function ReportReloadTable({
     name,
-    data={},
+    data=[],
+    startDate,
+    endDate,
     setDetail,
     setDetailName,
     setPelatihanName
 }){
+    console.log(data)
     return(
         <table className="text-center">
             <thead>
@@ -32,40 +105,16 @@ function ReportReloadTable({
                             </td>
                         </tr>
                     :
-                    Object.keys(data).map((key, index) => (
-                        <tr className="border-2 border-red-500">
-                            <td className="p-2">
-                                <p className="uppercase cursor-pointer underline text-blue-500"
-                                    onClick={() =>
-                                        {
-                                            var d = groupBy(data[key], ({pelatihan}) => pelatihan)
-                                            var e = forEach(d, (value, key) => d[key] = groupBy(d[key], (item) => {
-                                                return item.keterangan == null ? "HADIR" : item.keterangan == "TIDAK HADIR" ? "TIDAK" : item.keterangan
-                                            }))
-
-                                            setDetail(e)
-                                            if (name == "sertifikasi") {
-                                                setDetailName(`${key == "non" ? "non" : ""} ${name}`)
-                                            }
-                                            else{
-                                                setDetailName(`${name} ${key}`)
-                                            }
-                                            setPelatihanName(null)
-                                        }
-                                    }>
-                                    {key}
-                                </p>
-                            </td>
-                            <td>
-                                <p>{data[key].length}</p>
-                            </td>
-                            <td>
-                                <p>{data[key].filter(f => f.keterangan == null).length}</p>
-                            </td>
-                            <td>
-                                <p>{data[key].filter(f => f.keterangan != null).length}</p>
-                            </td>
-                        </tr>
+                    data.map(value => (
+                        <ReportReloadRow
+                            value={value}
+                            column={name}
+                            startDate={startDate}
+                            endDate={endDate}
+                            setDetail={setDetail}
+                            setDetailName={setDetailName}
+                            setPelatihanName={setPelatihanName}
+                        />
                     ))
                 }
             </tbody>
@@ -162,7 +211,7 @@ function DetailsData({data=[], setParticipants, setParticipantName, setShowDeskr
     )
 }
 
-function ParticipantDetails({data, showDeskripsi=false}){
+function ParticipantDetails({data}){
     console.debug(data)
     const columnHelper = createColumnHelper()
 
@@ -230,55 +279,80 @@ function ParticipantDetails({data, showDeskripsi=false}){
 }
 
 export default function ReportReload({
-    reports=[]
+    startDate,
+    endDate,
 }){
     const [detailName, setDetailName] = useState(null)
     const [pelatihanName, setPelatihanName] = useState(null)
-    const [detail, setDetail] = useState([]);
+    const [detail, setDetail] = useState([])
     const [participants, setParticipants] = useState([])
     const [showDeskripsi, setShowDeskripsi] = useState(false)
 
+    const [columns, setColumns] = useState(null)
+
+    useEffect(() => {
+        axios.get(route('reportReload.get.AllColumnValues'))
+            .then((response) => {
+                setColumns(response.data.result)
+            })
+    }, [startDate, endDate])
+
     return(
         <div className="p-5">
-            <div className="flex gap-10 justify-center">
-                <div className="mb-5">
-                    <ReportReloadTable
-                        name="sektor"
-                        data={get(reports, 'sektor')}
-                        setDetail={setDetail}
-                        setDetailName={setDetailName}
-                        setPelatihanName={setPelatihanName}
-                    />
+            {
+                columns == null ?
+                <div className="flex justify-center mt-2">
+                    <LoadingCircle />
                 </div>
-                <div className="flex flex-col items-center mb-5">
+                :
+                <div className="flex gap-10 justify-center">
                     <div className="mb-5">
                         <ReportReloadTable
-                            name="kategori"
-                            data={get(reports, 'kategori')}
+                            name="sektor"
+                            data={get(columns, 'sektor')}
                             setDetail={setDetail}
                             setDetailName={setDetailName}
                             setPelatihanName={setPelatihanName}
+                            startDate={startDate}
+                            endDate={endDate}
                         />
                     </div>
-                    <div className="mb-5">
-                        <ReportReloadTable
-                            name="lini" data={get(reports, 'lini')}
-                            setDetail={setDetail}
-                            setDetailName={setDetailName}
-                            setPelatihanName={setPelatihanName}
-                        />
-                    </div>
-                    <div className="mb-5">
-                        <ReportReloadTable
-                            name="sertifikasi"
-                            data={get(reports, 'sertifikasi')}
-                            setDetail={setDetail}
-                            setDetailName={setDetailName}
-                            setPelatihanName={setPelatihanName}
-                        />
+                    <div className="flex flex-col items-center mb-5">
+                        <div className="mb-5">
+                            <ReportReloadTable
+                                name="kategori"
+                                data={get(columns, 'kategori')}
+                                setDetail={setDetail}
+                                setDetailName={setDetailName}
+                                setPelatihanName={setPelatihanName}
+                                startDate={startDate}
+                                endDate={endDate}
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <ReportReloadTable
+                                name="lini" data={get(columns, 'lini')}
+                                setDetail={setDetail}
+                                setDetailName={setDetailName}
+                                setPelatihanName={setPelatihanName}
+                                startDate={startDate}
+                                endDate={endDate}
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <ReportReloadTable
+                                name="sertifikasi"
+                                data={get(columns, 'sertifikasi')}
+                                setDetail={setDetail}
+                                setDetailName={setDetailName}
+                                setPelatihanName={setPelatihanName}
+                                startDate={startDate}
+                                endDate={endDate}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <div className="mb-5">
                 {
                     detailName == null ?

@@ -7,14 +7,13 @@ import LoadingCircle from "@/Components/Loading/LoadingCircle";
 import ReportReload from "./ReportReload";
 import { Card } from "@material-tailwind/react";
 import { TableCellsIcon } from "@heroicons/react/24/outline";
+import { changeToInputDate, changeToInputDateFromDate } from "@/helpers/IndoesiaDate";
 
 export default function Index({
     auth
 }) {
-    const [reportData, setReportData] = useState([]);
-    const [loaded, setLoaded] = useState(true);
-
-    console.debug(reportData);
+    const [startDate, setStartDate] = useState(changeToInputDate(Date.parse(`${new Date().getFullYear()}-01-01`)));
+    const [endDate, setEndDate] = useState(changeToInputDateFromDate(new Date()));
 
     return (
         <Authenticated
@@ -26,9 +25,8 @@ export default function Index({
             <div className="container min-w-full p-5">
                 <div className="w-full">
                     <InputDateDashboard
-                        setReportData={setReportData}
-                        setLoaded={setLoaded}
-                        loaded={loaded}
+                        setStartDate={setStartDate}
+                        setEndDate={setEndDate}
                     />
                     <Card className="m-5 p-5">
                         <div className="flex gap-5 text-red-500 font-bold">
@@ -40,12 +38,10 @@ export default function Index({
                         </div>
                         <div className="m-5">
                             {
-                                loaded ?
-                                <ReportReload reports={reportData}/>
-                                :
-                                <div className="flex justify-center">
-                                    <LoadingCircle />
-                                </div>
+                                <ReportReload
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                />
                             }
                         </div>
                     </Card>

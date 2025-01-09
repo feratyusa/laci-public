@@ -5,10 +5,8 @@ import axios from "axios";
 import { useEffect } from "react";
 
 export default function InputDateDashboard({
-    date,
-    setReportData,
-    setLoaded,
-    loaded
+    setStartDate,
+    setEndDate,
 }){
     const {data, setData, reset} = useForm({
         'start_date': changeToInputDate(Date.parse(`${new Date().getFullYear()}-01-01`)),
@@ -16,24 +14,9 @@ export default function InputDateDashboard({
     });
 
     function handleSearch(){
-        setLoaded(false)
-        axios.get(route('reportReload.get'), {params: data})
-            .then((response) => {
-                console.log(response)
-                setReportData(response.data.reports)
-            })
-            .catch((error) => {
-                console.debug(error)
-                reset();
-            })
-            .finally(() => {
-                setLoaded(true)
-            })
+        setStartDate(data.start_date)
+        setEndDate(data.end_date)
     }
-
-    useEffect(() => {
-        handleSearch()
-    }, [])
 
     return(
         <div className="flex items-center gap-5">
@@ -50,7 +33,7 @@ export default function InputDateDashboard({
                 onChange={(e) => setData('end_date', e.target.value)}
             />
             <div>
-                <Button color="blue"  onClick={() => handleSearch()} loading={loaded == false}>
+                <Button color="blue"  onClick={() => handleSearch()}>
                     Cari
                 </Button>
             </div>

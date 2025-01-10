@@ -20,7 +20,7 @@ use App\Http\Controllers\Proposal\ProposalController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\Utilities\DashboardReloadController;
 use App\Http\Controllers\Utilities\NugieController;
-use App\Models\Event\EventParticipant;
+use App\Http\Controllers\Master\SertifikasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -160,6 +160,20 @@ Route::middleware('auth')->group(function () {
             Route::post('', [LocationController::class, 'store'])->name('location.store');
             Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
             Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
+        });
+
+
+        Route::prefix('sertifikasi')->group(function() {
+            Route::get('', [SertifikasiController::class, 'index'])->name('sertifikasi.index');
+            Route::post('jenis', [SertifikasiController::class, 'storeJenisSertifkasi'])->name('sertifikasi.jenis.create');
+            Route::post('level', [SertifikasiController::class, 'storeLevelSertifikasi'])->name('sertifikasi.level.create');
+            Route::post('kursus', [SertifikasiController::class, 'storeDetailSertifikasi'])->name('sertifikasi.detail.create');
+            Route::put('jenis/{id}', [SertifikasiController::class, 'updateJenisSertifikasi'])->name('sertifikasi.jenis.update');
+            Route::put('level/{id}', [SertifikasiController::class, 'updateLevelSertifikasi'])->name('sertifikasi.level.update');
+            Route::put('kursus/{id}', [SertifikasiController::class, 'updateDetailSertifikasi'])->name('sertifikasi.detail.update');
+            Route::put('jenis/{id}', [SertifikasiController::class, 'destroyJenisSertifikasi'])->name('sertifikasi.jenis.destroy');
+            Route::put('level/{id}', [SertifikasiController::class, 'destroyLevelSertifikasi'])->name('sertifikasi.level.destroy');
+            Route::put('kursus/{id}', [SertifikasiController::class, 'destroyDetailSertifikasi'])->name('sertifikasi.detail.destroy');
         });
 
     });

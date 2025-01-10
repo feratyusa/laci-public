@@ -29,7 +29,7 @@ return new class extends Migration
         Schema::connection('sqlite')->create('detail_sertifikasi', function (Blueprint $table){
             $table->id();
             $table->foreignId('level_sertifikasi_id')->constrained('level_sertifikasi')->cascadeOnDelete();
-            $table->string('kursus_id');
+            $table->string('kursus_id')->unique();
             $table->timestamps();
         });
     }

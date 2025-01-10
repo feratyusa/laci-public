@@ -10,7 +10,7 @@ class JenisSertifikasiWrite extends Model
 {
     use HasFactory;
 
-    protected $connection = 'ehc_write';
+    protected $connection = 'sqlite';
     protected $table = "jenis_sertifikasi";
     protected $fillable = [
         'nama',

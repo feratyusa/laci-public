@@ -162,18 +162,17 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
 
-
         Route::prefix('sertifikasi')->group(function() {
             Route::get('', [SertifikasiController::class, 'index'])->name('sertifikasi.index');
-            Route::post('jenis', [SertifikasiController::class, 'storeJenisSertifkasi'])->name('sertifikasi.jenis.create');
+            Route::post('jenis', [SertifikasiController::class, 'storeJenisSertifikasi'])->name('sertifikasi.jenis.create');
             Route::post('level', [SertifikasiController::class, 'storeLevelSertifikasi'])->name('sertifikasi.level.create');
             Route::post('kursus', [SertifikasiController::class, 'storeDetailSertifikasi'])->name('sertifikasi.detail.create');
             Route::put('jenis/{id}', [SertifikasiController::class, 'updateJenisSertifikasi'])->name('sertifikasi.jenis.update');
             Route::put('level/{id}', [SertifikasiController::class, 'updateLevelSertifikasi'])->name('sertifikasi.level.update');
-            Route::put('kursus/{id}', [SertifikasiController::class, 'updateDetailSertifikasi'])->name('sertifikasi.detail.update');
-            Route::put('jenis/{id}', [SertifikasiController::class, 'destroyJenisSertifikasi'])->name('sertifikasi.jenis.destroy');
-            Route::put('level/{id}', [SertifikasiController::class, 'destroyLevelSertifikasi'])->name('sertifikasi.level.destroy');
-            Route::put('kursus/{id}', [SertifikasiController::class, 'destroyDetailSertifikasi'])->name('sertifikasi.detail.destroy');
+            Route::put('kursus/{kursus_id}', [SertifikasiController::class, 'updateDetailSertifikasi'])->name('sertifikasi.detail.update');
+            Route::delete('jenis/{id}', [SertifikasiController::class, 'destroyJenisSertifikasi'])->name('sertifikasi.jenis.destroy');
+            Route::delete('level/{id}', [SertifikasiController::class, 'destroyLevelSertifikasi'])->name('sertifikasi.level.destroy');
+            Route::delete('kursus/{kursus_id}', [SertifikasiController::class, 'destroyDetailSertifikasi'])->name('sertifikasi.detail.destroy');
         });
 
     });
@@ -251,5 +250,5 @@ Route::prefix('api')->group(function (){
             Route::post('check-status', [EventParticipantController::class, 'checkStatuses'])->name('event.participant.status');
         });
     });
-})->middleware('auth');
+});
 

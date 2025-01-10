@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class LevelSertifikasiWrite extends Model
 {
     use HasFactory;
-    protected $connection = 'ehc_write';
+    protected $connection = 'sqlite';
     protected $table = "level_sertifikasi";
     protected $fillable = [
         'level',
+        'jenis_sertifikasi_id',
         'deskripsi',
     ];
 }

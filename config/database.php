@@ -150,7 +150,7 @@ return [
         ],
 
         'ehc_write' => [
-            'driver' => 'sqlsrv',
+            'driver' => env('EHC_WRITE', 'sqlite'),
             'url' => env('EHC_WRITE_URL'),
             'host' => env('EHC_WRITE_HOST', 'localhost'),
             'port' => env('EHC_WRITE_PORT', '1433'),

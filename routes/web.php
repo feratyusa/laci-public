@@ -228,6 +228,7 @@ Route::prefix('api')->group(function (){
         Route::get('branches', [InputController::class, 'getEmployeeBranches'])->name('input.employeeBranches');
         Route::get('jobs', [InputController::class, 'getEmployeeJobs'])->name('input.employeeJobs');
         Route::get('availableEmployees', [InputController::class, 'getAvailableEmployees'])->name('input.availableEmployees');
+        Route::get('jenis', [InputController::class, 'getJenisSertifikasi'])->name('input.sertifikasi.jenis');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

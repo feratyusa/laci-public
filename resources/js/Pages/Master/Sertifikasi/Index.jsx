@@ -11,6 +11,11 @@ import DetailJenisSertifikasi from "./Partials/DetailJenisSertifikasi";
 import FormJenisDialog from "./Partials/FormJenisDialog";
 import DialogDelete from "@/Components/Dialogs/DialogDelete";
 import FormLevelDialog from "./Partials/FormLevelDialog";
+import FormDetailSerfikasi from "./Partials/FormDetailSertifikasi";
+import { first } from "lodash";
+import { useEffect } from "react";
+import axios from "axios";
+import ReactSelect from "react-select"
 
 export default function Index({
     auth,
@@ -62,7 +67,9 @@ function BudgetTabs({
                     <JenisPanel jenis={jenis} />
                 </TabPanel>
                 <TabPanel>
-                    Kursus
+                    <KursusSertifikasiPanel
+                        kursuses={kursus}
+                    />
                 </TabPanel>
             </TabPanels>
         </TabGroup>
@@ -101,8 +108,6 @@ function ActionButtons({
 function JenisPanel({
     jenis
 }){
-    console.log(jenis)
-
     const columnHelper = createColumnHelper()
 
     const columns = [
@@ -153,6 +158,104 @@ function JenisPanel({
                         placeholder="Search..."
                     />
                 </div>
+            </div>
+            <TanstackTable table={table} alignTable="table-auto"/>
+        </div>
+    )
+}
+
+function KursusSertifikasiPanel({
+    kursuses=[]
+}){
+    const [sertifikasi, setSertfikasi] = useState([])
+
+    useEffect(() => {
+        axios.get(route('input.sertifikasi.jenis'))
+            .then((response) => {
+                setSertfikasi(response.data.sertifikasi)
+            })
+    }, [])
+
+    console.log(kursuses)
+    console.log(sertifikasi)
+
+    const columnHelper = createColumnHelper()
+
+    const columns = [
+        columnHelper.accessor('sandi', {
+            header: () => <span>Sandi</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor('lengkap', {
+            id: 'pelatihan',
+            header: () => <span>Pelatihan</span>,
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor('kategori', {
+            header: <span>Kategori</span>,
+            cell: info => info.getValue()
+        }),
+        columnHelper.accessor(row => first(row.level)?.jenis_sertifikasi_id, {
+            id: 'level',
+            header: () => <span>Level</span>,
+            cell: ({row}) => (
+                <p>{first(row.original.level)?.level}</p>
+            ),
+            enableSorting: false,
+            filterFn: 'FilterSertifikasi'
+        }),
+    ]
+
+    const table = useReactTable({
+        data: kursuses,
+        columns: columns,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        globalFilterFn: 'includesString',
+        initialState: {
+            columnFilters: [
+                {
+                    id: 'level',
+                    value: []
+                }
+            ]
+        },
+        filterFns: {
+            FilterSertifikasi: (row, columnID, filterValue) => {
+                if(filterValue.length == 0) return true
+                return filterValue.includes(first(row.original.level)?.jenis_sertifikasi_id)
+            },
+        }
+    })
+
+    console.log(table.getState().columnFilters.find(c => c.id == 'level'))
+
+    return(
+        <div>
+            <div className="mt-5 mb-5">
+                <FormDetailSerfikasi
+                />
+            </div>
+            <div className="flex items-center justify-start gap-5 mb-5">
+                <input
+                    className="rounded-md"
+                    onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+                    placeholder="Search..."
+                />
+                <ReactSelect
+                    className="w-full"
+                    classNamePrefix="select2-selection"
+                    placeholder="Sertifikasi"
+                    options={sertifikasi}
+                    isClearable={true}
+                    isMulti={true}
+                    value={sertifikasi.filter(s => table.getColumn('level').getFilterValue()?.includes(s.value))}
+                    onChange={(e) => {
+                        table.getColumn('level').setFilterValue(e.map(item => item.value))
+                    }}
+                />
             </div>
             <TanstackTable table={table} alignTable="table-auto"/>
         </div>

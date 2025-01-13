@@ -6,6 +6,7 @@ use App\Enum\EventCategory;
 use App\Enum\Prefixes;
 use App\Enum\Verbs;
 use App\Models\EHC\Employee;
+use App\Models\EHC\JenisSertifikasi;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\Vendor;
 use App\Models\Event\EventParticipant;
@@ -162,5 +163,14 @@ class InputController extends Controller
         return response()->json([
             'availableEmployees' => $this->selectOptions($availables, 'nip', 'nama')
         ]);
-    }    
+    }
+
+    public function getJenisSertifikasi()
+    {
+        $jenisSertifikasi = JenisSertifikasi::select('id', 'nama')->get()->toArray();
+
+        return response()->json([
+            'sertifikasi' => $this->selectOptions($jenisSertifikasi, 'id', 'nama', true)
+        ]);
+    }
 }

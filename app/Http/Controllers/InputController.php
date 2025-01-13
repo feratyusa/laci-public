@@ -8,6 +8,7 @@ use App\Enum\Verbs;
 use App\Models\EHC\Employee;
 use App\Models\EHC\JenisSertifikasi;
 use App\Models\EHC\Kursus;
+use App\Models\EHC\LevelSertifikasi;
 use App\Models\EHC\Vendor;
 use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
@@ -171,6 +172,24 @@ class InputController extends Controller
 
         return response()->json([
             'sertifikasi' => $this->selectOptions($jenisSertifikasi, 'id', 'nama', true)
+        ]);
+    }
+
+    public function getLevelSertifikasi()
+    {
+        $temps = LevelSertifikasi::with('jenis')->get();
+
+        $levels = [];
+
+        foreach ($temps as $value) {
+            $levels[] = [
+                'id' => $value->id,
+                'label' => $value->jenis->nama." - ".$value->level
+            ];
+        }
+
+        return response()->json([
+            'levels' => $this->selectOptions($levels, 'id', 'label')
         ]);
     }
 }

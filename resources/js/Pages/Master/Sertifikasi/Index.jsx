@@ -236,6 +236,7 @@ function KursusSertifikasiPanel({
         <div>
             <div className="mt-5 mb-5">
                 <FormDetailSerfikasi
+                    route={route("sertifikasi.detail.create")}
                 />
             </div>
             <div className="flex items-center justify-start gap-5 mb-5">

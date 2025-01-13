@@ -61,17 +61,17 @@ class SertifikasiController extends Controller
 
     public function storeDetailSertifikasi(KursusSertifikasiFormRequest $request)
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'level_sertifikasi_id' => ['required', 'integer'],
+            'kursus_id' => ['required', 'array'],
+            'kursus_id.*' => ['required', Rule::unique('App\Models\EHC\DetailSertifikasi', 'kursus_id')]
+        ]);
 
-
-        if (DetailSertifikasi::where('kursus_id', $validated['kursus_id'])
-                                ->first()
-        ) {
-            throw ValidationException::withMessages(['kursus_id' => 'kursus already exist']);
-        }
-
-        if (LevelSertifikasi::findOrFail($validated['level_sertifikasi_id']) && Kursus::where('sandi', $validated['kursus_id'])->firstOrFail()) {
-            DetailSertifikasiWrite::create($validated);
+        foreach ($validated['kursus_id'] as $course) {
+            DetailSertifikasiWrite::create([
+                'kursus_id' => $course,
+                'level_sertifikasi_id' => $validated['level_sertifikasi_id']
+            ]);
         }
 
         return redirect()->route('sertifikasi.index');

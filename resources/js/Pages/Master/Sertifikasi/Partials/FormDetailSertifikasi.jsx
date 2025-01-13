@@ -1,6 +1,7 @@
 import InputError from "@/Components/Form/InputError";
 import TextInput from "@/Components/Form/TextInput";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
@@ -12,20 +13,21 @@ import ReactSelect from "react-select";
 
 export default function FormDetailSerfikasi({
     route,
+    detail={kursus_id: [], level_sertifikasi_id: ''},
     mode="create",
     icon=false,
     iconSize="sm",
 }){
-    const {data, setData, post, errors, reset, processing, clearErrors} = useForm({
-        kursus_id: [],
-        level_sertifikasi_id: ''
+    const {data, setData, post, errors, put, reset, processing, clearErrors} = useForm({
+        kursus_id: detail.kursus_id,
+        level_sertifikasi_id: detail.level_sertifikasi_id
     })
 
     const [open, setOpen] = useState(false)
 
     function submit(){
         if (mode == 'edit') {
-
+            put(route)
         }
         else{
             post(route, {
@@ -49,7 +51,7 @@ export default function FormDetailSerfikasi({
                 icon == false ?
                 <Button color={mode == 'edit' ? 'amber' : 'blue'} className="flex items-center gap-2" onClick={() => setOpen(true)}>
                     <PlusIcon className="w-5"/>
-                    {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Sertifikasi`}
+                    {`${mode == 'edit' ? "Edit" : "Tambah"} Kursus Sertifikasi`}
                 </Button>
                 :
                 <IconButton size={iconSize} color={mode == 'edit' ? 'amber' : 'blue'} onClick={() => setOpen(true)}>
@@ -73,7 +75,7 @@ export default function FormDetailSerfikasi({
                 >
                 <DialogTitle className="flex items-center justify-center">
                     <p className="text-2xl font-bold text-red-500">
-                        {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Sertifikasi`}
+                        {`${mode == 'edit' ? "Edit" : "Tambah"} Kursus Sertifikasi`}
                     </p>
                 </DialogTitle>
                 <div className='py-5'>
@@ -85,6 +87,7 @@ export default function FormDetailSerfikasi({
                             data={data}
                             setData={setData}
                             errors={errors}
+                            mode={mode}
                         />
                         <InputError message={errors.kursus_id} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                     </div>
@@ -117,7 +120,8 @@ export default function FormDetailSerfikasi({
 function KursusSelection({
     data,
     setData,
-    errors
+    errors,
+    mode
 }){
     const [kursus, setKursus] = useState([])
 
@@ -130,18 +134,29 @@ function KursusSelection({
 
     return(
         <>
-            <ReactSelect
-                classNamePrefix="select2-selection"
-                className="w-full mb-3"
-                placeholder="Kursus"
-                isMulti={true}
-                isClearable={true}
-                options={kursus}
-                value={kursus.filter(k => data.kursus_id?.includes(k.value))}
-                onChange={(e) => {
-                    setData('kursus_id', e.map(item => item.value))
-                }}
-            />
+            {
+                mode == 'edit' ?
+                <ReactSelect
+                    classNamePrefix="select2-selection"
+                    className="w-full mb-3"
+                    isDisabled={true}
+                    options={kursus}
+                    value={kursus.find(k => data.kursus_id == k.value)}
+                />
+                :
+                <ReactSelect
+                    classNamePrefix="select2-selection"
+                    className="w-full mb-3"
+                    placeholder="Kursus"
+                    isMulti={true}
+                    isClearable={true}
+                    options={kursus}
+                    value={kursus.filter(k => data.kursus_id?.includes(k.value))}
+                    onChange={(e) => {
+                        setData('kursus_id', e.map(item => item.value))
+                    }}
+                />
+            }
             {
                 !isEmpty(errors) &&
                 <div className="bg-red-300 rounded-lg text-white">
@@ -185,7 +200,6 @@ function SertifikasiSelection({
             classNamePrefix="select2-selection"
             className="w-full"
             placeholder="Kursus"
-            isClearable={true}
             options={levels}
             value={levels.find(l => l.value == data.level_sertifikasi_id)}
             onChange={(e) => {

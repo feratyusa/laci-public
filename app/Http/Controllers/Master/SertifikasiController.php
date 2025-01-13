@@ -104,15 +104,17 @@ class SertifikasiController extends Controller
         return redirect()->route('sertifikasi.index');
     }
 
-    public function updateDetailSertifikasi(string $kursus_id, KursusSertifikasiFormRequest $request)
+    public function updateDetailSertifikasi(string $kursus_id, Request $request)
     {
-        $validated = $request->validated();
+        $detailSertifikasi = DetailSertifikasiWrite::where('kursus_id', $kursus_id)
+                                                    ->firstOrFail();
 
-        $entity = DetailSertifikasiWrite::where('kursus_id', $kursus_id)
-                                        ->firstOrFail();
+        $validated = $request->validate([
+            'level_sertifikasi_id' => ['required', 'integer']
+        ]);
 
         if (LevelSertifikasi::findOrFail($validated['level_sertifikasi_id'])) {
-            $entity->update(['level_sertifikasi_id' => $validated['level_sertifikasi_id']]);
+            $detailSertifikasi->update(['level_sertifikasi_id' => $validated['level_sertifikasi_id']]);
         }
 
         return redirect()->route('sertifikasi.index');

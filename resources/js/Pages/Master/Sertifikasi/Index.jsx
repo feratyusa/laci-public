@@ -77,9 +77,11 @@ function BudgetTabs({
 }
 
 function ActionButtons({
-    data
+    data,
+    type='jenis'
 }){
     return(
+        type == 'jenis' ?
         <div className="flex items-center justify-center gap-2">
             <DetailJenisSertifikasi data={data}/>
             <FormLevelDialog
@@ -100,6 +102,23 @@ function ActionButtons({
                 title={`Hapus Jenis Sertifikasi ${data.nama}`}
                 message={"Aksi ini tidak dapat dikembalikan. Aksi ini akan menghapus semua level jenis sertifikasi, tetapi tidak menghapus kursus yang terhubung."}
                 buttonSize="sm"
+            />
+        </div>
+        :
+        <div className="flex items-center justify-center gap-2">
+            <FormDetailSerfikasi
+                route={route("sertifikasi.detail.update", [data.sandi])}
+                mode="edit"
+                detail={{ kursus_id: data.sandi, level_sertifikasi_id: first(data.level)?.id}}
+                icon={true}
+            />
+            <DialogDelete
+                content={"Sertifikasi"}
+                route={route("sertifikasi.detail.destroy", [data.sandi])}
+                title={`Hapus Kursus Sertifikasi (${data.sandi})`}
+                message={"Aksi ini tidak bisa dikembalikan. Aksi ini tidak akan menghapus kursus"}
+                buttonSize="sm"
+                statePreserve={true}
             />
         </div>
     )
@@ -204,6 +223,13 @@ function KursusSertifikasiPanel({
             enableSorting: false,
             filterFn: 'FilterSertifikasi'
         }),
+        columnHelper.accessor(row => row.id, {
+            id: 'actions',
+            header: <span>Actions</span>,
+            cell: ({row}) => <ActionButtons type="kursus" data={row.original}/>,
+            enableSorting: false,
+            enableColumnFilter: false,
+        })
     ]
 
     const table = useReactTable({
@@ -229,8 +255,6 @@ function KursusSertifikasiPanel({
             },
         }
     })
-
-    console.log(table.getState().columnFilters.find(c => c.id == 'level'))
 
     return(
         <div>

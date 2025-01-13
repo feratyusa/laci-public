@@ -18,7 +18,8 @@ import {
     MapPinIcon,
     BeakerIcon,
     BookmarkSquareIcon,
-    TableCellsIcon
+    TableCellsIcon,
+    VariableIcon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -79,6 +80,9 @@ export default function MenuIconSelector({name=''}){
         :
         name == 'utilities/reportReload' ?
         <TableCellsIcon className="w-5"/>
+        :
+        name == 'master/sertifikasi' ?
+        <VariableIcon className="w-5" />
         :
         <HandThumbDownIcon className="w-5"/>
     )

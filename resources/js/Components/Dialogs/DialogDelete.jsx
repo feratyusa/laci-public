@@ -5,15 +5,15 @@ import { Typography, Button, IconButton, Tooltip } from "@material-tailwind/reac
 import { useState } from "react"
 
 export default function DialogDelete({
-        mode='icon', 
-        content, 
-        title, 
-        message, 
-        route, 
+        mode='icon',
+        content,
+        title,
+        message,
+        route,
         buttonText="Hapus Event",
-        buttonSize="md", 
-        variant="filled", 
-        statePreserve=false, 
+        buttonSize="md",
+        variant="filled",
+        statePreserve=false,
         ...props
     }){
     const {delete: destroy, processing} = useForm()
@@ -42,7 +42,7 @@ export default function DialogDelete({
                         <TrashIcon className="w-5"/>
                         {buttonText}
                     </div>
-                </div>                 
+                </div>
                 :
                 mode == 'button' ?
                 <Button onClick={() => setOpen(true)} color="red" size={buttonSize} className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export default function DialogDelete({
             }
             <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>
                 {/* Backdrop */}
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <DialogBackdrop className="fixed inset-0 z-10 bg-black/30" />
 
                 {/* Dialog Content */}
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -97,6 +97,6 @@ export default function DialogDelete({
                     </div>
                 </div>
             </Dialog>
-        </> 
+        </>
     )
 }

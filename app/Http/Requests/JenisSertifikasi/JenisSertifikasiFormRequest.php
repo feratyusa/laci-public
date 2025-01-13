@@ -22,7 +22,7 @@ class JenisSertifikasiFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => ['required', 'unique:App\Models\EHC\JenisSertifikasi,nama', 'max:255'],
+            'nama' => ['required', "unique:App\Models\EHC\JenisSertifikasi,nama", 'max:255'],
             'deskripsi' => ['nullable', 'max:255']
         ];
     }

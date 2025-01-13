@@ -13,9 +13,11 @@ use App\Models\EHC\LevelSertifikasi;
 use App\Models\EHCWRITE\DetailSertifikasiWrite;
 use App\Models\EHCWRITE\JenisSertifikasiWrite;
 use App\Models\EHCWRITE\LevelSertifikasiWrite;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -42,13 +44,16 @@ class SertifikasiController extends Controller
         return redirect()->route('sertifikasi.index');
     }
 
-    public function storeLevelSertifikasi(LevelSertifikasiFormRequest $request): RedirectResponse
+    public function storeLevelSertifikasi(LevelSertifikasiFormRequest $request)
     {
         $validated = $request->validated();
 
-        if(JenisSertifikasi::findOrFail($validated['jenis_sertifikasi_id']))
-        {
-            LevelSertifikasiWrite::create($validated);
+        try {
+            if (JenisSertifikasi::findOrFail($validated['jenis_sertifikasi_id'])) {
+                LevelSertifikasiWrite::create($validated);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw ValidationException::withMessages(['level' => "Jenis Sertifikasi with ID ".$validated['jenis_sertifikasi_id']." not found"]);
         }
 
         return redirect()->route('sertifikasi.index');
@@ -62,7 +67,7 @@ class SertifikasiController extends Controller
         if (DetailSertifikasi::where('kursus_id', $validated['kursus_id'])
                                 ->first()
         ) {
-            throw ValidationException::withMessages(['entity' => 'entity already exist']);
+            throw ValidationException::withMessages(['kursus_id' => 'kursus already exist']);
         }
 
         if (LevelSertifikasi::findOrFail($validated['level_sertifikasi_id']) && Kursus::where('sandi', $validated['kursus_id'])->firstOrFail()) {
@@ -72,11 +77,14 @@ class SertifikasiController extends Controller
         return redirect()->route('sertifikasi.index');
     }
 
-    public function updateJenisSertifikasi(string $id, JenisSertifikasiFormRequest $request): RedirectResponse
+    public function updateJenisSertifikasi(string $id, Request $request)
     {
         $jenisSertifikasi = JenisSertifikasiWrite::findOrFail($id);
 
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'nama' => ['required', Rule::unique('App\Models\EHC\JenisSertifikasi', 'nama')->ignore($jenisSertifikasi->id, 'id'), 'max:255'],
+            'deskripsi' => ['nullable', 'max:255']
+        ]);
 
         $jenisSertifikasi->update($validated);
 
@@ -89,11 +97,7 @@ class SertifikasiController extends Controller
 
         $validated = $request->validated();
 
-        if (JenisSertifikasi::findOrFail($validated['jenis_sertifikasi_id'])
-            && ! DetailSertifikasi::where('level_sertifikasi_id', $validated['level_sertifikasi_id'])
-                                    ->where('kursus_id', $validated['kursus_id'])
-                                    ->first()
-        ) {
+        if (JenisSertifikasi::findOrFail($validated['jenis_sertifikasi_id'])) {
             $levelSertifikasi->update($validated);
         }
 

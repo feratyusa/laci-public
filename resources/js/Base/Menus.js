@@ -14,6 +14,7 @@ const MainMenu = [
             {name: 'Kategori Wajib', link: 'mandatory-category.index', url: 'master/mandatory-categories'},
             {name: 'Anggaran', link: 'budget.index', url: 'master/budgets'},
             {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
+            {name: 'Sertifikasi', link: 'sertifikasi.index', url: 'master/sertifikasi'}
         ], url: 'master'},
         {name: 'Change Log', link: 'changeLog.index', url: 'changelog'},
         {name: 'Panduan', link: 'tutorial.index', url: 'tutorial'},

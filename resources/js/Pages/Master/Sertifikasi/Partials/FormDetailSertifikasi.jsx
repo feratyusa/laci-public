@@ -126,7 +126,7 @@ function KursusSelection({
     const [kursus, setKursus] = useState([])
 
     useEffect(() => {
-        axios.get(route('input.courses'))
+        axios.get(route('input.course.sertifikasi'))
             .then((response) => {
                 setKursus(response.data.courses)
             })

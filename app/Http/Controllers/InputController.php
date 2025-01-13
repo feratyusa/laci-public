@@ -192,4 +192,11 @@ class InputController extends Controller
             'levels' => $this->selectOptions($levels, 'id', 'label')
         ]);
     }
+
+    public function getSertifikasiOnlyCourse()
+    {
+        return response()->json([
+            'courses' => $this->selectOptions(Kursus::where('sertifikasi', 'sertifikasi')->get()->toArray(), 'sandi', 'lengkap')
+        ]);
+    }
 }

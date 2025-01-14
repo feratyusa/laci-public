@@ -205,7 +205,7 @@ class InputController extends Controller
     public function getLiniKursus()
     {
         return response()->json([
-            'lini' => $this->selectOptions(KelKursus::groupBy('lini')->get()->toArray(), 'lini', 'lini', false)
+            'lini' => $this->selectOptions(KelKursus::select('lini')->groupBy('lini')->get()->toArray(), 'lini', 'lini', false)
         ]);
     }
 

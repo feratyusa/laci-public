@@ -7,7 +7,7 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import { useForm } from "@inertiajs/react";
 import { Button, IconButton } from "@material-tailwind/react";
 import axios from "axios";
-import { first, get } from "lodash";
+import { get } from "lodash";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -20,11 +20,6 @@ export default function FormKursusDialog({
 }){
 
     const [open, setOpen] = useState(false)
-
-    function onClose(){
-        setOpen(false)
-        reset()
-    }
 
     return(
         <>
@@ -39,7 +34,7 @@ export default function FormKursusDialog({
                     {mode == 'edit' ? <Cog8ToothIcon className="w-full" /> : <PlusIcon className="w-full"/>}
                 </IconButton>
             }
-            <Dialog open={open} onClose={onClose} className="relative z-10">
+            <Dialog open={open} onClose={() => setOpen(false)} className="relative z-10">
 
             {/* The backdrop, rendered as a fixed sibling to the panel container */}
             <DialogBackdrop
@@ -63,7 +58,7 @@ export default function FormKursusDialog({
                     mode={mode}
                     routes={routes}
                     sandi={sandi}
-                    onClose={onClose}
+                    setOpen={setOpen}
                 />
                 </DialogPanel>
             </div>
@@ -76,10 +71,10 @@ function FormKursus({
     sandi,
     mode,
     routes,
-    onClose
+    setOpen
 }){
-    const {data, setData, post, put, errors, processing} = useForm({
-        sandi: '',
+    const {data, setData, post, put, errors, processing, reset} = useForm({
+        sandi: null,
         nama: '',
         tempat: '',
         npublic: '',
@@ -151,11 +146,18 @@ function FormKursus({
                     <label htmlFor='name'>
                         Sandi Kursus
                     </label>
-                    <TextInput
-                        id="id"
-                        value={data.sandi}
-                        disabled
-                    />
+                    {
+                        data.sandi == null ?
+                        <div className="w-fit">
+                            <LoadingCircle size="h-2 w-2"/>
+                        </div>
+                        :
+                        <TextInput
+                            id="id"
+                            value={data.sandi}
+                            disabled
+                        />
+                    }
                     <InputError message={errors.sandi} className="mt-2" color='red-500' iconSize='5' textSize='sm'/>
                 </div>
                 <div>
@@ -258,7 +260,10 @@ function FormKursus({
                 <Button color="green" onClick={() => submit()} loading={processing}>
                     Submit
                 </Button>
-                <Button color="amber" onClick={onClose}>
+                <Button color="amber" onClick={() => {
+                    setOpen(false)
+                    reset()
+                }}>
                     Cancel
                 </Button>
             </div>

@@ -23,6 +23,7 @@ use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\Utilities\DashboardReloadController;
 use App\Http\Controllers\Utilities\NugieController;
 use App\Http\Controllers\Master\SertifikasiController;
+use App\Http\Controllers\Utilities\ReportSertifikasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -224,6 +225,7 @@ Route::prefix('api')->group(function (){
         Route::get('events', [EventController::class, 'get'])->name('get.events');
         Route::get('kursus/{sandi}', [KursusController::class, 'getKursusRawDataBySandi'])->name('get.kursus.getDataRaw');
         Route::get('lembaga/{sandi}', [LembagaController::class, 'getRawDataBySandi'])->name('get.lembaga.getDataRaw');
+        Route::get('reportSertifikasi', [ReportSertifikasiController::class, 'getAllSertifikasiStatus'])->name('get.report.sertifikasi');
     });
     Route::prefix('categories')->group(function(){
         Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');

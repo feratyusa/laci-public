@@ -12,6 +12,9 @@ class LevelSertifikasi extends Model
 {
     protected $connection = 'sqlite';
     protected $table = 'level_sertifikasi';
+    protected $with = [
+        'jenis'
+    ];
 
     public function courses(): BelongsToMany
     {

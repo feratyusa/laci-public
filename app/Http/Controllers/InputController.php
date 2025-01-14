@@ -7,9 +7,11 @@ use App\Enum\Prefixes;
 use App\Enum\Verbs;
 use App\Models\EHC\Employee;
 use App\Models\EHC\JenisSertifikasi;
+use App\Models\EHC\KelKursus;
 use App\Models\EHC\Kursus;
 use App\Models\EHC\LevelSertifikasi;
 use App\Models\EHC\Vendor;
+use App\Models\EHCWRITE\KursusWrite;
 use App\Models\Event\EventParticipant;
 use App\Models\File\Category;
 use App\Models\Master\Budget;
@@ -197,6 +199,26 @@ class InputController extends Controller
     {
         return response()->json([
             'courses' => $this->selectOptions(Kursus::where('sertifikasi', 'sertifikasi')->get()->toArray(), 'sandi', 'lengkap')
+        ]);
+    }
+
+    public function getLiniKursus()
+    {
+        return response()->json([
+            'lini' => $this->selectOptions(KelKursus::groupBy('lini')->get()->toArray(), 'lini', 'lini', false)
+        ]);
+    }
+
+    public function getSektorKursus(Request $request)
+    {
+        $lini = $request->input('lini');
+
+        $sektors = $lini ?
+            KelKursus::where('lini', $lini)->get()->toArray() :
+            KelKursus::all()->toArray();
+
+        return response()->json([
+            'sektor' => $this->selectOptions($sektors, 'sektor', 'sektor', false)
         ]);
     }
 }

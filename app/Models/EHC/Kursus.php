@@ -14,15 +14,6 @@ class Kursus extends Model
     protected $connection = 'sqlite';
     protected $table = 'courses';
 
-    protected $fillable = [
-        'sandi',
-        'lengkap',
-        'kategori',
-        'lini',
-        'sektor',
-        'sertifikasi'
-    ];
-
     public function level()
     {
         return $this->belongsToMany(LevelSertifikasi::class, DetailSertifikasi::class, 'kursus_id', 'level_sertifikasi_id', 'sandi', 'id');

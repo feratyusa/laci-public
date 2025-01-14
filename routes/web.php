@@ -5,6 +5,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ChangeLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EHC\DiklatController;
+use App\Http\Controllers\EHC\KursusController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventParticipantController;
 use App\Http\Controllers\FileController;
@@ -175,6 +176,13 @@ Route::middleware('auth')->group(function () {
             Route::delete('kursus/{kursus_id}', [SertifikasiController::class, 'destroyDetailSertifikasi'])->name('sertifikasi.detail.destroy');
         });
 
+        Route::prefix('kursus')->group(function() {
+            Route::get('', [KursusController::class, 'index'])->name('kursus.index');
+            Route::post('', [KursusController::class, 'storeKursus'])->name('kursus.store');
+            Route::put('/{sandi}', [KursusController::class, 'updateKursus'])->name('kursus.update');
+            Route::delete('/{sandi}', [KursusController::class, 'destroyKursus'])->name('kursus.delete');
+        });
+
     });
 
     Route::prefix('utilities')->group(function() {
@@ -206,6 +214,7 @@ Route::prefix('api')->group(function (){
     Route::prefix('get')->group(function(){
         Route::get('proposals', [ProposalController::class, 'get'])->name('get.proposals');
         Route::get('events', [EventController::class, 'get'])->name('get.events');
+        Route::get('kursus/{sandi}', [KursusController::class, 'getKursusRawDataBySandi'])->name('get.kursus.getDataRaw');
     });
     Route::prefix('categories')->group(function(){
         Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');
@@ -230,6 +239,10 @@ Route::prefix('api')->group(function (){
         Route::get('availableEmployees', [InputController::class, 'getAvailableEmployees'])->name('input.availableEmployees');
         Route::get('sertifikasi-jenis', [InputController::class, 'getJenisSertifikasi'])->name('input.sertifikasi.jenis');
         Route::get('sertifikasi-level', [InputController::class, 'getLevelSertifikasi'])->name('input.sertifikasi.level');
+        Route::get('sertifikasiCourse', [InputController::class, 'getSertifikasiOnlyCourse'])->name('input.course.sertifikasi');
+        Route::get('kursusNewSandi', [KursusController::class, 'getNewSandi'])->name('input.kursus.newSandi');
+        Route::get('liniKursus', [InputController::class, 'getLiniKursus'])->name('input.kursus.lini');
+        Route::get('sektorKursus', [InputController::class, 'getSektorKursus'])->name('input.kursus.sektor');
     });
     Route::prefix('dashboard')->group(function() {
         Route::get('unfinishedDocuments', [DashboardController::class, 'unfinishedDocuments'])->name('dashboard.unfinishedDocuments');

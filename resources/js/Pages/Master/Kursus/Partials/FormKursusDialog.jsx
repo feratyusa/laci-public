@@ -32,7 +32,7 @@ export default function FormKursusDialog({
                 icon == false ?
                 <Button color={mode == 'edit' ? 'amber' : 'blue'} className="flex items-center gap-2" onClick={() => setOpen(true)}>
                     <PlusIcon className="w-5"/>
-                    {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Sertifikasi`}
+                    {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Kursus`}
                 </Button>
                 :
                 <IconButton size={iconSize} color={mode == 'edit' ? 'amber' : 'blue'} onClick={() => setOpen(true)}>
@@ -56,7 +56,7 @@ export default function FormKursusDialog({
                 >
                 <DialogTitle className="flex items-center justify-center">
                     <p className="text-2xl font-bold text-red-500">
-                        {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Sertifikasi`}
+                        {`${mode == 'edit' ? "Edit" : "Tambah"} Jenis Kursus`}
                     </p>
                 </DialogTitle>
                 <FormKursus

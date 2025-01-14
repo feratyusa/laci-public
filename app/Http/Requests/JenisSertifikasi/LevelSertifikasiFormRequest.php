@@ -24,7 +24,8 @@ class LevelSertifikasiFormRequest extends FormRequest
         return [
             'level' => ['required', 'max:255'],
             'jenis_sertifikasi_id' => ['required', 'integer'],
-            'deskripsi' => ['nullable']
+            'deskripsi' => ['nullable'],
+            'masa_berlaku_tahun' => ['nullable']
         ];
     }
 }

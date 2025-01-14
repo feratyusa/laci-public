@@ -19,7 +19,8 @@ export default function FormLevelDialog({
         id: '',
         jenis_sertifikasi_id: jenis_sertifikasi_id,
         level: '',
-        deskripsi: ''
+        deskripsi: '',
+        masa_berlaku_tahun: '',
     })
 
     const [open, setOpen] = useState(false)
@@ -98,7 +99,7 @@ export default function FormLevelDialog({
                             </div>
                         }
                         <div className='mb-5'>
-                            <label htmlFor='year'>
+                            <label htmlFor='name'>
                                 Level Sertifikasi
                             </label>
                             <TextInput
@@ -109,7 +110,7 @@ export default function FormLevelDialog({
                             />
                         </div>
                         <div className='mb-5'>
-                            <label htmlFor='year'>
+                            <label htmlFor='description'>
                                 Deskripsi Level
                             </label>
                             <TextInput
@@ -117,6 +118,17 @@ export default function FormLevelDialog({
                                 placeholder="Deskripsi Level Sertifikasi"
                                 value={data.deskripsi}
                                 onChange={(e) => setData('deskripsi', e.target.value)}
+                            />
+                        </div>
+                        <div className='mb-5'>
+                            <label htmlFor='validPeriod'>
+                                Masa Berlaku (Tahun)
+                            </label>
+                            <TextInput
+                                id="validPeriod"
+                                placeholder="Masa Berlaku dalam Tahun"
+                                value={data.masa_berlaku_tahun}
+                                onChange={(e) => setData('masa_berlaku_tahun', e.target.value)}
                             />
                         </div>
                     </div>
@@ -174,6 +186,10 @@ function LevelSertifikasiTable({
             header: <span>Deskripsi Level</span>,
             cell: info => info.getValue()
         }),
+        columnHelpers.accessor('masa_berlaku_tahun', {
+            header: <span>Masa Berlaku (Tahun)</span>,
+            cell: info => info.getValue() ?? '-'
+        }),
         columnHelpers.accessor(row => row.id, {
             id: 'actions',
             header: <span>Actions</span>,
@@ -212,7 +228,6 @@ function ActionButtons({
                 size="sm"
                 color="amber"
                 onClick={() => {
-                    console.log(level)
                     setData(level)
                     setMode("edit")
                     scrollToForm()

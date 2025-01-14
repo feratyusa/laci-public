@@ -16,6 +16,7 @@ const MainMenu = [
             {name: 'Lokasi', link: 'location.index', url: 'master/locations'},
             {name: 'Sertifikasi', link: 'sertifikasi.index', url: 'master/sertifikasi'},
             {name: 'Jenis Kursus', link: 'kursus.index', url: 'master/kursus'},
+            {name: 'Lembaga', link: 'lembaga.index', url: 'master/lembaga'},
         ], url: 'master'},
         {name: 'Change Log', link: 'changeLog.index', url: 'changelog'},
         {name: 'Panduan', link: 'tutorial.index', url: 'tutorial'},

@@ -20,7 +20,8 @@ import {
     BookmarkSquareIcon,
     TableCellsIcon,
     VariableIcon,
-    BuildingLibraryIcon
+    BuildingLibraryIcon,
+    BuildingOffice2Icon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -87,6 +88,9 @@ export default function MenuIconSelector({name=''}){
         :
         name == 'master/kursus' ?
         <BuildingLibraryIcon className="w-5"/>
+        :
+        name == 'master/lembaga' ?
+        <BuildingOffice2Icon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

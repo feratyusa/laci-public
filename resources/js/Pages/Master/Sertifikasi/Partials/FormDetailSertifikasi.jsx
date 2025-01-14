@@ -130,7 +130,7 @@ function KursusSelection({
             .then((response) => {
                 setKursus(response.data.courses)
             })
-    })
+    }, [])
 
     return(
         <>
@@ -193,7 +193,7 @@ function SertifikasiSelection({
             .then((response) => {
                 setLevels(response.data.levels)
             })
-    })
+    }, [])
 
     return(
         <ReactSelect

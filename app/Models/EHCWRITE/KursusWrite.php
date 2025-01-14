@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class KursusWrite extends Model
 {
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = 'kursus';
     protected $fillable = [
         'Lengkap',

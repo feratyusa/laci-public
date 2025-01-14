@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class JenisSertifikasi extends Model
 {
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = 'jenis_sertifikasi';
 
     public function levels(): HasMany

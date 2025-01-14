@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('diklat', function (Blueprint $table) {
+        Schema::connection('local_ehc')->create('diklat', function (Blueprint $table) {
             $table->id();
             $table->string('nip');
             $table->string('nama');

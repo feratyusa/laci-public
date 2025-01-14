@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('jenis_sertifikasi', function (Blueprint $table) {
+        Schema::connection('local_ehc')->create('jenis_sertifikasi', function (Blueprint $table) {
             $table->id();
             $table->string("nama")->unique();
             $table->string("deskripsi")->nullable();
             $table->timestamps();
         });
 
-        Schema::connection('sqlite')->create('level_sertifikasi', function (Blueprint $table){
+        Schema::connection('local_ehc')->create('level_sertifikasi', function (Blueprint $table){
             $table->id();
             $table->foreignId('jenis_sertifikasi_id')->constrained('jenis_sertifikasi')->cascadeOnDelete();
             $table->string('level');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::connection('sqlite')->create('detail_sertifikasi', function (Blueprint $table){
+        Schema::connection('local_ehc')->create('detail_sertifikasi', function (Blueprint $table){
             $table->id();
             $table->foreignId('level_sertifikasi_id')->constrained('level_sertifikasi')->cascadeOnDelete();
             $table->string('kursus_id')->unique();

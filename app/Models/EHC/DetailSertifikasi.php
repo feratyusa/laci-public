@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailSertifikasi extends Model
 {
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = 'detail_sertifikasi';
 }

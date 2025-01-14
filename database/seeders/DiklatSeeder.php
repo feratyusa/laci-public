@@ -18,7 +18,7 @@ class DiklatSeeder extends Seeder
     {
         $keterangans = ['TIDAK HADIR', 'SAKIT'];
 
-        if(env('EHC_ENV', 'sqlite') == 'sqlite'){
+        if(env('EHC_ENV', 'sqlite') == 'local_ehc'){
             $vendors = Vendor::all();
             $employees = Employee::all();
 

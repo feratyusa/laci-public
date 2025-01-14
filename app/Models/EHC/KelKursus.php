@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class KelKursus extends Model
 {
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = 'kelkursus';
 }

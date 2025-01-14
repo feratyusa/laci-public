@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('kursus', function (Blueprint $table) {
+        Schema::connection('local_ehc')->create('kursus', function (Blueprint $table) {
             $table->string('Sandi');
             $table->string('Lengkap');
             $table->string('tempat')->nullable();
@@ -23,14 +23,14 @@ return new class extends Migration
             $table->string('nskill')->nullable();
         });
 
-        Schema::connection('sqlite')->create('lembaga', function(Blueprint $table) {
+        Schema::connection('local_ehc')->create('lembaga', function(Blueprint $table) {
             $table->string('sandi');
             $table->string('lengkap');
             $table->string('cp')->nullable();
             $table->string('nope')->nullable();
         });
 
-        Schema::connection('sqlite')->create('kelkursus', function(Blueprint $table){
+        Schema::connection('local_ehc')->create('kelkursus', function(Blueprint $table){
             $table->string('lini');
             $table->string('sektor');
         });

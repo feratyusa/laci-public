@@ -13,7 +13,7 @@ class KursusSeeder extends Seeder
      */
     public function run(): void
     {
-        if(env('EHC_ENV', 'sqlite') == 'sqlite'){
+        if(env('EHC_ENV', 'sqlite') == 'local_ehc'){
             Kursus::factory()->create([
                 'sandi' => 90111,
             ]);

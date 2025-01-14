@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->table('level_sertifikasi', function(Blueprint $table) {
+        Schema::connection('local_ehc')->table('level_sertifikasi', function(Blueprint $table) {
             $table->integer('masa_berlaku_tahun')->nullable();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('sqlite')->table('level_sertifikasi', function(Blueprint $table){
+        Schema::connection('local_ehc')->table('level_sertifikasi', function(Blueprint $table){
             $table->dropColumn('masa_berlaku_tahun');
         });
     }

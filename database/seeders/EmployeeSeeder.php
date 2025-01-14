@@ -13,7 +13,7 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        if(env('EHC_ENV', 'sqlite') == 'sqlite'){
+        if(env('EHC_ENV', 'sqlite') == 'local_ehc'){
             Employee::factory()->count(1000)->create();
         }
         else{

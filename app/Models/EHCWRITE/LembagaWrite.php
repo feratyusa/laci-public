@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LembagaWrite extends Model
 {
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = 'lembaga';
     protected $fillable = [
         'lengkap',

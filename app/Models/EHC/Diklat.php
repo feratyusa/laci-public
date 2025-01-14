@@ -4,13 +4,14 @@ namespace App\Models\EHC;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Schema;
 
 class Diklat extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
 
     protected $table = 'diklat';
 
@@ -28,4 +29,9 @@ class Diklat extends Model
         'keterangan',
         'deskripsi',
     ];
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Kursus::class, 'kd_kursus', 'sandi');
+    }
 }

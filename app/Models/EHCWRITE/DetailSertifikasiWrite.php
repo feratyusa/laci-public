@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DetailSertifikasiWrite extends Model
 {
     use HasFactory;
-    protected $connection = 'sqlite';
+    protected $connection = 'local_ehc';
     protected $table = "detail_sertifikasi";
     protected $fillable = [
         'kursus_id',

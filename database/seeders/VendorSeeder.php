@@ -13,7 +13,7 @@ class VendorSeeder extends Seeder
      */
     public function run(): void
     {
-        if(env('EHC_ENV', 'sqlite') == 'sqlite'){
+        if(env('EHC_ENV', 'sqlite') == 'local_ehc'){
             Vendor::factory()->count(100)->create();
         }
         else{

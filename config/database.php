@@ -150,7 +150,7 @@ return [
         ],
 
         'ehc_write' => [
-            'driver' => env('EHC_WRITE', 'sqlite'),
+            'driver' => env('sqls', 'sqlite'),
             'url' => env('EHC_WRITE_URL'),
             'host' => env('EHC_WRITE_HOST', 'localhost'),
             'port' => env('EHC_WRITE_PORT', '1433'),
@@ -162,6 +162,21 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+        'local_ehc' => [
+            'driver' => 'sqlsrv',
+            'url' => '',
+            'host' => 'localhost',
+            'port' => '1433',
+            'database' => 'laci_ehc',
+            'username' => 'apps',
+            'password' => 'secret',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'encrypt' => 'yes',
+            'trust_server_certificate' => 'true',
         ],
 
     ],

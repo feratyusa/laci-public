@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('sqlite')->create('employees', function (Blueprint $table) {
+        Schema::connection('local_ehc')->create('employees', function (Blueprint $table) {
             $table->string('nip')->primary();
             $table->string('nama');
             $table->string('jabatan');

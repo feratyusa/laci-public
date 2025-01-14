@@ -70,15 +70,15 @@ class KursusController extends Controller
     {
         $validated = $request->validated();
 
-        $kursus = KursusWrite::where('Sandi', $sandi)->firstOrFail();
-
-        $kursus->Lengkap = $validated['nama'];
-        $kursus->tempat = $validated['tempat'];
-        $kursus->npublic = $validated['npublic'];
-        $kursus->nlini = $validated['nlini'];
-        $kursus->nsektor = $validated['nsektor'];
-        $kursus->sertifikat = $validated['sertifikat'];
-        $kursus->nskill = $validated['nskill'];
+        KursusWrite::where('Sandi', $sandi)->update([
+            'Lengkap' => $validated['nama'],
+            'tempat' => $validated['tempat'],
+            'npublic' => $validated['npublic'],
+            'nlini' => $validated['nlini'],
+            'nsektor' => $validated['nsektor'],
+            'sertifikat' => $validated['sertifikat'],
+            'nskill' => $validated['nskill']
+        ]);
 
         switch ($validated['sertifikat']) {
             case 'non':
@@ -93,7 +93,6 @@ class KursusController extends Controller
                 break;
         }
 
-        $kursus->save();
 
         return redirect()->route('kursus.index');
     }

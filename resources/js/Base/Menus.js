@@ -3,6 +3,7 @@ const MainMenu = [
         {name: 'Report Pendidikan', link: [
             {name: 'Nugie', link: 'nugie.index', url: 'utilities/nugies'},
             {name: 'Report Pendidikan Reload', link: 'reportReload.index', url: 'utilities/reportReload'},
+            {name: 'Report Sertifikasi', link: 'report.sertifikasi.index', url: 'utilities/report-sertifikasi'},
         ], url: 'utilities'},
         {name: 'Usulan', link: 'proposal.index', url: 'proposals'},
         {name: 'Event', link: 'event.index', url: 'events'},

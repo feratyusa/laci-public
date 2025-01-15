@@ -21,7 +21,8 @@ import {
     TableCellsIcon,
     VariableIcon,
     BuildingLibraryIcon,
-    BuildingOffice2Icon
+    BuildingOffice2Icon,
+    GlobeAsiaAustraliaIcon
 } from "@heroicons/react/24/solid";
 
 export default function MenuIconSelector({name=''}){
@@ -91,6 +92,9 @@ export default function MenuIconSelector({name=''}){
         :
         name == 'master/lembaga' ?
         <BuildingOffice2Icon className="w-5"/>
+        :
+        name == 'utilities/report-sertifikasi' ?
+        <GlobeAsiaAustraliaIcon className="w-5"/>
         :
         <HandThumbDownIcon className="w-5"/>
     )

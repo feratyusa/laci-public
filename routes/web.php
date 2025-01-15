@@ -215,6 +215,10 @@ Route::middleware('auth')->group(function () {
             Route::get('getAllColumns', [DashboardReloadController::class, 'getAllColumnValues'])->name('reportReload.get.AllColumnValues');
             Route::get('getColumnValueResults', [DashboardReloadController::class, 'getColumnValueResults'])->name('reportReload.get.ColumnValues');
         });
+
+        Route::prefix('report-sertifikasi')->group(function() {
+            Route::get('', [ReportSertifikasiController::class, 'index'])->name('report.sertifikasi.index');
+        });
     });
 
 });
@@ -225,7 +229,12 @@ Route::prefix('api')->group(function (){
         Route::get('events', [EventController::class, 'get'])->name('get.events');
         Route::get('kursus/{sandi}', [KursusController::class, 'getKursusRawDataBySandi'])->name('get.kursus.getDataRaw');
         Route::get('lembaga/{sandi}', [LembagaController::class, 'getRawDataBySandi'])->name('get.lembaga.getDataRaw');
-        Route::get('reportSertifikasi', [ReportSertifikasiController::class, 'getAllSertifikasiStatus'])->name('get.report.sertifikasi');
+
+        Route::prefix('reportSertifikasi')->group(function() {
+            Route::get('', [ReportSertifikasiController::class, 'getAllSertifikasiStatus'])->name('get.report.sertifikasi');
+            Route::get('level/{id}', [ReportSertifikasiController::class, 'getKursusLevelDetailsBySandi'])->name('get.report.sertifikasi.level');
+            Route::get('employee/{nip}', [ReportSertifikasiController::class, 'getAllSertifikasiDataByNip'])->name('get.report.sertifikasi.allCourses');
+        });
     });
     Route::prefix('categories')->group(function(){
         Route::get('selections', [CategoryController::class, 'getSelections'])->name('api.category.selection');

@@ -21,6 +21,7 @@ export default function FormLevelDialog({
         level: '',
         deskripsi: '',
         masa_berlaku_tahun: '',
+        urutan: '',
     })
 
     const [open, setOpen] = useState(false)
@@ -85,10 +86,10 @@ export default function FormLevelDialog({
                             {`${mode == 'edit' ? "Edit" : "Tambah"} Level Sertifikasi`}
                         </p>
                     </DialogTitle>
-                    <div className='pt-5'>
+                    <div className='grid grid-cols-2 gap-2 pt-5'>
                         {
                             mode == 'edit' &&
-                            <div className="mb-5">
+                            <div className="col-span-2">
                                 <label htmlFor='year'>
                                     ID Level
                                 </label>
@@ -98,7 +99,7 @@ export default function FormLevelDialog({
                                 />
                             </div>
                         }
-                        <div className='mb-5'>
+                        <div className='col-span-2'>
                             <label htmlFor='name'>
                                 Level Sertifikasi
                             </label>
@@ -109,7 +110,7 @@ export default function FormLevelDialog({
                                 onChange={(e) => setData('level', e.target.value)}
                             />
                         </div>
-                        <div className='mb-5'>
+                        <div className='col-span-2'>
                             <label htmlFor='description'>
                                 Deskripsi Level
                             </label>
@@ -129,6 +130,17 @@ export default function FormLevelDialog({
                                 placeholder="Masa Berlaku dalam Tahun"
                                 value={data.masa_berlaku_tahun}
                                 onChange={(e) => setData('masa_berlaku_tahun', e.target.value)}
+                            />
+                        </div>
+                        <div className='mb-5'>
+                            <label htmlFor='urutan'>
+                                Urutan
+                            </label>
+                            <TextInput
+                                id="urutan"
+                                placeholder="Urutan Level Sertifikasi"
+                                value={data.urutan}
+                                onChange={(e) => setData('urutan', e.target.value)}
                             />
                         </div>
                     </div>
@@ -181,6 +193,10 @@ function LevelSertifikasiTable({
         columnHelpers.accessor('level', {
             header: <span>Level</span>,
             cell: info => info.getValue()
+        }),
+        columnHelpers.accessor('urutan', {
+            header: <span>Urutan</span>,
+            cell: info => info.getValue() ?? "-"
         }),
         columnHelpers.accessor('deskripsi', {
             header: <span>Deskripsi Level</span>,

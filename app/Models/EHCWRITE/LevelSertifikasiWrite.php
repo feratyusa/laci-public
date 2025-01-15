@@ -14,5 +14,6 @@ class LevelSertifikasiWrite extends Model
         'jenis_sertifikasi_id',
         'deskripsi',
         'masa_berlaku_tahun',
+        'urutan'
     ];
 }

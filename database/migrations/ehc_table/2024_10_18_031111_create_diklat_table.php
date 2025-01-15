@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('lembaga');
             $table->dateTime('tgl_mulai');
             $table->dateTime('tgl_selesai');
+            $table->string('nilai2')->nullable();
+            $table->string('nilai3')->nullable();
             $table->string('keterangan')->nullable();
             $table->string('deskripsi')->nullable();
             $table->timestamps();

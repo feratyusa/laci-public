@@ -33,6 +33,19 @@ class DiklatSeeder extends Seeder
                 $end  = fake()->dateTimeInInterval($start, '+1 week');
                 for ($i=0; $i < $maxParticipants; $i++) {
                     $employee = $employees[$i + $employeeStartIndex];
+                    $randNilai = fake()->numberBetween(1, 10);
+                    $nilai2 = null;
+                    $nilai3 = null;
+                    if ($randNilai < 2) {
+                        $nilai2 = match ($randNilai) {
+                            1 => '0',
+                            2 => '100',
+                        };
+                        $nilai3 = match ($randNilai) {
+                            1 => 'TIDAK KOMPETEN',
+                            2 => 'KOMPETEN',
+                        };
+                    }
                     $keterangan = fake()->numberBetween(0, 10) == 1 ? fake()->randomElement($keterangans) : null;
                     Diklat::create([
                         'nip' => $employee->nip,
@@ -45,6 +58,8 @@ class DiklatSeeder extends Seeder
                         'lembaga' => $vendor->lengkap,
                         'tgl_mulai' => $start,
                         'tgl_selesai' => $end,
+                        'nilai2' => $nilai2,
+                        'nilai3' => $nilai3,
                         'keterangan' => $keterangan,
                         'deskripsi' => $keterangan != null ? fake()->words(asText:true) : null,
                     ]);

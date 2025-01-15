@@ -29,5 +29,6 @@ class EHCSeeder extends Command
         $this->call('db:seed', ['--class' => 'KursusSeeder']);
         $this->call('db:seed', ['--class' => 'VendorSeeder']);
         $this->call('db:seed', ['--class' => 'DiklatSeeder']);
+        $this->call('db:seed', ['--class' => 'SertifikasiSeeder']);
     }
 }

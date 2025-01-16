@@ -19,7 +19,7 @@ class ReportSertifikasiController extends Controller
     {
         return Inertia::render('Utility/ReportSertifikasi/Index', [
             'jenis_sertifikasi' => JenisSertifikasi::select('id', 'nama')->orderBy('id')->get(),
-            'levels' => LevelSertifikasi::select('id', 'jenis_sertifikasi_id', 'level')->orderBy('id')->get(),
+            'levels' => LevelSertifikasi::select('id', 'jenis_sertifikasi_id', 'level')->orderBy('id')->get()
         ]);
     }
 
@@ -27,7 +27,8 @@ class ReportSertifikasiController extends Controller
     {
         $validated = $request->validate([
             'jenis_sertifikasi_id' => ['required', 'integer'],
-            'level_id' => ['required']
+            'level_id' => ['required'],
+            'limit' => ['nullable']
         ]);
 
         $diklatTable = (new Diklat())->getTable();
@@ -59,8 +60,7 @@ class ReportSertifikasiController extends Controller
                             ->whereNotNull('jenis_sertifikasi_id')
                             ->whereRaw("((nilai2 IS NULL AND nilai3 IS NULL) OR (nilai2 IS NULL AND nilai3 <> ?) OR (nilai2 <> ? AND nilai3 IS NULL) OR NOT(nilai2 = ? OR nilai3 = ?))",
                                     ['0', 'TIDAK KOMPETEN', '0', 'TIDAK KOMPETEN'])
-                            ->orderBy('expired')
-                            ->get();
+                            ->orderBy('expired');
         }
         else if($validated['level_id'] == 0){
             $temps = Diklat::selectRaw("
@@ -83,8 +83,7 @@ class ReportSertifikasiController extends Controller
                             ->where('jenis_sertifikasi_id', "=", $validated['jenis_sertifikasi_id'])
                             ->whereRaw("((nilai2 IS NULL AND nilai3 IS NULL) OR (nilai2 IS NULL AND nilai3 <> ?) OR (nilai2 <> ? AND nilai3 IS NULL) OR NOT(nilai2 = ? OR nilai3 = ?))",
                                     ['0', 'TIDAK KOMPETEN', '0', 'TIDAK KOMPETEN'])
-                            ->orderBy('expired')
-                            ->get();
+                            ->orderBy('expired');
         }
         else{
             $temps = Diklat::selectRaw("
@@ -108,9 +107,14 @@ class ReportSertifikasiController extends Controller
                             ->where('level_sertifikasi_id', '=', $validated['level_id'])
                             ->whereRaw("((nilai2 IS NULL AND nilai3 IS NULL) OR (nilai2 IS NULL AND nilai3 <> ?) OR (nilai2 <> ? AND nilai3 IS NULL) OR NOT(nilai2 = ? OR nilai3 = ?))",
                                     ['0', 'TIDAK KOMPETEN', '0', 'TIDAK KOMPETEN'])
-                            ->orderBy('expired')
-                            ->get();
+                            ->orderBy('expired');
         }
+
+        if (array_key_exists('limit', $validated)) {
+            $temps = $temps->limit($validated['limit']);
+        }
+
+        $temps = $temps->get();
 
         $temps = $temps->groupBy('jenis_sertifikasi_id');
         $tempsGrouped = [];

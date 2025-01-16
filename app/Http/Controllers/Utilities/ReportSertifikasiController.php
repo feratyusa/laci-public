@@ -38,8 +38,43 @@ class ReportSertifikasiController extends Controller
         $employeeTable = (new Employee())->getTable();
 
         $temps = null;
-        if($validated['level_id'] == 0){
-            $temps = Diklat::selectRaw("{$employeeTable}.nip, {$employeeTable}.nama, {$employeeTable}.jabatan, kd_kursus, CAST(tgl_selesai as DATE) as tgl_lulus, urutan, CAST(DATEADD(YEAR, masa_berlaku_tahun, tgl_selesai) AS DATE) as expired, {$levelSertfikasiTable}.level, {$jenisSertifikasiTable}.nama as jenis_sertifikasi")
+        if ($validated['jenis_sertifikasi_id'] == 0) {
+            $temps = Diklat::selectRaw("
+                                {$employeeTable}.nip,
+                                {$employeeTable}.nama,
+                                {$employeeTable}.jabatan,
+                                kd_kursus,
+                                CAST(tgl_selesai as DATE) as tgl_lulus,
+                                urutan,
+                                CAST(DATEADD(YEAR, masa_berlaku_tahun, tgl_selesai) AS DATE) as expired,
+                                {$levelSertfikasiTable}.level,
+                                {$jenisSertifikasiTable}.nama as jenis_sertifikasi,
+                                jenis_sertifikasi_id
+                            ")
+                            ->leftJoin($employeeTable, "{$employeeTable}.nip", "=", "{$diklatTable}.nip")
+                            ->leftJoin($courseTable, "{$courseTable}.sandi", "=", "{$diklatTable}.kd_kursus")
+                            ->leftJoin($detailSertfikasiTable, "{$detailSertfikasiTable}.kursus_id", "=", "{$courseTable}.sandi")
+                            ->leftJoin($levelSertfikasiTable, "{$levelSertfikasiTable}.id", "=", "{$detailSertfikasiTable}.level_sertifikasi_id")
+                            ->leftJoin($jenisSertifikasiTable, "{$jenisSertifikasiTable}.id", "=", "{$levelSertfikasiTable}.jenis_sertifikasi_id")
+                            ->whereNotNull('jenis_sertifikasi_id')
+                            ->whereRaw("((nilai2 IS NULL AND nilai3 IS NULL) OR (nilai2 IS NULL AND nilai3 <> ?) OR (nilai2 <> ? AND nilai3 IS NULL) OR NOT(nilai2 = ? OR nilai3 = ?))",
+                                    ['0', 'TIDAK KOMPETEN', '0', 'TIDAK KOMPETEN'])
+                            ->orderBy('expired')
+                            ->get();
+        }
+        else if($validated['level_id'] == 0){
+            $temps = Diklat::selectRaw("
+                                {$employeeTable}.nip,
+                                {$employeeTable}.nama,
+                                {$employeeTable}.jabatan,
+                                kd_kursus,
+                                CAST(tgl_selesai as DATE) as tgl_lulus,
+                                urutan,
+                                CAST(DATEADD(YEAR, masa_berlaku_tahun, tgl_selesai) AS DATE) as expired,
+                                {$levelSertfikasiTable}.level,
+                                {$jenisSertifikasiTable}.nama as jenis_sertifikasi,
+                                jenis_sertifikasi_id
+                            ")
                             ->leftJoin($employeeTable, "{$employeeTable}.nip", "=", "{$diklatTable}.nip")
                             ->leftJoin($courseTable, "{$courseTable}.sandi", "=", "{$diklatTable}.kd_kursus")
                             ->leftJoin($detailSertfikasiTable, "{$detailSertfikasiTable}.kursus_id", "=", "{$courseTable}.sandi")
@@ -52,7 +87,18 @@ class ReportSertifikasiController extends Controller
                             ->get();
         }
         else{
-            $temps = Diklat::selectRaw("{$employeeTable}.nip, {$employeeTable}.nama, {$employeeTable}.jabatan, kd_kursus, CAST(tgl_selesai as DATE) as tgl_lulus, urutan, CAST(DATEADD(YEAR, masa_berlaku_tahun, tgl_selesai) AS DATE) as expired, {$levelSertfikasiTable}.level, {$jenisSertifikasiTable}.nama as jenis_sertifikasi")
+            $temps = Diklat::selectRaw("
+                                {$employeeTable}.nip,
+                                {$employeeTable}.nama,
+                                {$employeeTable}.jabatan,
+                                kd_kursus,
+                                CAST(tgl_selesai as DATE) as tgl_lulus,
+                                urutan,
+                                CAST(DATEADD(YEAR, masa_berlaku_tahun, tgl_selesai) AS DATE) as expired,
+                                {$levelSertfikasiTable}.level,
+                                {$jenisSertifikasiTable}.nama as jenis_sertifikasi,
+                                jenis_sertifikasi_id
+                            ")
                             ->leftJoin($employeeTable, "{$employeeTable}.nip", "=", "{$diklatTable}.nip")
                             ->leftJoin($courseTable, "{$courseTable}.sandi", "=", "{$diklatTable}.kd_kursus")
                             ->leftJoin($detailSertfikasiTable, "{$detailSertfikasiTable}.kursus_id", "=", "{$courseTable}.sandi")
@@ -66,47 +112,60 @@ class ReportSertifikasiController extends Controller
                             ->get();
         }
 
-        $temps = $temps->groupBy('nip');
-        $results = [];
-        foreach ($temps as $nip => $values) {
-            $resTemp = [
-                'nip' => $nip,
-                'nama' => $values[0]->nama,
-                'jabatan' => $values[0]->jabatan,
-                'level' => '',
-                'jenis_sertifikasi' => '',
-                'kd_kursus' => '',
-                'tgl_lulus' => '',
-                'expired' => date('1990-01-01'),
-                'urutan' => 0
-            ];
-
-            foreach ($values as $value) {
-                if($resTemp['urutan'] < $value->urutan){
-                    $resTemp['level'] = $value['level'];
-                    $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
-                    $resTemp['kd_kursus'] = $value['kd_kursus'];
-                    $resTemp['tgl_lulus'] = $value['tgl_lulus'];
-                    $resTemp['urutan'] = $value['urutan'];
-                    $resTemp['expired'] = $value['expired'];
-                }
-                else if($resTemp['urutan'] == $value->urutan && $resTemp['expired'] < date($value->expired)){
-                    $resTemp['level'] = $value['level'];
-                    $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
-                    $resTemp['kd_kursus'] = $value['kd_kursus'];
-                    $resTemp['tgl_lulus'] = $value['tgl_lulus'];
-                    $resTemp['expired'] = $value['expired'];
-                }
-            }
-
-            $results[] = $resTemp;
+        $temps = $temps->groupBy('jenis_sertifikasi_id');
+        $tempsGrouped = [];
+        foreach ($temps as $key => $values) {
+            $tempsGrouped[$key] = $values->groupBy('nip');
         }
 
-        $tempSub = JenisSertifikasi::find($validated['jenis_sertifikasi_id']);
-        $subtitle = $tempSub->nama;
-        if ($validated['level_id'] != 0) {
-            $tempSub = LevelSertifikasi::find($validated['level_id']);
-            $subtitle .= " " . $tempSub->level;
+        $results = [];
+        foreach ($tempsGrouped as $key => $temps) {
+            foreach ($temps as $nip => $values) {
+                $resTemp = [
+                    'nip' => $nip,
+                    'jenis_sertifikasi_id' => $key,
+                    'nama' => $values[0]->nama,
+                    'jabatan' => $values[0]->jabatan,
+                    'level' => '',
+                    'jenis_sertifikasi' => '',
+                    'kd_kursus' => '',
+                    'tgl_lulus' => '',
+                    'expired' => date('1990-01-01'),
+                    'urutan' => 0
+                ];
+
+                foreach ($values as $value) {
+                    if($resTemp['urutan'] < $value->urutan){
+                        $resTemp['level'] = $value['level'];
+                        $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
+                        $resTemp['kd_kursus'] = $value['kd_kursus'];
+                        $resTemp['tgl_lulus'] = $value['tgl_lulus'];
+                        $resTemp['urutan'] = $value['urutan'];
+                        $resTemp['expired'] = $value['expired'];
+                    }
+                    else if($resTemp['urutan'] == $value->urutan && $resTemp['expired'] < date($value->expired)){
+                        $resTemp['level'] = $value['level'];
+                        $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
+                        $resTemp['kd_kursus'] = $value['kd_kursus'];
+                        $resTemp['tgl_lulus'] = $value['tgl_lulus'];
+                        $resTemp['expired'] = $value['expired'];
+                    }
+                }
+
+                $results[] = $resTemp;
+            }
+        }
+
+        if ($validated['jenis_sertifikasi_id'] == 0) {
+            $subtitle = 'Semua';
+        }
+        else{
+            $tempSub = JenisSertifikasi::find($validated['jenis_sertifikasi_id']);
+            $subtitle = $tempSub->nama;
+            if ($validated['level_id'] != 0) {
+                $tempSub = LevelSertifikasi::find($validated['level_id']);
+                $subtitle .= " " . $tempSub->level;
+            }
         }
 
         return response()->json([
@@ -156,7 +215,8 @@ class ReportSertifikasiController extends Controller
                         ->get();
 
         return response()->json([
-            'courses' => $results
+            'courses' => $results,
+            'employee' => Employee::select('nip', 'nama')->where('nip', $nip)->first()
         ]);
     }
 }

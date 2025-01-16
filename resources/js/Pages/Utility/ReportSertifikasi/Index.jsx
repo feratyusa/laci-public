@@ -27,7 +27,7 @@ export default function Index({
         setSubtitle(null)
         axios.get(route('get.report.sertifikasi'), {params: {jenis_sertifikasi_id: data.jenis_sertifikasi_id, level_id: data.level_id}})
             .then((response) => {
-                setResults(response.data.results)
+                setResults(response.data.results.sort((a, b) => new Date(a.expired) < new Date(b.expired) ? -1 : new Date(a.expired) > new Date(b.expired) ? 1 : 0))
                 setSubtitle(response.data.subtitle)
             })
             .catch((error) => {
@@ -75,7 +75,6 @@ export default function Index({
                         <div className="m-5">
                             <ReportSertifikasiTable
                                 data={results}
-                                jenis_sertifikasi_id={data.jenis_sertifikasi_id}
                             />
                         </div>
                     </Card>
@@ -96,6 +95,7 @@ function SertifikasiSelection({
             value={data.jenis_sertifikasi_id}
             onChange={(e) => setData('jenis_sertifikasi_id', e.target.value)}
         >
+            <option value="0">Semua</option>
             {
                 sertifikasi.map(s => (
                     <option value={get(s, 'id', 'sack')}>{get(s, 'nama', 'balls')}</option>
@@ -113,7 +113,12 @@ function LevelSelection({
     const [selections, setSelections] = useState([])
 
     useEffect(() => {
-        setSelections(levels.filter(l => l.jenis_sertifikasi_id == data.jenis_sertifikasi_id))
+        if (data.jenis_sertifikasi_id == 0) {
+            setSelections([])
+        }
+        else{
+            setSelections(levels.filter(l => l.jenis_sertifikasi_id == data.jenis_sertifikasi_id))
+        }
         setData('level_id', 0)
     }, [data.jenis_sertifikasi_id])
 

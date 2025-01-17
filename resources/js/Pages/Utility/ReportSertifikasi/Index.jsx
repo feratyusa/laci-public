@@ -73,6 +73,12 @@ export default function Index({
                             </div>
                         </div>
                         <div className="m-5">
+                            <div className="mb-5">
+                                <ExportButton
+                                    jenis_sertifikasi_id={data.jenis_sertifikasi_id}
+                                    level_id={data.level_id}
+                                />
+                            </div>
                             <ReportSertifikasiTable
                                 data={results}
                             />
@@ -81,6 +87,19 @@ export default function Index({
                 </div>
             </div>
         </Authenticated>
+    )
+}
+
+function ExportButton({
+    jenis_sertifikasi_id,
+    level_id
+}){
+    return(
+        <a href={route('report.sertifikasi.export', {jenis_sertifikasi_id: jenis_sertifikasi_id, level_id: level_id})} target="__blank">
+            <Button color="green">
+                Export Report Sertifikasi
+            </Button>
+        </a>
     )
 }
 

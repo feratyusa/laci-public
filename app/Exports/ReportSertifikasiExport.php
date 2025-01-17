@@ -12,8 +12,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ReportSertifikasiExport implements FromCollection, ShouldAutoSize, WithStyles, WithHeadings
 {
-    private array $results;
-    public function __construct(array $results)
+    private $results;
+    public function __construct($results)
     {
         $this->results = $results;
     }
@@ -54,7 +54,7 @@ class ReportSertifikasiExport implements FromCollection, ShouldAutoSize, WithSty
 
         foreach ($this->results as $object) {
             $temp = collect((object)$object);
-            $collects->push($temp->forget('urutan'));
+            $collects->push($temp->forget(['urutan', 'level_sertifikasi_id']));
         }
 
         return $collects;

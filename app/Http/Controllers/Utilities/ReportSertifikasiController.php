@@ -148,7 +148,7 @@ class ReportSertifikasiController extends Controller
                 ];
 
                 foreach ($values as $value) {
-                    if($resTemp['urutan'] < $value->urutan){
+                    if((int)$resTemp['urutan'] < (int)$value->urutan){
                         $resTemp['level'] = $value['level'];
                         $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
                         $resTemp['kd_kursus'] = $value['kd_kursus'];
@@ -156,7 +156,7 @@ class ReportSertifikasiController extends Controller
                         $resTemp['urutan'] = $value['urutan'];
                         $resTemp['expired'] = $value['expired'];
                     }
-                    else if($resTemp['urutan'] == $value->urutan && $resTemp['expired'] < date($value->expired)){
+                    else if((int)$resTemp['urutan'] == (int)$value->urutan && date($resTemp['expired']) < date($value->expired)){
                         $resTemp['level'] = $value['level'];
                         $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'];
                         $resTemp['kd_kursus'] = $value['kd_kursus'];
@@ -257,13 +257,13 @@ class ReportSertifikasiController extends Controller
                 ];
 
                 foreach ($values as $value) {
-                    if($resTemp['urutan'] < $value->urutan){
+                    if((int)$resTemp['urutan'] < (int)$value->urutan){
                         $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'] . " " . $value['level'];
                         $resTemp['tgl_lulus'] = $value['tgl_lulus'];
                         $resTemp['expired'] = $value['expired'];
                         $resTemp['urutan'] = $value['urutan'];
                     }
-                    else if($resTemp['urutan'] == $value->urutan && $resTemp['expired'] < date($value->expired)){
+                    else if((int)$resTemp['urutan'] == (int)$value->urutan && date($resTemp['expired']) < date($value->expired)){
                         $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'] . " " . $value['level'];
                         $resTemp['tgl_lulus'] = $value['tgl_lulus'];
                         $resTemp['expired'] = $value['expired'];

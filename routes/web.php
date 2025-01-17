@@ -287,5 +287,9 @@ Route::prefix('api')->group(function (){
             Route::post('check-status', [EventParticipantController::class, 'checkStatuses'])->name('event.participant.status');
         });
     });
+
+    Route::prefix('skibidi')->group(function(){
+        Route::get('diklat', [DiklatController::class, 'getDiklatData'])->name('dev.get.diklat');
+    });
 });
 

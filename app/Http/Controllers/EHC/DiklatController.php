@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\EHC;
 
+use App\Exports\DiklatExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EHC\DiklatFormRequest;
+use App\Models\EHC\Diklat;
 use App\Models\EHC\Employee;
 use App\Models\EHCWRITE\DiklatWrite;
 use App\Models\Event\Event;
@@ -11,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DiklatController extends Controller
 {
@@ -21,7 +24,7 @@ class DiklatController extends Controller
         $user = Auth::user();
 
         $validated = $request->validated();
-        
+
         DB::beginTransaction();
 
         try{
@@ -29,7 +32,7 @@ class DiklatController extends Controller
                 $employee = Employee::where('nip', $nip)->firstOrFail();
 
                 $diklat = new DiklatWrite();
-                
+
                 $diklat->Nip = $nip;
                 $diklat->kd_kursus = $event->proposal->kd_kursus;
                 $diklat->kd_lembaga = $event->proposal->kd_lembaga;
@@ -55,5 +58,16 @@ class DiklatController extends Controller
         }
 
         return redirect()->route('event.show', ['id' => $event->id]);
+    }
+
+    public function getDiklatData(Request $request)
+    {
+        $validated = $request->validate([
+            'kd_kursus' => ['required']
+        ]);
+
+        $results = Diklat::where('kd_kursus', $validated['kd_kursus'])->get(['nip', 'pelatihan', 'kd_kursus', 'nilai2', 'nilai3', 'tgl_mulai', 'tgl_selesai']);
+
+        return Excel::download(new DiklatExport($results), "skibidi_diklat.xlsx");
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Utilities;
 
+use App\Exports\ReportSertifikasiExport;
 use App\Http\Controllers\Controller;
 use App\Models\EHC\DetailSertifikasi;
 use App\Models\EHC\Diklat;
@@ -12,6 +13,7 @@ use App\Models\EHC\LevelSertifikasi;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportSertifikasiController extends Controller
 {
@@ -23,14 +25,8 @@ class ReportSertifikasiController extends Controller
         ]);
     }
 
-    public function getAllSertifikasiStatus(Request $request)
+    private function getQueryReportResults(array $validated)
     {
-        $validated = $request->validate([
-            'jenis_sertifikasi_id' => ['required', 'integer'],
-            'level_id' => ['required'],
-            'limit' => ['nullable']
-        ]);
-
         $diklatTable = (new Diklat())->getTable();
         $courseTable = (new Kursus())->getTable();
         $detailSertfikasiTable = (new DetailSertifikasi())->getTable();
@@ -121,6 +117,19 @@ class ReportSertifikasiController extends Controller
         foreach ($temps as $key => $values) {
             $tempsGrouped[$key] = $values->groupBy('nip');
         }
+
+        return $tempsGrouped;
+    }
+
+    public function getAllSertifikasiStatus(Request $request)
+    {
+        $validated = $request->validate([
+            'jenis_sertifikasi_id' => ['required', 'integer'],
+            'level_id' => ['required'],
+            'limit' => ['nullable']
+        ]);
+
+        $tempsGrouped = $this->getQueryReportResults($validated);
 
         $results = [];
         foreach ($tempsGrouped as $key => $temps) {
@@ -222,5 +231,64 @@ class ReportSertifikasiController extends Controller
             'courses' => $results,
             'employee' => Employee::select('nip', 'nama')->where('nip', $nip)->first()
         ]);
+    }
+
+    public function exportReportSertifikasi(Request $request)
+    {
+        $validated = $request->validate([
+            'jenis_sertifikasi_id' => ['required', 'integer'],
+            'level_id' => ['required'],
+            'limit' => ['nullable']
+        ]);
+
+        $tempsGrouped = $this->getQueryReportResults($validated);
+
+        $results = [];
+        foreach ($tempsGrouped as $key => $temps) {
+            foreach ($temps as $nip => $values) {
+                $resTemp = [
+                    'nip' => $nip,
+                    'nama' => $values[0]->nama,
+                    'jabatan' => $values[0]->jabatan,
+                    'jenis_sertifikasi' => '',
+                    'tgl_lulus' => '',
+                    'expired' => date('1990-01-01'),
+                    'urutan' => 0,
+                ];
+
+                foreach ($values as $value) {
+                    if($resTemp['urutan'] < $value->urutan){
+                        $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'] . " " . $value['level'];
+                        $resTemp['tgl_lulus'] = $value['tgl_lulus'];
+                        $resTemp['expired'] = $value['expired'];
+                        $resTemp['urutan'] = $value['urutan'];
+                    }
+                    else if($resTemp['urutan'] == $value->urutan && $resTemp['expired'] < date($value->expired)){
+                        $resTemp['jenis_sertifikasi'] = $value['jenis_sertifikasi'] . " " . $value['level'];
+                        $resTemp['tgl_lulus'] = $value['tgl_lulus'];
+                        $resTemp['expired'] = $value['expired'];
+                        $resTemp['urutan'] = $value['urutan'];
+                    }
+                }
+
+                $results[] = $resTemp;
+            }
+        }
+
+        if ($validated['jenis_sertifikasi_id'] == 0) {
+            $subtitle = 'Semua';
+        }
+        else{
+            $tempSub = JenisSertifikasi::find($validated['jenis_sertifikasi_id']);
+            $subtitle = $tempSub->nama;
+            if ($validated['level_id'] != 0) {
+                $tempSub = LevelSertifikasi::find($validated['level_id']);
+                $subtitle .= "-" . $tempSub->level;
+            }
+        }
+
+        $date = date('Y-m-d', strtotime('now'));
+
+        return Excel::download(new ReportSertifikasiExport($results), "{$subtitle}_{$date}.xlsx");
     }
 }

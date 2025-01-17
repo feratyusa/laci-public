@@ -218,6 +218,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('report-sertifikasi')->group(function() {
             Route::get('', [ReportSertifikasiController::class, 'index'])->name('report.sertifikasi.index');
+            Route::get('/export', [ReportSertifikasiController::class, 'exportReportSertifikasi'])->name('report.sertifikasi.export');
         });
     });
 

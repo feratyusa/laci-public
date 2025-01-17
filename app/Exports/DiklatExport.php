@@ -12,9 +12,11 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class DiklatExport implements FromCollection, ShouldAutoSize, WithStyles, WithHeadings
 {
     private $results;
-    public function __construct($results)
+    private array $columns;
+    public function __construct($results, $columns)
     {
         $this->results = $results;
+        $this->columns = $columns;
     }
 
     public function styles(Worksheet $sheet)
@@ -34,7 +36,7 @@ class DiklatExport implements FromCollection, ShouldAutoSize, WithStyles, WithHe
     }
     public function headings(): array
     {
-        return ['nip', 'pelatihan', 'kd_kursus', 'nilai2', 'nilai3', 'tgl_mulai', 'tgl_selesai'];
+        return $this->columns;
     }
     /**
     * @return \Illuminate\Support\Collection

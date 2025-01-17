@@ -84,10 +84,6 @@ class ReportSertifikasiController extends Controller
                             ->orderBy('expired');
         }
 
-        if (array_key_exists('limit', $validated)) {
-            $temps = $temps->limit($validated['limit']);
-        }
-
         $temps = $temps->get();
 
         $temps = $temps->groupBy('jenis_sertifikasi_id');
@@ -152,6 +148,10 @@ class ReportSertifikasiController extends Controller
 
         if ($validated['level_id'] != 0) {
             $results = $results->where('level_sertifikasi_id',$validated['level_id'])->values();
+        }
+
+        if (array_key_exists('limit', $validated)) {
+            $results = $results->sortBy('expired')->take(200)->values();
         }
 
         if ($validated['jenis_sertifikasi_id'] == 0) {

@@ -66,8 +66,11 @@ class DiklatController extends Controller
             'kd_kursus' => ['required']
         ]);
 
-        $results = Diklat::where('kd_kursus', $validated['kd_kursus'])->get(['nip', 'pelatihan', 'kd_kursus', 'nilai2', 'nilai3', 'tgl_mulai', 'tgl_selesai']);
+        $results = Diklat::selectRaw('nip, MAX(tgl_selesai) as tgl_selesai')
+                            ->where('kd_kursus', $validated['kd_kursus'])
+                            ->groupBy('nip')
+                            ->get();
 
-        return Excel::download(new DiklatExport($results), "skibidi_diklat.xlsx");
+        return Excel::download(new DiklatExport($results, ['nip', 'tgl_selesai']), "skibidi_diklat.xlsx");
     }
 }

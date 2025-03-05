@@ -1,3 +1,15 @@
+const _01_17_2025 = {
+    title: 'v1.1.0 (17 Januari 2025)',
+    md: `
+#### New Features
+- Master Jenis Kursus dan Jenis Sertifikasi
+- Report Sertifikasi pada Menu Report Pendidikan
+- Dashboard bagian Report sertifikasi
+#### Update
+- Update Guidebook v1.1.0
+`
+}
+
 const _01_03_2025 = {
     title: 'v1.0.0 (03 Januari 2025)',
     md: `
@@ -67,6 +79,7 @@ md: `
 }
 
 const changes = [
+    _01_17_2025,
     _01_03_2025,
     _11_07_2024,
     _10_10_2024,

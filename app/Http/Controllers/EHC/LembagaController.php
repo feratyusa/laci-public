@@ -19,7 +19,7 @@ class LembagaController extends Controller
 
     public function getNewSandi()
     {
-        $query = Vendor::selectRaw('MAX(CAST(sandi AS INT)) as sandi')->first();
+        $query = Vendor::selectRaw('MAX(sandi) as sandi')->first();
 
         $sandi = intval($query->sandi) + 1;
 

@@ -276,9 +276,9 @@ function KursusSertifikasiPanel({
                     options={sertifikasi}
                     isClearable={true}
                     isMulti={true}
-                    value={sertifikasi.filter(s => table.getColumn('level').getFilterValue()?.includes(s.value))}
+                    value={sertifikasi.filter(s => table.getColumn('level').getFilterValue()?.includes(s.value.toString()))}
                     onChange={(e) => {
-                        table.getColumn('level').setFilterValue(e.map(item => item.value))
+                        table.getColumn('level').setFilterValue(e.map(item => item.value.toString()))
                     }}
                 />
             </div>

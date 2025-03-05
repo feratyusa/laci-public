@@ -56,10 +56,12 @@ class KursusController extends Controller
         $kursus->sertifikat = $validated['sertifikat'];
         $kursus->nskill = $validated['nskill'];
 
-        DetailSertifikasiWrite::create([
-            'kursus_id' => $validated['sandi'],
-            'level_sertifikasi_id' => $validated['level_sertifikasi_id']
-        ]);
+        if ($validated['sertifikat'] == 'sertifikasi') {
+            DetailSertifikasiWrite::create([
+                'kursus_id' => $validated['sandi'],
+                'level_sertifikasi_id' => $validated['level_sertifikasi_id']
+            ]);
+        }
 
         $kursus->save();
 
